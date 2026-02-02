@@ -1,7 +1,3 @@
-/**
- * Toast notification composable
- */
-
 import { ref } from 'vue'
 
 export type ToastType = 'success' | 'error' | 'warning' | 'info'
@@ -11,21 +7,20 @@ export interface Toast {
   message: string
   type: ToastType
   duration: number
-  createdAt: number
 }
 
+const MAX_TOASTS = 5
 const toasts = ref<Toast[]>([])
 let toastIdCounter = 0
 
 export function useToast() {
   function addToast(message: string, type: ToastType = 'info', duration: number = 3000) {
     const id = ++toastIdCounter
-    const toast: Toast = {
-      id,
-      message,
-      type,
-      duration,
-      createdAt: Date.now(),
+    const toast: Toast = { id, message, type, duration }
+
+    // 限制最大同时显示 5 个 toast，超过则移除最旧的
+    if (toasts.value.length >= MAX_TOASTS) {
+      toasts.value.shift()
     }
 
     toasts.value.push(toast)
@@ -66,14 +61,5 @@ export function useToast() {
     toasts.value = []
   }
 
-  return {
-    toasts,
-    addToast,
-    removeToast,
-    success,
-    error,
-    warning,
-    info,
-    clear,
-  }
+  return { toasts, addToast, removeToast, success, error, warning, info, clear }
 }
