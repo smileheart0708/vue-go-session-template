@@ -34,7 +34,7 @@ withDefaults(defineProps<Props>(), { change: '' })
   align-items: flex-start;
   gap: 1rem;
   padding: 1.5rem;
-  background: var(--color-background-secondary);
+  background: var(--color-background-elevated);
   border: 1px solid var(--color-border);
   border-radius: 12px;
   transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
