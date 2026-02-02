@@ -128,19 +128,11 @@ const handleLogin = async () => {
 
 .error-message {
   padding: 10px 12px;
-  background: #fef0f0;
-  border: 1px solid #fde2e2;
+  background: var(--color-error-bg);
+  border: 1px solid var(--color-error-border);
   border-radius: 4px;
-  color: #c53030;
+  color: var(--color-error-text);
   font-size: 14px;
-}
-
-@media (prefers-color-scheme: dark) {
-  .error-message {
-    background: #3d2020;
-    border-color: #5a2020;
-    color: #fc8181;
-  }
 }
 
 .login-button {

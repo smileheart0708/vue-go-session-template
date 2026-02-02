@@ -40,22 +40,30 @@
 
   --color-border: var(--color-border-light);
   --color-border-hover: var(--color-border-light-hover);
+
+  /* 错误状态 - 浅色 */
+  --color-error-bg: #fef0f0;
+  --color-error-border: #fde2e2;
+  --color-error-text: #c53030;
 }
 
 /* 深色主题 */
-@media (prefers-color-scheme: dark) {
-  :root {
-    --color-background: var(--color-bg-dark);
-    --color-background-elevated: var(--color-bg-dark-elevated);
-    --color-background-secondary: var(--color-bg-dark-secondary);
+:root[data-theme='dark'] {
+  --color-background: var(--color-bg-dark);
+  --color-background-elevated: var(--color-bg-dark-elevated);
+  --color-background-secondary: var(--color-bg-dark-secondary);
 
-    --color-text: var(--color-text-dark-primary);
-    --color-text-secondary: var(--color-text-dark-secondary);
-    --color-text-tertiary: var(--color-text-dark-tertiary);
+  --color-text: var(--color-text-dark-primary);
+  --color-text-secondary: var(--color-text-dark-secondary);
+  --color-text-tertiary: var(--color-text-dark-tertiary);
 
-    --color-border: var(--color-border-dark);
-    --color-border-hover: var(--color-border-dark-hover);
-  }
+  --color-border: var(--color-border-dark);
+  --color-border-hover: var(--color-border-dark-hover);
+
+  /* 错误状态 - 深色 */
+  --color-error-bg: #3d2020;
+  --color-error-border: #5a2020;
+  --color-error-text: #fc8181;
 }
 
 /* 基础样式重置 */

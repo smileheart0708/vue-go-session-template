@@ -26,22 +26,22 @@ export const useThemeStore = defineStore('theme', () => {
     return colorMode.value === 'dark'
   })
 
-  function setMode(newMode: ThemeMode, event?: MouseEvent) {
+  function setMode(newMode: ThemeMode) {
     mode.value = newMode
     if (newMode === 'auto') {
-      colorMode.value = 'light'
+      colorMode.value = 'auto'
     } else {
       colorMode.value = newMode
     }
   }
 
-  function cycleMode(event?: MouseEvent) {
+  function cycleMode() {
     const modes: ThemeMode[] = ['light', 'dark', 'auto']
     const currentIndex = modes.indexOf(mode.value)
     const nextIndex = (currentIndex + 1) % modes.length
     const nextMode = modes[nextIndex]
     if (nextMode) {
-      setMode(nextMode, event)
+      setMode(nextMode)
     }
   }
 
@@ -54,7 +54,7 @@ export const useThemeStore = defineStore('theme', () => {
     watch(mode, (newMode) => {
       localStorage.setItem(STORAGE_KEY, newMode)
       if (newMode === 'auto') {
-        colorMode.value = 'light'
+        colorMode.value = 'auto'
       } else {
         colorMode.value = newMode
       }
