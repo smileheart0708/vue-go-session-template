@@ -11,10 +11,7 @@ export const useThemeStore = defineStore('theme', () => {
     selector: 'html',
     attribute: 'data-theme',
     storageKey: STORAGE_KEY,
-    modes: {
-      light: 'light',
-      dark: 'dark',
-    },
+    modes: { light: 'light', dark: 'dark' },
   })
 
   const mode = ref<ThemeMode>('auto')
@@ -61,11 +58,5 @@ export const useThemeStore = defineStore('theme', () => {
     })
   }
 
-  return {
-    mode,
-    isDark,
-    setMode,
-    cycleMode,
-    init,
-  }
+  return { mode, isDark, setMode, cycleMode, init }
 })
