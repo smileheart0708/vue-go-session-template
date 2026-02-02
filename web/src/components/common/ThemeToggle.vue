@@ -222,7 +222,7 @@ onUnmounted(() => {
 
 .dropdown-item.active {
   background: var(--color-primary);
-  color: #ffffff;
+  color: wheat;
 }
 
 .dropdown-icon {
