@@ -2,6 +2,7 @@ import { fileURLToPath, URL } from 'node:url'
 import { defineConfig, loadEnv } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import vueDevTools from 'vite-plugin-vue-devtools'
+import { compression } from 'vite-plugin-compression2'
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '')
@@ -10,6 +11,20 @@ export default defineConfig(({ mode }) => {
     plugins: [
       vue(), // 如果想全局开启 Vapor，可配置 vue({ template: { compilerOptions: { vapor: true } } })
       vueDevTools(),
+      // 生成 .zst 文件 (Zstd) - 2026 优先级最高
+      compression({
+        algorithms: ['zstd'],
+        exclude: [/\.(zst)$/, /\.(br)$/, /\.(gz)$/],
+        deleteOriginalAssets: false, // 必须保留原文件，作为不支持压缩的浏览器的兜底
+      }),
+      // 生成 .br 文件 (Brotli) - 兼容性兜底
+      compression({
+        algorithms: ['brotliCompress'],
+        exclude: [/\.(zst)$/, /\.(br)$/, /\.(gz)$/],
+        deleteOriginalAssets: false,
+      }),
+      // 生成 .gz 文件 (Gzip) - 兼容性兜底
+      compression({ algorithms: ['gzip'], exclude: [/\.(zst)$/, /\.(br)$/, /\.(gz)$/] }),
     ],
     resolve: { alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) } },
     server: {
