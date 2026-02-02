@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import ThemeToggle from '@/components/common/ThemeToggle.vue'
 
 const authKey = ref('')
 const isLoading = ref(false)
@@ -30,6 +31,9 @@ const handleLogin = async () => {
 
 <template>
   <div class="login-container">
+    <div class="theme-toggle-wrapper">
+      <ThemeToggle />
+    </div>
     <div class="login-card">
       <h1 class="login-title">身份认证</h1>
 
@@ -65,6 +69,13 @@ const handleLogin = async () => {
   justify-content: center;
   min-height: 100vh;
   padding: 20px;
+  position: relative;
+}
+
+.theme-toggle-wrapper {
+  position: absolute;
+  top: 20px;
+  right: 20px;
 }
 
 .login-card {
