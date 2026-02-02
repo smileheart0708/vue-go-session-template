@@ -1,28 +1,29 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import ThemeToggle from '@/components/common/ThemeToggle.vue'
+import { useToast } from '@/composables'
 
 const authKey = ref('')
 const isLoading = ref(false)
-const errorMessage = ref('')
+const { success, error: toastError } = useToast()
 
 const handleLogin = async () => {
   if (!authKey.value.trim()) {
-    errorMessage.value = '请输入认证令牌'
+    toastError('请输入认证令牌')
     return
   }
 
   isLoading.value = true
-  errorMessage.value = ''
 
   try {
     // TODO: 实现实际的认证逻辑
     console.log('认证令牌:', authKey.value)
     // 模拟 API 调用
     await new Promise((resolve) => setTimeout(resolve, 1000))
+    success('登录成功！')
   } catch (error) {
     console.error(error)
-    errorMessage.value = '认证失败，请重试'
+    toastError('认证失败，请重试')
   } finally {
     isLoading.value = false
   }
@@ -48,10 +49,6 @@ const handleLogin = async () => {
             placeholder="请输入 AUTH_KEY"
             :disabled="isLoading"
           />
-        </div>
-
-        <div v-if="errorMessage" class="error-message">
-          {{ errorMessage }}
         </div>
 
         <button type="submit" class="login-button" :disabled="isLoading">
@@ -125,15 +122,6 @@ const handleLogin = async () => {
 .form-input:disabled {
   opacity: 0.6;
   cursor: not-allowed;
-}
-
-.error-message {
-  padding: 10px 12px;
-  background: var(--color-error-bg);
-  border: 1px solid var(--color-error-border);
-  border-radius: 4px;
-  color: var(--color-error-text);
-  font-size: 14px;
 }
 
 .login-button {

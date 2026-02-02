@@ -45,6 +45,16 @@
   --color-error-bg: #fef0f0;
   --color-error-border: #fde2e2;
   --color-error-text: #c53030;
+
+  /* Toast 状态颜色 */
+  --toast-success: #22c55e;
+  --toast-success-rgb: 34, 197, 94;
+  --toast-error: red;
+  --toast-error-rgb: 239, 68, 68;
+  --toast-warning: orange;
+  --toast-warning-rgb: 245, 158, 11;
+  --toast-info: #3b82f6;
+  --toast-info-rgb: 59, 130, 246;
 }
 
 /* 深色主题 */
