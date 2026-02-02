@@ -92,7 +92,19 @@ func tryServeFile(c *gin.Context, subFS fs.FS, filePath string, encoding string)
 	}
 
 	// 优化：直接根据原始文件名判断 MIME
-	originalPath := strings.TrimSuffix(filePath, "."+encoding)
+	// 需要根据不同的编码格式移除对应的后缀
+	var originalPath string
+	switch encoding {
+	case "zstd":
+		originalPath = strings.TrimSuffix(filePath, ".zst")
+	case "br":
+		originalPath = strings.TrimSuffix(filePath, ".br")
+	case "gzip":
+		originalPath = strings.TrimSuffix(filePath, ".gz")
+	default:
+		originalPath = filePath
+	}
+
 	contentType := mime.TypeByExtension(filepath.Ext(originalPath))
 	if contentType == "" {
 		contentType = "application/octet-stream"
