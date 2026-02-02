@@ -38,14 +38,8 @@ export function useTheme() {
     // Circular expansion animation
     await transition.ready
     document.documentElement.animate(
-      {
-        clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${endRadius}px at ${x}px ${y}px)`],
-      },
-      {
-        duration: 400,
-        easing: 'ease-out',
-        pseudoElement: '::view-transition-new(root)',
-      },
+      { clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${endRadius}px at ${x}px ${y}px)`] },
+      { duration: 400, easing: 'ease-out', pseudoElement: '::view-transition-new(root)' },
     )
   }
 
@@ -59,10 +53,5 @@ export function useTheme() {
     }
   }
 
-  return {
-    mode,
-    isDark,
-    setTheme,
-    toggleTheme,
-  }
+  return { mode, isDark, setTheme, toggleTheme }
 }
