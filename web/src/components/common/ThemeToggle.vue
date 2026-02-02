@@ -6,6 +6,8 @@
       :title="tooltipText"
       @click="handleClick"
       @mousedown="handleMouseDown"
+      @mouseup="handleMouseUp"
+      @mouseleave="handleMouseUp"
       @touchstart="handleTouchStart"
       @touchend="handleTouchEnd"
     >
@@ -105,6 +107,13 @@ function handleMouseDown() {
   }, LONG_PRESS_DURATION)
 }
 
+function handleMouseUp() {
+  if (longPressTimer) {
+    clearTimeout(longPressTimer)
+    longPressTimer = null
+  }
+}
+
 function handleTouchStart() {
   isLongPress = false
   longPressTimer = setTimeout(() => {
@@ -151,18 +160,19 @@ onUnmounted(() => {
   width: 40px;
   height: 40px;
   padding: 0;
-  background: var(--bg-secondary);
-  border: none;
+  background: transparent;
+  border: 1px solid transparent;
   border-radius: 8px;
   cursor: pointer;
-  color: var(--fg-primary);
+  color: var(--color-text);
   transition:
-    background-color 0.2s,
+    all 0.2s,
     transform 0.1s;
 }
 
 .theme-toggle-button:hover {
-  background: var(--bg-tertiary);
+  background: var(--color-background-secondary);
+  border-color: var(--color-border);
 }
 
 .theme-toggle-button:active {
@@ -181,8 +191,10 @@ onUnmounted(() => {
   right: 0;
   min-width: 140px;
   padding: 4px;
-  background: var(--bg-secondary);
-  border: 1px solid var(--border-color);
+  background: var(--color-background-elevated);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid var(--color-border);
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   z-index: 1000;
@@ -198,19 +210,19 @@ onUnmounted(() => {
   border: none;
   border-radius: 6px;
   cursor: pointer;
-  color: var(--fg-primary);
+  color: var(--color-text);
   font-size: 14px;
   text-align: left;
   transition: background-color 0.2s;
 }
 
 .dropdown-item:hover {
-  background: var(--bg-tertiary);
+  background: var(--color-background-secondary);
 }
 
 .dropdown-item.active {
-  background: var(--accent-bg);
-  color: var(--accent-fg);
+  background: var(--color-primary);
+  color: #ffffff;
 }
 
 .dropdown-icon {

@@ -31,10 +31,10 @@ const handleLogin = async () => {
 
 <template>
   <div class="login-container">
-    <div class="theme-toggle-wrapper">
-      <ThemeToggle />
-    </div>
     <div class="login-card">
+      <div class="theme-toggle-wrapper">
+        <ThemeToggle />
+      </div>
       <h1 class="login-title">身份认证</h1>
 
       <form @submit.prevent="handleLogin" class="login-form">
@@ -74,11 +74,12 @@ const handleLogin = async () => {
 
 .theme-toggle-wrapper {
   position: absolute;
-  top: 20px;
-  right: 20px;
+  top: 12px;
+  right: 12px;
 }
 
 .login-card {
+  position: relative;
   width: 100%;
   max-width: 400px;
   padding: 40px;
