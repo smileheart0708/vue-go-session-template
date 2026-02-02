@@ -7,7 +7,7 @@ import (
 	"strings"
 	"time"
 
-	"kiroapi/internal/stream"
+	"main/internal/stream"
 
 	"github.com/lmittmann/tint"
 )
