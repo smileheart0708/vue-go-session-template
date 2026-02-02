@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import ThemeToggle from '@/components/common/ThemeToggle.vue'
+import BaseButton from '@/components/common/BaseButton.vue'
 import { useToast } from '@/composables'
 
 const authKey = ref('')
@@ -51,9 +52,14 @@ const handleLogin = async () => {
           />
         </div>
 
-        <button type="submit" class="login-button" :disabled="isLoading">
-          {{ isLoading ? '认证中...' : '登录' }}
-        </button>
+        <BaseButton
+          type="submit"
+          :width="320"
+          :height="44"
+          :text="isLoading ? '认证中...' : '登录'"
+          :primary="true"
+          :disabled="isLoading"
+        />
       </form>
     </div>
   </div>
@@ -120,30 +126,6 @@ const handleLogin = async () => {
 }
 
 .form-input:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-.login-button {
-  padding: 12px 24px;
-  background: var(--color-primary);
-  color: #ffffff;
-  font-size: 14px;
-  font-weight: 500;
-  border-radius: 4px;
-  transition: all 0.2s;
-  cursor: pointer;
-}
-
-.login-button:hover:not(:disabled) {
-  background: var(--color-primary-hover);
-}
-
-.login-button:active:not(:disabled) {
-  background: var(--color-primary-active);
-}
-
-.login-button:disabled {
   opacity: 0.6;
   cursor: not-allowed;
 }
