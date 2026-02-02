@@ -29,6 +29,16 @@ func spaHandler(distFS embed.FS) gin.HandlerFunc {
 	}
 	fileServer := http.FileServer(http.FS(subFS))
 
+	// 压缩格式优先级：zstd > br > gzip
+	compressionFormats := []struct {
+		encoding string
+		ext      string
+	}{
+		{"zstd", ".zst"},
+		{"br", ".br"},
+		{"gzip", ".gz"},
+	}
+
 	return func(c *gin.Context) {
 		path := strings.TrimPrefix(c.Request.URL.Path, "/")
 		if path == "" {
@@ -37,18 +47,11 @@ func spaHandler(distFS embed.FS) gin.HandlerFunc {
 
 		ae := c.GetHeader("Accept-Encoding")
 
-		// 2026 优先级：zstd > br > gzip
-		served := false
-		if strings.Contains(ae, "zstd") && tryServeFile(c, subFS, path+".zst", "zstd") {
-			served = true
-		} else if strings.Contains(ae, "br") && tryServeFile(c, subFS, path+".br", "br") {
-			served = true
-		} else if strings.Contains(ae, "gzip") && tryServeFile(c, subFS, path+".gz", "gzip") {
-			served = true
-		}
-
-		if served {
-			return
+		// 按优先级尝试压缩文件
+		for _, cf := range compressionFormats {
+			if strings.Contains(ae, cf.encoding) && tryServeFile(c, subFS, path+cf.ext, cf.encoding) {
+				return
+			}
 		}
 
 		// 原始文件兜底
@@ -61,12 +64,11 @@ func spaHandler(distFS embed.FS) gin.HandlerFunc {
 
 		// SPA Fallback
 		if filepath.Ext(path) == "" || filepath.Ext(path) == ".html" {
-			// 同样对 index.html 尝试压缩版本
-			if strings.Contains(ae, "zstd") && tryServeFile(c, subFS, "index.html.zst", "zstd") {
-				return
-			}
-			if strings.Contains(ae, "br") && tryServeFile(c, subFS, "index.html.br", "br") {
-				return
+			// 对 index.html 尝试压缩版本
+			for _, cf := range compressionFormats {
+				if strings.Contains(ae, cf.encoding) && tryServeFile(c, subFS, "index.html"+cf.ext, cf.encoding) {
+					return
+				}
 			}
 			// 最终回退到原始 index.html
 			c.Request.URL.Path = "/"
@@ -92,20 +94,17 @@ func tryServeFile(c *gin.Context, subFS fs.FS, filePath string, encoding string)
 	}
 
 	// 优化：直接根据原始文件名判断 MIME
-	// 需要根据不同的编码格式移除对应的后缀
-	var originalPath string
-	switch encoding {
-	case "zstd":
-		originalPath = strings.TrimSuffix(filePath, ".zst")
-	case "br":
-		originalPath = strings.TrimSuffix(filePath, ".br")
-	case "gzip":
-		originalPath = strings.TrimSuffix(filePath, ".gz")
-	default:
-		originalPath = filePath
+	// 根据编码格式移除对应的后缀
+	extMap := map[string]string{
+		"zstd":  ".zst",
+		"br":    ".br",
+		"gzip":  ".gz",
+	}
+	if suffix, ok := extMap[encoding]; ok {
+		filePath = strings.TrimSuffix(filePath, suffix)
 	}
 
-	contentType := mime.TypeByExtension(filepath.Ext(originalPath))
+	contentType := mime.TypeByExtension(filepath.Ext(filePath))
 	if contentType == "" {
 		contentType = "application/octet-stream"
 	}
