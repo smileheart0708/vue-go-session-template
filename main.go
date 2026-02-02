@@ -2,6 +2,7 @@ package main
 
 import (
 	"embed"
+	"fmt"
 	"io/fs"
 	"log/slog"
 	"net/http"
@@ -10,6 +11,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 
+	"main/configs"
 	"main/internal/middleware"
 	"main/internal/stream"
 )
@@ -58,9 +60,21 @@ func spaHandler(distFS embed.FS) gin.HandlerFunc {
 }
 
 func main() {
+	// 加载配置
+	cfg := configs.Load()
+
+	// 初始化日志系统
 	logBroadcaster := stream.NewLogBroadcaster()
-	logger := middleware.InitLogger("info", logBroadcaster)
+	logger := middleware.InitLogger(cfg.LogLevel, logBroadcaster)
 	slog.SetDefault(logger)
+
+	// 输出配置信息
+	slog.Info("应用配置已加载",
+		"port", cfg.Port,
+		"data_dir", cfg.DataDir,
+		"log_level", cfg.LogLevel,
+		"auth_key", cfg.AuthKey,
+	)
 
 	// 创建 gin 路由
 	gin.SetMode(gin.ReleaseMode)
@@ -71,5 +85,7 @@ func main() {
 	r.NoRoute(spaHandler(distFS))
 
 	// 启动服务器
-	r.Run(":8080")
+	addr := fmt.Sprintf(":%d", cfg.Port)
+	slog.Info("启动 HTTP 服务器", "address", addr)
+	r.Run(addr)
 }
