@@ -1,61 +1,70 @@
-/* color palette from <https://github.com/vuejs/theme> */
+/* 颜色系统定义 */
 :root {
-  --vt-c-white: #ffffff;
-  --vt-c-white-soft: #f8f8f8;
-  --vt-c-white-mute: #f2f2f2;
+  /* 主题色 */
+  --color-primary: #0078d4;
+  --color-primary-hover: #106ebe;
+  --color-primary-active: #005a9e;
 
-  --vt-c-black: #181818;
-  --vt-c-black-soft: #222222;
-  --vt-c-black-mute: #282828;
+  /* 浅色主题 */
+  --color-bg-light: #f3f3f3;
+  --color-bg-light-elevated: #ffffff;
+  --color-bg-light-secondary: #e8e8e8;
 
-  --vt-c-indigo: #2c3e50;
+  --color-text-light-primary: #1a1a1a;
+  --color-text-light-secondary: #666666;
+  --color-text-light-tertiary: #999999;
 
-  --vt-c-divider-light-1: rgba(60, 60, 60, 0.29);
-  --vt-c-divider-light-2: rgba(60, 60, 60, 0.12);
-  --vt-c-divider-dark-1: rgba(84, 84, 84, 0.65);
-  --vt-c-divider-dark-2: rgba(84, 84, 84, 0.48);
+  --color-border-light: #d4d4d4;
+  --color-border-light-hover: #b8b8b8;
 
-  --vt-c-text-light-1: var(--vt-c-indigo);
-  --vt-c-text-light-2: rgba(60, 60, 60, 0.66);
-  --vt-c-text-dark-1: var(--vt-c-white);
-  --vt-c-text-dark-2: rgba(235, 235, 235, 0.64);
+  /* 深色主题 */
+  --color-bg-dark: #202020;
+  --color-bg-dark-elevated: #2d2d2d;
+  --color-bg-dark-secondary: #1a1a1a;
+
+  --color-text-dark-primary: #f0f0f0;
+  --color-text-dark-secondary: #b8b8b8;
+  --color-text-dark-tertiary: #8a8a8a;
+
+  --color-border-dark: #3d3d3d;
+  --color-border-dark-hover: #525252;
+
+  /* 语义化颜色变量 - 默认浅色主题 */
+  --color-background: var(--color-bg-light);
+  --color-background-elevated: var(--color-bg-light-elevated);
+  --color-background-secondary: var(--color-bg-light-secondary);
+
+  --color-text: var(--color-text-light-primary);
+  --color-text-secondary: var(--color-text-light-secondary);
+  --color-text-tertiary: var(--color-text-light-tertiary);
+
+  --color-border: var(--color-border-light);
+  --color-border-hover: var(--color-border-light-hover);
 }
 
-/* semantic color variables for this project */
-:root {
-  --color-background: var(--vt-c-white);
-  --color-background-soft: var(--vt-c-white-soft);
-  --color-background-mute: var(--vt-c-white-mute);
-
-  --color-border: var(--vt-c-divider-light-2);
-  --color-border-hover: var(--vt-c-divider-light-1);
-
-  --color-heading: var(--vt-c-text-light-1);
-  --color-text: var(--vt-c-text-light-1);
-
-  --section-gap: 160px;
-}
-
+/* 深色主题 */
 @media (prefers-color-scheme: dark) {
   :root {
-    --color-background: var(--vt-c-black);
-    --color-background-soft: var(--vt-c-black-soft);
-    --color-background-mute: var(--vt-c-black-mute);
+    --color-background: var(--color-bg-dark);
+    --color-background-elevated: var(--color-bg-dark-elevated);
+    --color-background-secondary: var(--color-bg-dark-secondary);
 
-    --color-border: var(--vt-c-divider-dark-2);
-    --color-border-hover: var(--vt-c-divider-dark-1);
+    --color-text: var(--color-text-dark-primary);
+    --color-text-secondary: var(--color-text-dark-secondary);
+    --color-text-tertiary: var(--color-text-dark-tertiary);
 
-    --color-heading: var(--vt-c-text-dark-1);
-    --color-text: var(--vt-c-text-dark-2);
+    --color-border: var(--color-border-dark);
+    --color-border-hover: var(--color-border-dark-hover);
   }
 }
 
+/* 基础样式重置 */
 *,
 *::before,
 *::after {
   box-sizing: border-box;
   margin: 0;
-  font-weight: normal;
+  padding: 0;
 }
 
 body {
@@ -63,24 +72,101 @@ body {
   color: var(--color-text);
   background: var(--color-background);
   transition:
-    color 0.5s,
-    background-color 0.5s;
+    color 0.3s,
+    background-color 0.3s;
   line-height: 1.6;
   font-family:
-    Inter,
-    -apple-system,
-    BlinkMacSystemFont,
-    'Segoe UI',
-    Roboto,
-    Oxygen,
-    Ubuntu,
-    Cantarell,
-    'Fira Sans',
-    'Droid Sans',
-    'Helvetica Neue',
-    sans-serif;
-  font-size: 15px;
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-size: 14px;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+/* 链接样式 */
+a {
+  color: var(--color-primary);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+a:hover {
+  color: var(--color-primary-hover);
+}
+
+a:active {
+  color: var(--color-primary-active);
+}
+
+/* 标题样式 */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: var(--color-text);
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+/* 按钮基础样式 */
+button {
+  font-family: inherit;
+  font-size: inherit;
+  cursor: pointer;
+  border: none;
+  outline: none;
+  background: none;
+}
+
+/* 输入框基础样式 */
+input,
+textarea,
+select {
+  font-family: inherit;
+  font-size: inherit;
+  color: var(--color-text);
+  background: var(--color-background-elevated);
+  border: 1px solid var(--color-border);
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  border-color: var(--color-primary);
+}
+
+/* 自定义滚动条样式 */
+/* Webkit 浏览器 (Chrome, Safari, Edge) */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 120, 212, 0.3);
+  border-radius: 100px;
+  backdrop-filter: blur(40px);
+  transition: background 0.2s;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 120, 212, 0.5);
+}
+
+::-webkit-scrollbar-thumb:active {
+  background: rgba(0, 120, 212, 0.6);
+}
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 120, 212, 0.3) transparent;
 }
