@@ -7,8 +7,8 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	"kiroapi/internal/middleware"
-	"kiroapi/internal/stream"
+	"main/internal/middleware"
+	"main/internal/stream"
 )
 
 //go:embed web/dist
