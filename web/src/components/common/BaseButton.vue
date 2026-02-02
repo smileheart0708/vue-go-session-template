@@ -8,7 +8,7 @@
   >
     <span v-if="$slots.icon || icon" class="button-icon">
       <slot name="icon">
-        <i :class="icon"></i>
+        <component :is="icon" v-if="icon" :size="16" />
       </slot>
     </span>
     <span class="button-text">{{ text }}</span>
@@ -16,7 +16,8 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, type Component } from 'vue'
+import type { PropType } from 'vue'
 
 const props = defineProps({
   // 按钮宽度（必需）
@@ -27,8 +28,8 @@ const props = defineProps({
   text: { type: String, required: true },
   // 是否使用主题色（默认 false）
   primary: { type: Boolean, default: false },
-  // 图标类名（可选）
-  icon: { type: String, default: '' },
+  // 图标组件（可选，支持 lucide 图标）
+  icon: { type: [String, Object] as PropType<string | Component>, default: null },
   // 是否禁用
   disabled: { type: Boolean, default: false },
 })
