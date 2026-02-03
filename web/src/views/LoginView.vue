@@ -1,9 +1,13 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 import ThemeToggle from '@/components/common/ThemeToggle.vue'
 import BaseButton from '@/components/common/BaseButton.vue'
 import { useToast } from '@/composables'
+import { useAuthStore } from '@/stores/auth'
 
+const router = useRouter()
+const authStore = useAuthStore()
 const authKey = ref('')
 const isLoading = ref(false)
 const { success, error: toastError } = useToast()
@@ -17,14 +21,34 @@ const handleLogin = async () => {
   isLoading.value = true
 
   try {
-    // TODO: 实现实际的认证逻辑
-    console.log('认证令牌:', authKey.value)
-    // 模拟 API 调用
-    await new Promise((resolve) => setTimeout(resolve, 1000))
+    const response = await fetch('/api/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        auth_key: authKey.value,
+      }),
+    })
+
+    const data = await response.json()
+
+    if (!response.ok || !data.success) {
+      toastError(data.message || '认证失败，请重试')
+      return
+    }
+
+    // 登录成功
+    authStore.setAuthenticated(data.session_id)
     success('登录成功！')
+
+    // 跳转到 dashboard
+    setTimeout(() => {
+      router.push('/dashboard')
+    }, 500)
   } catch (error) {
-    console.error(error)
-    toastError('认证失败，请重试')
+    console.error('Login error:', error)
+    toastError('网络错误，请重试')
   } finally {
     isLoading.value = false
   }

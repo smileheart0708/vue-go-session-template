@@ -10,11 +10,14 @@ import (
 	"net/http"
 	"path/filepath"
 	"strings"
+	"time"
 
 	"github.com/gin-gonic/gin"
 
 	"main/configs"
+	"main/internal/handlers"
 	"main/internal/middleware"
+	"main/internal/session"
 	"main/internal/stream"
 )
 
@@ -138,10 +141,37 @@ func main() {
 		"auth_key", cfg.AuthKey,
 	)
 
+	// 初始化 session 管理器
+	sessionManager, err := session.NewManager(cfg.DataDir)
+	if err != nil {
+		slog.Error("failed to initialize session manager", "error", err)
+		return
+	}
+
+	// 定期清理过期 session
+	go func() {
+		ticker := time.NewTicker(1 * time.Hour)
+		defer ticker.Stop()
+		for range ticker.C {
+			sessionManager.CleanExpiredSessions()
+		}
+	}()
+
+	// 创建认证处理器
+	authHandler := handlers.NewAuthHandler(cfg.AuthKey, sessionManager)
+
 	// 创建 gin 路由
 	gin.SetMode(gin.ReleaseMode)
 	r := gin.New()
 	r.Use(gin.Recovery())
+
+	// API 路由
+	api := r.Group("/api")
+	{
+		api.POST("/login", authHandler.Login)
+		api.POST("/validate-session", authHandler.ValidateSession)
+		api.POST("/logout", authHandler.Logout)
+	}
 
 	// 使用自定义的 SPA handler
 	r.NoRoute(spaHandler(distFS))
