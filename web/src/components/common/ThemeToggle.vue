@@ -1,8 +1,7 @@
 <template>
   <div ref="containerRef" class="theme-toggle-container">
-    <button
+    <IconButton
       ref="buttonRef"
-      class="theme-toggle-button"
       :title="tooltipText"
       @click="handleClick"
       @mousedown="handleMouseDown"
@@ -11,10 +10,10 @@
       @touchstart="handleTouchStart"
       @touchend="handleTouchEnd"
     >
-      <Sun v-if="mode === 'light'" class="icon" />
-      <Moon v-else-if="mode === 'dark'" class="icon" />
-      <Monitor v-else class="icon" />
-    </button>
+      <Sun v-if="mode === 'light'" />
+      <Moon v-else-if="mode === 'dark'" />
+      <Monitor v-else />
+    </IconButton>
 
     <Transition name="dropdown">
       <div v-if="showDropdown" ref="dropdownRef" class="theme-dropdown">
@@ -51,11 +50,12 @@
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { Sun, Moon, Monitor } from 'lucide-vue-next'
 import { useTheme, type ThemeMode } from '@/composables'
+import IconButton from './IconButton.vue'
 
 const { mode, setTheme } = useTheme()
 
 const containerRef = ref<HTMLElement | null>(null)
-const buttonRef = ref<HTMLButtonElement | null>(null)
+const buttonRef = ref<InstanceType<typeof IconButton> | null>(null)
 const dropdownRef = ref<HTMLElement | null>(null)
 
 const showDropdown = ref(false)
@@ -89,8 +89,8 @@ async function handleClick(event: MouseEvent) {
 
 async function selectMode(newMode: ThemeMode) {
   showDropdown.value = false
-  if (buttonRef.value) {
-    const rect = buttonRef.value.getBoundingClientRect()
+  if (buttonRef.value?.$el) {
+    const rect = buttonRef.value.$el.getBoundingClientRect()
     const event = new MouseEvent('click', {
       clientX: rect.left + rect.width / 2,
       clientY: rect.top + rect.height / 2,
@@ -151,38 +151,6 @@ onUnmounted(() => {
 .theme-toggle-container {
   position: relative;
   display: inline-block;
-}
-
-.theme-toggle-button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  padding: 0;
-  background: transparent;
-  border: 1px solid transparent;
-  border-radius: 8px;
-  cursor: pointer;
-  color: var(--color-text);
-  transition:
-    all 0.2s,
-    transform 0.1s;
-}
-
-.theme-toggle-button:hover {
-  background: var(--color-background-secondary);
-  border-color: var(--color-border);
-}
-
-.theme-toggle-button:active {
-  transform: scale(0.95);
-}
-
-.icon {
-  width: 20px;
-  height: 20px;
-  flex-shrink: 0;
 }
 
 .theme-dropdown {

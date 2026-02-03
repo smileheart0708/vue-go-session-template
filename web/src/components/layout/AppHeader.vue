@@ -1,13 +1,12 @@
 <template>
   <header class="mobile-header">
-    <BaseButton
+    <IconButton
       class="menu-toggle"
-      :width="40"
-      :height="40"
-      text=""
-      :icon="Menu"
+      title="切换侧边栏"
       @click="emit('toggle-sidebar')"
-    />
+    >
+      <Menu />
+    </IconButton>
 
     <h1 class="header-title">{{ currentTitle }}</h1>
 
@@ -21,7 +20,7 @@
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { Menu } from 'lucide-vue-next'
-import BaseButton from '@/components/common/BaseButton.vue'
+import IconButton from '@/components/common/IconButton.vue'
 import ThemeToggle from '@/components/common/ThemeToggle.vue'
 
 const emit = defineEmits<{ 'toggle-sidebar': [] }>()
