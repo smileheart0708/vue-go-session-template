@@ -1,6 +1,6 @@
 <template>
   <div class="sidebar-footer">
-    <BaseButton width="100%" height="40" text="退出登录" :icon="LogOut" @click="handleLogout" />
+    <BaseButton width="100%" :height="40" text="退出登录" :icon="LogOut" @click="handleLogout" />
   </div>
 </template>
 
@@ -18,6 +18,7 @@ function handleLogout() {
 
 <style scoped>
 .sidebar-footer {
-  padding: 1rem 1.25rem;
+  padding: 2rem 1.25rem;
+  min-height: 80px;
 }
 </style>
