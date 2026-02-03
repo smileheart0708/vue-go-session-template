@@ -20,5 +20,6 @@ function handleLogout() {
 .sidebar-footer {
   padding: 2rem 1.25rem;
   min-height: 80px;
+  background: var(--color-background-elevated);
 }
 </style>

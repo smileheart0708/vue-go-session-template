@@ -14,6 +14,7 @@ import logoSvg from '@/assets/logo.svg'
 <style scoped>
 .sidebar-header {
   padding: 1.5rem 1.25rem;
+  background: var(--color-background-elevated);
 }
 
 .logo-container {

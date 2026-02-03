@@ -42,7 +42,7 @@ const currentTitle = computed(() => {
   gap: 1rem;
   height: var(--header-height);
   padding: 0 1rem;
-  background: var(--color-background);
+  background: var(--color-background-elevated);
   border-bottom: 1px solid var(--color-border);
   position: sticky;
   top: 0;
