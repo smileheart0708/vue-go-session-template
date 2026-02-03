@@ -256,7 +256,7 @@ export const useThemeStore = defineStore("theme", () => {
 
 **错误处理:**
 
-- 必须使用 `log/slog` 进行结构化日志
+- 必须使用 `log/slog` 进行结构化日志，使用中文日志输出
 - 禁止吞掉错误，使用 `fmt.Errorf("context: %w", err)` 包装
 
 **示例:**
@@ -283,6 +283,10 @@ type CreateUserRequest struct {
     Email    string `json:"email" binding:"required,email"`
 }
 ```
+
+### 时间戳规范
+
+- **统一格式**: 优先使用 **Unix 秒时间戳** (int64)
 
 ### Vite 配置
 
