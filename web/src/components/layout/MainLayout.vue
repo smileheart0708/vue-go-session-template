@@ -4,10 +4,16 @@
     <div class="main-content">
       <AppHeader @toggle-sidebar="toggleSidebar" />
       <main class="content">
-        <RouterView />
+        <RouterView v-slot="{ Component }">
+          <Transition name="fade" mode="out-in">
+            <component :is="Component" />
+          </Transition>
+        </RouterView>
       </main>
     </div>
-    <div v-if="sidebarOpen" class="sidebar-overlay" @click="toggleSidebar" />
+    <Transition name="fade">
+      <div v-if="sidebarOpen" class="sidebar-overlay" @click="toggleSidebar" />
+    </Transition>
   </div>
 </template>
 
@@ -65,6 +71,16 @@ onUnmounted(() => {
   inset: 0;
   background: rgba(0, 0, 0, 0.5);
   z-index: 99;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
 }
 
 @media (max-width: 767px) {
