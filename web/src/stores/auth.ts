@@ -22,6 +22,15 @@ export const useAuthStore = defineStore('auth', () => {
     }
   }
 
+  // 模拟登录 (仅在开发环境使用)
+  function mockLogin() {
+    const mockSessionId = `mock-session-${Date.now()}`
+    sessionId.value = mockSessionId
+    isAuthenticated.value = true
+    saveToStorage()
+    console.log('[MOCK AUTH] 模拟登录成功:', mockSessionId)
+  }
+
   // 登录成功后设置认证状态
   function setAuthenticated(newSessionId: string) {
     sessionId.value = newSessionId
@@ -105,6 +114,7 @@ export const useAuthStore = defineStore('auth', () => {
     sessionId: computed(() => sessionId.value),
     isAuthenticated: computed(() => isAuthenticated.value),
     init,
+    mockLogin,
     setAuthenticated,
     clear,
     validateSession,

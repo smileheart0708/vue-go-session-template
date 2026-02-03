@@ -17,4 +17,10 @@ app.use(router)
 const authStore = useAuthStore()
 authStore.init()
 
+// 如果开启了模拟认证模式，且当前未登录，则自动模拟登录
+const isMockAuth = import.meta.env.VITE_MOCK_AUTH === 'true'
+if (isMockAuth && !authStore.isAuthenticated) {
+  authStore.mockLogin()
+}
+
 app.mount('#app')
