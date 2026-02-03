@@ -21,9 +21,9 @@ const (
 
 // Session 会话数据结构
 type Session struct {
-	ID        string    `json:"id"`
-	CreatedAt time.Time `json:"created_at"`
-	ExpiresAt time.Time `json:"expires_at"`
+	ID        string `json:"id"`
+	CreatedAt int64  `json:"created_at"` // Unix 秒时间戳
+	ExpiresAt int64  `json:"expires_at"` // Unix 秒时间戳
 }
 
 // Manager session 管理器
@@ -66,8 +66,8 @@ func (m *Manager) CreateSession() (*Session, error) {
 	now := time.Now()
 	session := &Session{
 		ID:        sessionID,
-		CreatedAt: now,
-		ExpiresAt: now.Add(SessionDuration),
+		CreatedAt: now.Unix(),
+		ExpiresAt: now.Add(SessionDuration).Unix(),
 	}
 
 	m.mu.Lock()
@@ -94,7 +94,7 @@ func (m *Manager) ValidateSession(sessionID string) bool {
 	}
 
 	// 检查是否过期
-	if time.Now().After(session.ExpiresAt) {
+	if time.Now().Unix() > session.ExpiresAt {
 		// 删除过期的 session
 		m.DeleteSession(sessionID)
 		return false
@@ -113,7 +113,7 @@ func (m *Manager) RefreshSession(sessionID string) error {
 	}
 
 	// 更新过期时间
-	session.ExpiresAt = time.Now().Add(SessionDuration)
+	session.ExpiresAt = time.Now().Add(SessionDuration).Unix()
 	m.mu.Unlock()
 
 	// 持久化更新
@@ -145,9 +145,9 @@ func (m *Manager) CleanExpiredSessions() {
 	m.mu.Lock()
 	defer m.mu.Unlock()
 
-	now := time.Now()
+	now := time.Now().Unix()
 	for id, session := range m.sessions {
-		if now.After(session.ExpiresAt) {
+		if now > session.ExpiresAt {
 			delete(m.sessions, id)
 			filePath := m.getSessionFilePath(id)
 			if err := os.Remove(filePath); err != nil && !os.IsNotExist(err) {
@@ -181,7 +181,7 @@ func (m *Manager) loadSessions() (int, error) {
 		return 0, fmt.Errorf("failed to read data directory: %w", err)
 	}
 
-	now := time.Now()
+	now := time.Now().Unix()
 	count := 0
 	for _, file := range files {
 		if file.IsDir() || filepath.Ext(file.Name()) != ".json" {
@@ -202,7 +202,7 @@ func (m *Manager) loadSessions() (int, error) {
 		}
 
 		// 跳过已过期的 session
-		if now.After(session.ExpiresAt) {
+		if now > session.ExpiresAt {
 			os.Remove(filePath)
 			slog.Info("expired session file removed", "session_id", session.ID)
 			continue
