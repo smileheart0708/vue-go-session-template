@@ -8,11 +8,14 @@
 import { useRouter } from 'vue-router'
 import { LogOut } from 'lucide-vue-next'
 import BaseButton from '@/components/common/BaseButton.vue'
+import { useAuthStore } from '@/stores/auth'
 
 const router = useRouter()
+const authStore = useAuthStore()
 
-function handleLogout() {
-  router.replace('/')
+async function handleLogout() {
+  await authStore.logout()
+  router.replace('/login')
 }
 </script>
 

@@ -57,8 +57,6 @@ func (h *LogsHandler) StreamLogs(c *gin.Context) {
 	for {
 		select {
 		case <-c.Request.Context().Done():
-			// 客户端断开连接
-			slog.Info("客户端断开日志流", "session_id", sessionID, "remote_addr", c.ClientIP())
 			return
 
 		case logData, ok := <-ch:

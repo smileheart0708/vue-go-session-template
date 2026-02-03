@@ -59,6 +59,11 @@
   --toast-warning-rgb: 245, 158, 11;
   --toast-info: #3b82f6;
   --toast-info-rgb: 59, 130, 246;
+  /* 日志行背景色 */
+  --log-row-error-bg: rgba(239, 68, 68, 0.3);
+  --log-row-warn-bg: rgba(245, 158, 11, 0.3);
+  --log-row-debug-bg: rgba(59, 130, 246, 0.3);
+  --log-row-info-bg: var(--color-background-elevated);
 }
 
 /* 深色主题 */

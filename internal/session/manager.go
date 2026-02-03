@@ -121,7 +121,7 @@ func (m *Manager) RefreshSession(sessionID string) error {
 		return fmt.Errorf("failed to refresh session: %w", err)
 	}
 
-	slog.Info("session refreshed", "session_id", sessionID, "new_expires_at", session.ExpiresAt)
+	slog.Debug("session refreshed", "session_id", sessionID, "new_expires_at", session.ExpiresAt)
 	return nil
 }
 
