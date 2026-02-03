@@ -167,8 +167,9 @@ func main() {
 		}
 	}()
 
-	// 创建认证处理器
+	// 创建处理器
 	authHandler := handlers.NewAuthHandler(cfg.AuthKey, sessionManager)
+	logsHandler := handlers.NewLogsHandler(logBroadcaster)
 
 	// 创建 gin 路由
 	gin.SetMode(gin.ReleaseMode)
@@ -178,9 +179,18 @@ func main() {
 	// API 路由
 	api := r.Group("/api")
 	{
+		// 公开路由
 		api.POST("/login", authHandler.Login)
 		api.POST("/validate-session", authHandler.ValidateSession)
 		api.POST("/logout", authHandler.Logout)
+
+		// 需要认证的路由
+		authenticated := api.Group("")
+		authenticated.Use(middleware.AuthMiddleware(sessionManager))
+		{
+			authenticated.GET("/logs/stream", logsHandler.StreamLogs)
+			authenticated.GET("/logs/history", logsHandler.GetHistory)
+		}
 	}
 
 	// 使用自定义的 SPA handler
