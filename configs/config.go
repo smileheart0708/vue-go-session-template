@@ -9,10 +9,11 @@ import (
 
 // Config 应用配置结构
 type Config struct {
-	Port     int    // 服务监听端口
-	DataDir  string // 数据持久化目录
-	LogLevel string // 日志等级
-	AuthKey  string // 管理员身份验证密钥
+	Port         int    // 服务监听端口
+	DataDir      string // 数据持久化目录
+	LogLevel     string // 日志等级
+	AuthKey      string // 管理员身份验证密钥
+	IsAutoAuthKey bool  // AuthKey 是否自动生成
 }
 
 // Load 从环境变量加载配置
@@ -27,6 +28,7 @@ func Load() *Config {
 	// 如果 AUTH_KEY 未设置，生成随机 12 位字符串
 	if cfg.AuthKey == "" {
 		cfg.AuthKey = generateRandomKey(12)
+		cfg.IsAutoAuthKey = true
 	}
 
 	return cfg

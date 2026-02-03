@@ -124,6 +124,16 @@ func tryServeFile(c *gin.Context, subFS fs.FS, filePath string, encoding string)
 	return true
 }
 
+// printBanner 打印启动横幅
+func printBanner(cfg *configs.Config) {
+	separator := "════════════════════════════════════════════════"
+	fmt.Println(separator)
+	fmt.Printf("服务地址: http://localhost:%d\n", cfg.Port)
+	fmt.Printf("日志级别: %s\n", cfg.LogLevel)
+	fmt.Printf("数据目录: %s\n", cfg.DataDir)
+	fmt.Println(separator)
+}
+
 func main() {
 	// 加载配置
 	cfg := configs.Load()
@@ -133,13 +143,13 @@ func main() {
 	logger := middleware.InitLogger(cfg.LogLevel, logBroadcaster)
 	slog.SetDefault(logger)
 
-	// 输出配置信息
-	slog.Info("应用配置已加载",
-		"port", cfg.Port,
-		"data_dir", cfg.DataDir,
-		"log_level", cfg.LogLevel,
-		"auth_key", cfg.AuthKey,
-	)
+	// 打印启动横幅
+	printBanner(cfg)
+
+	// 如果是自动生成的 AUTH_KEY，则打印出来
+	if cfg.IsAutoAuthKey {
+		slog.Info("自动生成的 AUTH_KEY", "auth_key", cfg.AuthKey)
+	}
 
 	// 初始化 session 管理器
 	sessionManager, err := session.NewManager(cfg.DataDir)

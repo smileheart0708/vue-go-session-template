@@ -46,8 +46,11 @@ func NewManager(dataDir string) (*Manager, error) {
 	}
 
 	// 加载已有的 session
-	if err := m.loadSessions(); err != nil {
-		slog.Warn("failed to load sessions", "error", err)
+	count, err := m.loadSessions()
+	if err != nil {
+		slog.Warn("加载 session 失败", "error", err)
+	} else {
+		slog.Info("已加载 session", "count", count)
 	}
 
 	return m, nil
@@ -172,13 +175,14 @@ func (m *Manager) saveSession(session *Session) error {
 }
 
 // loadSessions 从文件加载所有 session
-func (m *Manager) loadSessions() error {
+func (m *Manager) loadSessions() (int, error) {
 	files, err := os.ReadDir(m.dataDir)
 	if err != nil {
-		return fmt.Errorf("failed to read data directory: %w", err)
+		return 0, fmt.Errorf("failed to read data directory: %w", err)
 	}
 
 	now := time.Now()
+	count := 0
 	for _, file := range files {
 		if file.IsDir() || filepath.Ext(file.Name()) != ".json" {
 			continue
@@ -205,10 +209,10 @@ func (m *Manager) loadSessions() error {
 		}
 
 		m.sessions[session.ID] = &session
-		slog.Info("session loaded", "session_id", session.ID, "expires_at", session.ExpiresAt)
+		count++
 	}
 
-	return nil
+	return count, nil
 }
 
 // getSessionFilePath 获取 session 文件路径
