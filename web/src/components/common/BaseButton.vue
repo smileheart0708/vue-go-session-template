@@ -29,7 +29,7 @@ const props = defineProps({
   // 是否使用主题色（默认 false）
   primary: { type: Boolean, default: false },
   // 图标组件（可选，支持 lucide 图标）
-  icon: { type: [String, Object] as PropType<string | Component>, default: null },
+  icon: { type: [String, Object, Function] as PropType<string | Component>, default: null },
   // 是否禁用
   disabled: { type: Boolean, default: false },
 })
