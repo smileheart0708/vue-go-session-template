@@ -56,23 +56,30 @@ withDefaults(defineProps<Props>(), { change: '' })
   background: v-bind('color');
 }
 
-.stats-card:hover {
-  border-color: transparent;
-}
+/* 仅在支持真正 hover 的设备上启用 hover 效果 */
+@media (hover: hover) {
+  .stats-card:hover {
+    border-color: transparent;
+  }
 
-.stats-card:hover .card-bg {
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  border-radius: 12px;
-  transform: scale(1.1);
-}
+  .stats-card:hover .card-bg {
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 12px;
+    transform: scale(1.1);
+  }
 
-.stats-card:hover .stats-label,
-.stats-card:hover .stats-value,
-.stats-card:hover .stats-change {
-  color: white;
+  .stats-card:hover .stats-label,
+  .stats-card:hover .stats-value,
+  .stats-card:hover .stats-change {
+    color: white;
+  }
+
+  .stats-card:hover .stats-icon {
+    transform: scale(1.5);
+  }
 }
 
 .stats-icon {
@@ -88,10 +95,6 @@ withDefaults(defineProps<Props>(), { change: '' })
   flex-shrink: 0;
   box-sizing: border-box;
   transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-.stats-card:hover .stats-icon {
-  transform: scale(1.5);
 }
 
 .stats-icon svg {
