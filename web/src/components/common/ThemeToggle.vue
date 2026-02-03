@@ -7,7 +7,7 @@
       @mousedown="handleMouseDown"
       @mouseup="handleMouseUp"
       @mouseleave="handleMouseUp"
-      @touchstart="handleTouchStart"
+      @touchstart.passive="handleTouchStart"
       @touchend="handleTouchEnd"
     >
       <Sun v-if="mode === 'light'" />

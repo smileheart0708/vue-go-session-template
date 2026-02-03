@@ -130,7 +130,8 @@ const updateChart = () => {
 
 onMounted(() => {
   if (chartRef.value) {
-    chartInstance = echarts.init(chartRef.value)
+    // 使用 canvas 渲染器并启用脏矩形优化，减少重绘区域
+    chartInstance = echarts.init(chartRef.value, null, { renderer: 'canvas', useDirtyRect: true })
 
     let isFirstRender = true
     // 使用 ResizeObserver 监听容器大小变化
