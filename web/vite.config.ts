@@ -11,11 +11,11 @@ export default defineConfig(({ mode }) => {
     plugins: [
       vue(), // 如果想全局开启 Vapor，可配置 vue({ template: { compilerOptions: { vapor: true } } })
       vueDevTools(),
-      // 生成多种压缩格式：.zst (Zstd, 2026优先级最高), .br (Brotli), .gz (Gzip)
+      // 生成 Brotli 和 Gzip 压缩文件
       compression({
-        algorithms: ['zstd', 'brotliCompress', 'gzip'],
-        exclude: [/\.(zst)$/, /\.(br)$/, /\.(gz)$/],
-        deleteOriginalAssets: false, // 保留原文件，作为不支持压缩的浏览器的兜底
+        algorithms: ['brotliCompress', 'gzip'],
+        exclude: [/\.(br)$/, /\.(gz)$/],
+        deleteOriginalAssets: true,
       }),
     ],
     resolve: { alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) } },

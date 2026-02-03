@@ -27,14 +27,12 @@ func spaHandler(distFS embed.FS) gin.HandlerFunc {
 	if err != nil {
 		panic(err)
 	}
-	fileServer := http.FileServer(http.FS(subFS))
 
-	// 压缩格式优先级：zstd > br > gzip
+	// 压缩格式优先级：br > gzip
 	compressionFormats := []struct {
 		encoding string
 		ext      string
 	}{
-		{"zstd", ".zst"},
 		{"br", ".br"},
 		{"gzip", ".gz"},
 	}
@@ -54,11 +52,8 @@ func spaHandler(distFS embed.FS) gin.HandlerFunc {
 			}
 		}
 
-		// 原始文件兜底
-		f, err := subFS.Open(path)
-		if err == nil {
-			f.Close()
-			fileServer.ServeHTTP(c.Writer, c.Request)
+		// 如果没有匹配的压缩格式，返回 gzip 版本作为兜底
+		if tryServeFile(c, subFS, path+".gz", "gzip") {
 			return
 		}
 
@@ -70,10 +65,10 @@ func spaHandler(distFS embed.FS) gin.HandlerFunc {
 					return
 				}
 			}
-			// 最终回退到原始 index.html
-			c.Request.URL.Path = "/"
-			fileServer.ServeHTTP(c.Writer, c.Request)
-			return
+			// 最终回退到 gzip 版本的 index.html
+			if tryServeFile(c, subFS, "index.html.gz", "gzip") {
+				return
+			}
 		}
 
 		c.Status(http.StatusNotFound)
@@ -96,9 +91,8 @@ func tryServeFile(c *gin.Context, subFS fs.FS, filePath string, encoding string)
 	// 优化：直接根据原始文件名判断 MIME
 	// 根据编码格式移除对应的后缀
 	extMap := map[string]string{
-		"zstd":  ".zst",
-		"br":    ".br",
-		"gzip":  ".gz",
+		"br":   ".br",
+		"gzip": ".gz",
 	}
 	if suffix, ok := extMap[encoding]; ok {
 		filePath = strings.TrimSuffix(filePath, suffix)
