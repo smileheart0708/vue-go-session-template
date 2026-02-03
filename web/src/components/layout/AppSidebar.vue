@@ -24,7 +24,9 @@ withDefaults(defineProps<Props>(), { isOpen: true })
   flex-direction: column;
   width: var(--sidebar-width);
   height: 100vh;
-  background: var(--color-background);
+  background: var(--color-background-elevated);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   border-right: 1px solid var(--color-border);
   transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: fixed;

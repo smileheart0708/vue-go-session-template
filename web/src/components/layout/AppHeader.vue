@@ -2,8 +2,8 @@
   <header class="mobile-header">
     <BaseButton
       class="menu-toggle"
-      width="40"
-      height="40"
+      :width="40"
+      :height="40"
       text=""
       :icon="Menu"
       @click="emit('toggle-sidebar')"
@@ -43,6 +43,8 @@ const currentTitle = computed(() => {
   height: var(--header-height);
   padding: 0 1rem;
   background: var(--color-background-elevated);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   border-bottom: 1px solid var(--color-border);
   position: sticky;
   top: 0;
