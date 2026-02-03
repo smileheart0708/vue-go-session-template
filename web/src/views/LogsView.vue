@@ -14,5 +14,7 @@ import LogBoard from '@/components/logs/LogBoard.vue'
   height: 100%;
   display: flex;
   flex-direction: column;
+  min-width: 0;
+  min-height: 0;
 }
 </style>

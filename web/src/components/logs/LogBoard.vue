@@ -24,7 +24,7 @@
     </div>
 
     <div ref="logContainer" class="log-board-content">
-      <TransitionGroup name="log-list">
+      <TransitionGroup name="log-list" tag="div" class="log-list">
         <div
           v-for="(log, index) in logs"
           :key="`${log.time}-${index}`"
@@ -189,6 +189,8 @@ onUnmounted(() => {
   display: flex;
   flex-direction: column;
   height: 100%;
+  min-width: 0;
+  min-height: 0;
   background: var(--color-background-elevated);
   border-radius: 12px;
   overflow: hidden;
@@ -237,6 +239,8 @@ onUnmounted(() => {
   padding: 0;
   display: flex;
   flex-direction: column;
+  min-width: 0;
+  min-height: 0;
 }
 
 .log-board-empty {
@@ -259,16 +263,22 @@ onUnmounted(() => {
   color: var(--color-text-tertiary);
 }
 
+.log-list {
+  width: max-content;
+  min-width: 100%;
+}
+
 /* 日志行样式 */
 .log-row {
   display: flex;
   align-items: center;
   padding: 0.5rem 1rem;
   white-space: nowrap;
-  overflow: hidden;
   font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
   font-size: 0.875rem;
   line-height: 1.5;
+  min-width: 100%;
+  width: max-content;
 }
 
 .log-row:hover {
@@ -302,11 +312,8 @@ onUnmounted(() => {
 
 /* 消息列 */
 .log-message {
-  flex: 1;
-  min-width: 0;
   color: var(--color-text);
-  overflow: hidden;
-  text-overflow: ellipsis;
+  flex: 0 0 auto;
 }
 
 /* 日志列表动画 */

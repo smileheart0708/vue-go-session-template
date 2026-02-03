@@ -50,6 +50,8 @@ onUnmounted(() => {
 .main-layout {
   display: flex;
   min-height: 100vh;
+  width: 100%;
+  overflow: hidden;
 }
 
 .main-content {
@@ -58,12 +60,17 @@ onUnmounted(() => {
   flex-direction: column;
   margin-left: var(--sidebar-width);
   min-height: 100vh;
+  min-width: 0;
+  overflow: hidden;
 }
 
 .content {
   flex: 1;
   padding: 1.5rem;
   overflow-y: auto;
+  overflow-x: hidden;
+  min-width: 0;
+  min-height: 0;
 }
 
 .sidebar-overlay {

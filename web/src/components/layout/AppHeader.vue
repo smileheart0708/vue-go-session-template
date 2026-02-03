@@ -52,6 +52,10 @@ const currentTitle = computed(() => {
 
 .header-title {
   flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   font-size: 1.125rem;
   font-weight: 600;
   color: var(--color-text);
