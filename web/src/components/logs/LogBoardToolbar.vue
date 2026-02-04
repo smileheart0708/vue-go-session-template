@@ -2,7 +2,6 @@
   <div class="log-board-header">
     <div class="log-board-title">
       <h2>{{ title }}</h2>
-      <span v-if="logsCount > 0" class="log-count">{{ logsCount }} 条</span>
     </div>
     <div class="log-board-actions">
       <div ref="exportAnchorRef" class="log-export">
@@ -127,14 +126,6 @@ function handleToggleAutoScroll() {
   margin: 0;
 }
 
-.log-count {
-  padding: 0.25rem 0.625rem;
-  background: var(--color-primary);
-  color: white;
-  border-radius: 12px;
-  font-size: 0.75rem;
-  font-weight: 600;
-}
 
 .log-board-actions {
   display: flex;
