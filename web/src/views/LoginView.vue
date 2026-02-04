@@ -23,12 +23,8 @@ const handleLogin = async () => {
   try {
     const response = await fetch('/api/login', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        auth_key: authKey.value,
-      }),
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ auth_key: authKey.value }),
     })
 
     const data = await response.json()
@@ -78,7 +74,7 @@ const handleLogin = async () => {
 
         <BaseButton
           type="submit"
-          :width="320"
+          width="100%"
           :height="44"
           :text="isLoading ? '认证中...' : '登录'"
           :primary="true"
