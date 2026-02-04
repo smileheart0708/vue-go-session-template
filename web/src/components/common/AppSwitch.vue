@@ -6,20 +6,20 @@
 import { computed } from 'vue'
 
 interface Props {
-  modelValue: boolean
   disabled?: boolean
   label?: string
 }
 
 const props = withDefaults(defineProps<Props>(), { disabled: false, label: '' })
+const modelValue = defineModel<boolean>({ required: true })
 
-const emit = defineEmits<{ 'update:modelValue': [value: boolean]; change: [value: boolean] }>()
+const emit = defineEmits<{ change: [value: boolean] }>()
 
 const isChecked = computed({
-  get: () => props.modelValue,
+  get: () => modelValue.value,
   set: (val: boolean) => {
     if (props.disabled) return
-    emit('update:modelValue', val)
+    modelValue.value = val
     emit('change', val)
   },
 })

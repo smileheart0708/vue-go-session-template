@@ -16,7 +16,7 @@ export interface DashboardData {
   startTime: string
 }
 
-interface SystemStatsResponse {
+interface DashboardStatsResponse {
   memory_used: number
   memory_total: number
   memory_percent: number
@@ -64,7 +64,7 @@ export const useDashboardStore = defineStore('dashboard', () => {
     dataAvailable.value = true
   }
 
-  function setSystemStats(data: SystemStatsResponse) {
+  function setDashboardStats(data: DashboardStatsResponse) {
     startTimestamp.value = data.start_time
     setData({
       memoryPercent: data.memory_percent,
@@ -98,18 +98,18 @@ export const useDashboardStore = defineStore('dashboard', () => {
     startTimestamp.value = null
   }
 
-  async function fetchSystemStats(): Promise<boolean> {
+  async function fetchDashboardStats(): Promise<boolean> {
     try {
-      const response = await fetch('/api/system/stats')
+      const response = await fetch('/api/dashboard/stats')
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}`)
       }
 
-      const data = (await response.json()) as SystemStatsResponse
-      setSystemStats(data)
+      const data = (await response.json()) as DashboardStatsResponse
+      setDashboardStats(data)
       return true
     } catch (error) {
-      console.error('Failed to fetch system stats:', error)
+      console.error('Failed to fetch dashboard stats:', error)
       return false
     }
   }
@@ -147,7 +147,7 @@ export const useDashboardStore = defineStore('dashboard', () => {
     uptime,
     startTime,
     setData,
-    fetchSystemStats,
+    fetchDashboardStats,
     refreshUptime,
     reset,
     loadMockData,

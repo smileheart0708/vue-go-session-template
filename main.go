@@ -191,7 +191,7 @@ func main() {
 		authenticated := api.Group("")
 		authenticated.Use(middleware.AuthMiddleware(sessionManager))
 		{
-			authenticated.GET("/system/stats", systemHandler.GetStats)
+			authenticated.GET("/dashboard/stats", systemHandler.GetStats)
 			authenticated.GET("/logs/stream", logsHandler.StreamLogs)
 			authenticated.GET("/logs/history", logsHandler.GetHistory)
 		}
