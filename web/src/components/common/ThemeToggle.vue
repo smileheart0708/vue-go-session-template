@@ -15,39 +15,46 @@
       <Monitor v-else />
     </IconButton>
 
-    <Transition name="dropdown">
-      <div v-if="showDropdown" ref="dropdownRef" class="theme-dropdown">
-        <button
-          class="dropdown-item"
-          :class="{ active: mode === 'light' }"
-          @click="selectMode('light')"
+    <Teleport to="body">
+      <Transition name="dropdown">
+        <div
+          v-if="showDropdown"
+          ref="dropdownRef"
+          class="theme-dropdown"
+          :style="dropdownStyle"
         >
-          <Sun class="dropdown-icon" />
-          <span>浅色</span>
-        </button>
-        <button
-          class="dropdown-item"
-          :class="{ active: mode === 'dark' }"
-          @click="selectMode('dark')"
-        >
-          <Moon class="dropdown-icon" />
-          <span>深色</span>
-        </button>
-        <button
-          class="dropdown-item"
-          :class="{ active: mode === 'auto' }"
-          @click="selectMode('auto')"
-        >
-          <Monitor class="dropdown-icon" />
-          <span>自动</span>
-        </button>
-      </div>
-    </Transition>
+          <button
+            class="dropdown-item"
+            :class="{ active: mode === 'light' }"
+            @click="selectMode('light')"
+          >
+            <Sun class="dropdown-icon" />
+            <span>浅色</span>
+          </button>
+          <button
+            class="dropdown-item"
+            :class="{ active: mode === 'dark' }"
+            @click="selectMode('dark')"
+          >
+            <Moon class="dropdown-icon" />
+            <span>深色</span>
+          </button>
+          <button
+            class="dropdown-item"
+            :class="{ active: mode === 'auto' }"
+            @click="selectMode('auto')"
+          >
+            <Monitor class="dropdown-icon" />
+            <span>自动</span>
+          </button>
+        </div>
+      </Transition>
+    </Teleport>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted, watch, nextTick } from 'vue'
 import { Sun, Moon, Monitor } from 'lucide-vue-next'
 import { useTheme, type ThemeMode } from '@/composables'
 import IconButton from './IconButton.vue'
@@ -62,6 +69,7 @@ const showDropdown = ref(false)
 let longPressTimer: ReturnType<typeof setTimeout> | null = null
 let isLongPress = false
 const LONG_PRESS_DURATION = 500
+const dropdownStyle = ref<Record<string, string>>({})
 
 const tooltipText = computed(() => {
   const modeText: Record<ThemeMode, string> = {
@@ -130,9 +138,26 @@ function handleTouchEnd() {
 }
 
 function handleClickOutside(event: MouseEvent) {
-  if (containerRef.value && !containerRef.value.contains(event.target as Node)) {
-    showDropdown.value = false
+  const target = event.target as Node
+  if (containerRef.value?.contains(target)) return
+  if (dropdownRef.value?.contains(target)) return
+  showDropdown.value = false
+}
+
+function updateDropdownPosition() {
+  const buttonEl = buttonRef.value?.$el
+  if (!buttonEl) return
+  const rect = buttonEl.getBoundingClientRect()
+  const offset = 8
+  dropdownStyle.value = {
+    top: `${rect.bottom + offset}px`,
+    right: `${Math.max(8, window.innerWidth - rect.right)}px`,
   }
+}
+
+function handleWindowChange() {
+  if (!showDropdown.value) return
+  updateDropdownPosition()
 }
 
 onMounted(() => {
@@ -141,8 +166,22 @@ onMounted(() => {
 
 onUnmounted(() => {
   document.removeEventListener('click', handleClickOutside)
+  window.removeEventListener('resize', handleWindowChange)
+  window.removeEventListener('scroll', handleWindowChange, true)
   if (longPressTimer) {
     clearTimeout(longPressTimer)
+  }
+})
+
+watch(showDropdown, async (isOpen) => {
+  if (isOpen) {
+    await nextTick()
+    updateDropdownPosition()
+    window.addEventListener('resize', handleWindowChange)
+    window.addEventListener('scroll', handleWindowChange, true)
+  } else {
+    window.removeEventListener('resize', handleWindowChange)
+    window.removeEventListener('scroll', handleWindowChange, true)
   }
 })
 </script>
@@ -154,17 +193,18 @@ onUnmounted(() => {
 }
 
 .theme-dropdown {
-  position: absolute;
-  top: calc(100% + 8px);
-  right: 0;
+  position: fixed;
   min-width: 140px;
   padding: 4px;
-  background: var(--color-background-elevated);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  background-color: var(--color-background-glass);
+  backdrop-filter: blur(12px) saturate(140%);
+  -webkit-backdrop-filter: blur(12px) saturate(140%);
   border: 1px solid var(--color-border);
   border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow:
+    0 12px 28px rgba(0, 0, 0, 0.18),
+    0 6px 12px rgba(0, 0, 0, 0.1),
+    0 0 0 1px rgba(255, 255, 255, 0.08) inset;
   z-index: 1000;
 }
 

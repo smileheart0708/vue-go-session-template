@@ -13,6 +13,7 @@
   --color-bg-light: #85aeca38;
   --color-bg-light-elevated: #ffffffad;
   --color-bg-light-secondary: #e8e8e8;
+  --color-bg-light-glass: rgba(255, 255, 255, 0.9);
 
   --color-text-light-primary: #1a1a1a;
   --color-text-light-secondary: #666666;
@@ -25,6 +26,7 @@
   --color-bg-dark: #202020;
   --color-bg-dark-elevated: #2d2d2d;
   --color-bg-dark-secondary: #1a1a1a;
+  --color-bg-dark-glass: rgba(32, 32, 32, 0.9);
 
   --color-text-dark-primary: #f0f0f0;
   --color-text-dark-secondary: #b8b8b8;
@@ -37,6 +39,7 @@
   --color-background: var(--color-bg-light);
   --color-background-elevated: var(--color-bg-light-elevated);
   --color-background-secondary: var(--color-bg-light-secondary);
+  --color-background-glass: var(--color-bg-light-glass);
 
   --color-text: var(--color-text-light-primary);
   --color-text-secondary: var(--color-text-light-secondary);
@@ -71,6 +74,7 @@
   --color-background: var(--color-bg-dark);
   --color-background-elevated: var(--color-bg-dark-elevated);
   --color-background-secondary: var(--color-bg-dark-secondary);
+  --color-background-glass: var(--color-bg-dark-glass);
 
   --color-text: var(--color-text-dark-primary);
   --color-text-secondary: var(--color-text-dark-secondary);
