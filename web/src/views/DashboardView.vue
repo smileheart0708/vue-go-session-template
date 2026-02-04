@@ -1,7 +1,10 @@
 <template>
   <div class="dashboard">
     <DashboardStats />
-    <ModelDistribution />
+    <div class="chart-grid">
+      <RequestChart />
+      <ModelDistribution />
+    </div>
   </div>
 </template>
 
@@ -10,6 +13,7 @@ import { onMounted, onUnmounted } from 'vue'
 import { useIntervalFn } from '@vueuse/core'
 import DashboardStats from '@/components/dashboard/DashboardStats.vue'
 import ModelDistribution from '@/components/dashboard/ModelDistribution.vue'
+import RequestChart from '@/components/dashboard/RequestChart.vue'
 import { useDashboardStore } from '@/stores/dashboard'
 import { useRefreshStore } from '@/stores/refresh'
 
@@ -48,5 +52,18 @@ onUnmounted(() => {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+}
+
+.chart-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.5rem;
+  align-items: stretch;
+}
+
+@media (max-width: 1024px) {
+  .chart-grid {
+    grid-template-columns: 1fr;
+  }
 }
 </style>
