@@ -94,5 +94,9 @@ onUnmounted(() => {
   .main-content {
     margin-left: 0;
   }
+
+  .content {
+    padding-top: calc(1.5rem + var(--header-height));
+  }
 }
 </style>
