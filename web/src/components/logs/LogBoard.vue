@@ -9,16 +9,22 @@
         <BaseButton
           @click="clearLogs"
           :disabled="logs.length === 0"
-          :width="100"
+          width="auto"
           :height="36"
           text="清空日志"
+          :icon="Trash2"
+          title="清空日志"
+          aria-label="清空日志"
         />
         <BaseButton
           @click="toggleAutoScroll"
           :primary="autoScroll"
-          :width="120"
+          width="auto"
           :height="36"
-          :text="autoScroll ? '自动滚动: 开' : '自动滚动: 关'"
+          :text="autoScrollText"
+          :icon="autoScroll ? ArrowDownToLine : ArrowDown"
+          :title="autoScrollText"
+          :aria-label="autoScrollText"
         />
       </div>
     </div>
@@ -44,9 +50,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted, nextTick } from 'vue'
+import { ref, computed, onMounted, onUnmounted, nextTick } from 'vue'
 import { useRouter } from 'vue-router'
-import { Info } from 'lucide-vue-next'
+import { Info, Trash2, ArrowDownToLine, ArrowDown } from 'lucide-vue-next'
 import BaseButton from '@/components/common/BaseButton.vue'
 import { useAuthStore } from '@/stores/auth'
 
@@ -63,6 +69,8 @@ const logs = ref<LogEntry[]>([])
 const logContainer = ref<HTMLElement | null>(null)
 const autoScroll = ref(true)
 let eventSource: EventSource | null = null
+
+const autoScrollText = computed(() => (autoScroll.value ? '自动滚动: 开' : '自动滚动: 关'))
 
 function getLevelClass(level: string): string {
   const upperLevel = level.toUpperCase()
@@ -338,15 +346,35 @@ onUnmounted(() => {
 /* 响应式适配 */
 @media (max-width: 768px) {
   .log-board-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 1rem;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.75rem;
     padding: 1rem;
   }
 
+  .log-board-title {
+    flex: 1;
+    min-width: 0;
+    white-space: nowrap;
+  }
+
   .log-board-actions {
-    width: 100%;
-    flex-direction: column;
+    width: auto;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.5rem;
+  }
+
+  .log-board-actions :deep(.button-text) {
+    display: none;
+  }
+
+  .log-board-actions :deep(.base-button) {
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    min-width: 36px;
   }
 
   .log-time {
