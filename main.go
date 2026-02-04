@@ -135,6 +135,8 @@ func printBanner(cfg *configs.Config) {
 }
 
 func main() {
+	startTime := time.Now().Unix()
+
 	// 加载配置
 	cfg := configs.Load()
 
@@ -170,6 +172,7 @@ func main() {
 	// 创建处理器
 	authHandler := handlers.NewAuthHandler(cfg.AuthKey, sessionManager)
 	logsHandler := handlers.NewLogsHandler(logBroadcaster)
+	systemHandler := handlers.NewSystemHandler(startTime)
 
 	// 创建 gin 路由
 	gin.SetMode(gin.ReleaseMode)
@@ -188,6 +191,7 @@ func main() {
 		authenticated := api.Group("")
 		authenticated.Use(middleware.AuthMiddleware(sessionManager))
 		{
+			authenticated.GET("/system/stats", systemHandler.GetStats)
 			authenticated.GET("/logs/stream", logsHandler.StreamLogs)
 			authenticated.GET("/logs/history", logsHandler.GetHistory)
 		}

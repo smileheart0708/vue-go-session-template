@@ -1,5 +1,6 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
+import { formatStartTime, formatUptime } from '@/utils'
 
 export interface DashboardData {
   totalRequests: number
@@ -13,6 +14,13 @@ export interface DashboardData {
   memoryTotal: number
   uptime: string
   startTime: string
+}
+
+interface SystemStatsResponse {
+  memory_used: number
+  memory_total: number
+  memory_percent: number
+  start_time: number
 }
 
 export const useDashboardStore = defineStore('dashboard', () => {
@@ -37,6 +45,7 @@ export const useDashboardStore = defineStore('dashboard', () => {
   // 运行时间
   const uptime = ref('0天 0小时 0分钟')
   const startTime = ref('')
+  const startTimestamp = ref<number | null>(null)
 
   // 设置数据
   function setData(data: Partial<DashboardData>) {
@@ -55,6 +64,23 @@ export const useDashboardStore = defineStore('dashboard', () => {
     dataAvailable.value = true
   }
 
+  function setSystemStats(data: SystemStatsResponse) {
+    startTimestamp.value = data.start_time
+    setData({
+      memoryPercent: data.memory_percent,
+      memoryUsed: data.memory_used,
+      memoryTotal: data.memory_total,
+      startTime: formatStartTime(data.start_time),
+      uptime: formatUptime(data.start_time),
+    })
+  }
+
+  function refreshUptime(nowMs?: number) {
+    if (startTimestamp.value === null) return
+    uptime.value = formatUptime(startTimestamp.value, nowMs)
+    startTime.value = formatStartTime(startTimestamp.value)
+  }
+
   // 重置数据
   function reset() {
     dataAvailable.value = false
@@ -69,10 +95,29 @@ export const useDashboardStore = defineStore('dashboard', () => {
     memoryTotal.value = 0
     uptime.value = '0天 0小时 0分钟'
     startTime.value = ''
+    startTimestamp.value = null
+  }
+
+  async function fetchSystemStats(): Promise<boolean> {
+    try {
+      const response = await fetch('/api/system/stats')
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`)
+      }
+
+      const data = (await response.json()) as SystemStatsResponse
+      setSystemStats(data)
+      return true
+    } catch (error) {
+      console.error('Failed to fetch system stats:', error)
+      return false
+    }
   }
 
   // 模拟数据（用于开发测试）
   function loadMockData() {
+    const mockStartTime = Math.floor(Date.now() / 1000) - 15 * 24 * 60 * 60
+    startTimestamp.value = mockStartTime
     setData({
       totalRequests: 128456,
       successCount: 127890,
@@ -83,8 +128,8 @@ export const useDashboardStore = defineStore('dashboard', () => {
       memoryPercent: 45.6,
       memoryUsed: 7.4 * 1024 * 1024 * 1024, // 7.4 GB
       memoryTotal: 16 * 1024 * 1024 * 1024, // 16 GB
-      uptime: '15天 8小时 32分钟',
-      startTime: '2025-01-18 04:18:14',
+      uptime: formatUptime(mockStartTime),
+      startTime: formatStartTime(mockStartTime),
     })
   }
 
@@ -102,6 +147,8 @@ export const useDashboardStore = defineStore('dashboard', () => {
     uptime,
     startTime,
     setData,
+    fetchSystemStats,
+    refreshUptime,
     reset,
     loadMockData,
   }
