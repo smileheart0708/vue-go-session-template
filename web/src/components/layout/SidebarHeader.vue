@@ -13,8 +13,8 @@ import logoSvg from '@/assets/logo.svg'
 
 <style scoped>
 .sidebar-header {
-  padding: 1.5rem 1.25rem;
-  background: var(--color-background-elevated);
+  padding: 1.25rem 1.25rem 0.75rem;
+  background: transparent;
 }
 
 .logo-container {

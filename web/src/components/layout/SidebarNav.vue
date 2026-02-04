@@ -60,9 +60,10 @@ function updateIndicatorPosition() {
     if (navElement && activeElement) {
       const navRect = navElement.getBoundingClientRect()
       const activeRect = activeElement.getBoundingClientRect()
+      const indicatorOffsetAdjustment = activeRect.height / 4
 
       // 计算相对于导航容器的偏移量
-      indicatorOffset.value = activeRect.top - navRect.top
+      indicatorOffset.value = activeRect.top - navRect.top + indicatorOffsetAdjustment
       showIndicator.value = true
     }
   } else {
@@ -87,21 +88,28 @@ onMounted(() => {
 
 <style scoped>
 .sidebar-nav {
+  --nav-item-x: 0.75rem;
+  --nav-item-height: 44px;
   flex: 1;
-  padding: 1rem 0;
+  padding: 0.5rem 0;
   overflow-y: auto;
   position: relative;
-  background: var(--color-background-elevated);
+  background: transparent;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
 }
 
 .nav-indicator {
   position: absolute;
   top: 0;
-  left: 0;
-  width: 3px;
-  height: 48px;
+  left: var(--nav-item-x);
+  width: 4px;
+  height: calc(var(--nav-item-height) / 2);
   background: var(--color-primary);
-  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 999px;
+  box-shadow: 0 0 12px rgba(0, 120, 212, 0.35);
+  transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
   will-change: transform;
   z-index: 10;
 }
@@ -109,12 +117,20 @@ onMounted(() => {
 .nav-item {
   display: flex;
   align-items: center;
+  justify-content: flex-start;
   gap: 0.75rem;
-  padding: 0 1.25rem;
-  height: 48px;
+  padding: 0 1rem 0 2.5rem;
+  height: var(--nav-item-height);
   color: var(--color-text-secondary);
   text-decoration: none;
-  transition: all 0.2s ease;
+  border-radius: 12px;
+  margin: 0 var(--nav-item-x);
+  text-align: left;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
   position: relative;
   z-index: 1;
 }
@@ -122,11 +138,21 @@ onMounted(() => {
 .nav-item:hover {
   background: var(--color-background-secondary);
   color: var(--color-text);
+  transform: translate3d(2px, 0, 0);
 }
 
 .nav-item.active {
   background: var(--color-background-secondary);
   color: var(--color-primary);
+  font-weight: 600;
+  box-shadow: inset 0 0 0 1px var(--color-border);
+}
+
+.nav-item:focus-visible {
+  outline: none;
+  box-shadow:
+    0 0 0 2px rgba(0, 120, 212, 0.35),
+    inset 0 0 0 1px var(--color-border);
 }
 
 .nav-icon {

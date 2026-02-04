@@ -21,8 +21,8 @@ async function handleLogout() {
 
 <style scoped>
 .sidebar-footer {
-  padding: 2rem 1.25rem;
+  padding: 1.25rem 1.25rem 1.5rem;
   min-height: 80px;
-  background: var(--color-background-elevated);
+  background: transparent;
 }
 </style>
