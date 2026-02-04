@@ -6,6 +6,31 @@
         <span v-if="logs.length > 0" class="log-count">{{ logs.length }} 条</span>
       </div>
       <div class="log-board-actions">
+        <div ref="exportAnchorRef" class="log-export">
+          <BaseButton
+            @click="toggleExportMenu"
+            :disabled="logs.length === 0"
+            width="auto"
+            :height="36"
+            text="导出"
+            :icon="Download"
+            title="导出日志"
+            aria-label="导出日志"
+            aria-haspopup="menu"
+            :aria-expanded="showExportMenu"
+          />
+          <DropdownDrawer v-model="showExportMenu" :anchor-el="exportAnchorEl" :min-width="160">
+            <button class="dropdown-item" type="button" @click="exportLogs('txt')">
+              导出 TXT
+            </button>
+            <button class="dropdown-item" type="button" @click="exportLogs('csv')">
+              导出 CSV
+            </button>
+            <button class="dropdown-item" type="button" @click="exportLogs('json')">
+              导出 JSON
+            </button>
+          </DropdownDrawer>
+        </div>
         <BaseButton
           @click="clearLogs"
           :disabled="logs.length === 0"
@@ -52,8 +77,9 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted, nextTick } from 'vue'
 import { useRouter } from 'vue-router'
-import { Info, Trash2, ArrowDownToLine, ArrowDown } from 'lucide-vue-next'
+import { Info, Trash2, ArrowDownToLine, ArrowDown, Download } from 'lucide-vue-next'
 import BaseButton from '@/components/common/BaseButton.vue'
+import DropdownDrawer from '@/components/common/DropdownDrawer.vue'
 import { useAuthStore } from '@/stores/auth'
 
 interface LogEntry {
@@ -68,9 +94,14 @@ const authStore = useAuthStore()
 const logs = ref<LogEntry[]>([])
 const logContainer = ref<HTMLElement | null>(null)
 const autoScroll = ref(true)
+const showExportMenu = ref(false)
+const exportAnchorRef = ref<HTMLElement | null>(null)
+const exportAnchorEl = computed<HTMLElement | null>(() => exportAnchorRef.value)
 let eventSource: EventSource | null = null
 
 const autoScrollText = computed(() => (autoScroll.value ? '自动滚动: 开' : '自动滚动: 关'))
+
+type ExportType = 'txt' | 'csv' | 'json'
 
 function getLevelClass(level: string): string {
   const upperLevel = level.toUpperCase()
@@ -164,6 +195,78 @@ function toggleAutoScroll() {
   }
 }
 
+function toggleExportMenu() {
+  if (logs.value.length === 0) return
+  showExportMenu.value = !showExportMenu.value
+}
+
+function formatFileTimestamp(date: Date): string {
+  const pad = (value: number): string => value.toString().padStart(2, '0')
+  const year = date.getFullYear()
+  const month = pad(date.getMonth() + 1)
+  const day = pad(date.getDate())
+  const hours = pad(date.getHours())
+  const minutes = pad(date.getMinutes())
+  const seconds = pad(date.getSeconds())
+  return `${year}${month}${day}-${hours}${minutes}${seconds}`
+}
+
+function downloadFile(content: string, mimeType: string, extension: ExportType) {
+  const timestamp = formatFileTimestamp(new Date())
+  const filename = `logs-${timestamp}.${extension}`
+  const blob = new Blob([content], { type: mimeType })
+  const url = URL.createObjectURL(blob)
+  const link = document.createElement('a')
+  link.href = url
+  link.download = filename
+  document.body.appendChild(link)
+  link.click()
+  link.remove()
+  URL.revokeObjectURL(url)
+}
+
+function buildTxtContent(entries: LogEntry[]): string {
+  return entries.map((log) => `${log.time} ${formatLogMessage(log)}`).join('\n')
+}
+
+function escapeCsvValue(value: string): string {
+  const escaped = value.replace(/"/g, '""')
+  if (/[",\n]/.test(escaped)) {
+    return `"${escaped}"`
+  }
+  return escaped
+}
+
+function buildCsvContent(entries: LogEntry[]): string {
+  const header = ['time', 'level', 'message', 'attrs']
+  const rows = entries.map((log) => {
+    const message = formatLogMessage(log)
+    const attrs = log.attrs ? JSON.stringify(log.attrs) : ''
+    return [log.time, log.level, message, attrs].map(escapeCsvValue).join(',')
+  })
+  return [header.join(','), ...rows].join('\n')
+}
+
+function buildJsonContent(entries: LogEntry[]): string {
+  return JSON.stringify(entries, null, 2)
+}
+
+function exportLogs(type: ExportType) {
+  if (logs.value.length === 0) return
+  showExportMenu.value = false
+  const entries = [...logs.value]
+
+  if (type === 'txt') {
+    downloadFile(buildTxtContent(entries), 'text/plain;charset=utf-8', type)
+    return
+  }
+  if (type === 'csv') {
+    downloadFile(buildCsvContent(entries), 'text/csv;charset=utf-8', type)
+    return
+  }
+  downloadFile(buildJsonContent(entries), 'application/json;charset=utf-8', type)
+}
+
 // 监听用户手动滚动
 function handleScroll() {
   if (!logContainer.value) return
@@ -239,6 +342,10 @@ onUnmounted(() => {
 .log-board-actions {
   display: flex;
   gap: 0.75rem;
+}
+
+.log-export {
+  position: relative;
 }
 
 .log-board-content {
