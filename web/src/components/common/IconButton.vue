@@ -4,6 +4,7 @@
     class="icon-button"
     :class="[size, { active }]"
     :title="title"
+    :aria-pressed="toggle ? active : undefined"
     :disabled="disabled"
     @click="handleClick"
   >
@@ -17,16 +18,18 @@ import { ref } from 'vue'
 interface Props {
   title?: string
   disabled?: boolean
-  active?: boolean
   size?: 'small' | 'medium' | 'large'
+  toggle?: boolean
 }
 
-withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<Props>(), {
   title: '',
   disabled: false,
-  active: false,
   size: 'medium',
+  toggle: false,
 })
+
+const active = defineModel<boolean>('active', { default: false })
 
 const emit = defineEmits<{
   click: [event: MouseEvent]
@@ -35,6 +38,10 @@ const emit = defineEmits<{
 const buttonRef = ref<HTMLButtonElement | null>(null)
 
 function handleClick(event: MouseEvent) {
+  if (props.disabled) return
+  if (props.toggle) {
+    active.value = !active.value
+  }
   emit('click', event)
 }
 
