@@ -6,21 +6,13 @@ import { useAuthStore } from '@/stores/auth'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
-    {
-      path: '/login',
-      name: 'login',
-      component: LoginView,
-      meta: { requiresGuest: true }
-    },
+    { path: '/login', name: 'login', component: LoginView, meta: { requiresGuest: true } },
     {
       path: '/',
       component: MainLayout,
       meta: { requiresAuth: true },
       children: [
-        {
-          path: '',
-          redirect: '/dashboard'
-        },
+        { path: '', redirect: '/dashboard' },
         {
           path: 'dashboard',
           name: 'dashboard',
@@ -38,6 +30,27 @@ const router = createRouter({
           name: 'settings',
           component: () => import('@/views/SettingsView.vue'),
           meta: { title: '设置', requiresAuth: true },
+          redirect: '/settings/general',
+          children: [
+            {
+              path: 'general',
+              name: 'settings-general',
+              component: () => import('@/views/settings/GeneralSettings.vue'),
+              meta: { title: '基本设置', requiresAuth: true },
+            },
+            {
+              path: 'upstream',
+              name: 'settings-upstream',
+              component: () => import('@/views/settings/UpstreamSettings.vue'),
+              meta: { title: '上游服务', requiresAuth: true },
+            },
+            {
+              path: 'proxy',
+              name: 'settings-proxy',
+              component: () => import('@/views/settings/ProxySettings.vue'),
+              meta: { title: '下游代理', requiresAuth: true },
+            },
+          ],
         },
       ],
     },
@@ -49,8 +62,8 @@ router.beforeEach(async (to, _from, next) => {
   const authStore = useAuthStore()
 
   // 检查路由是否需要认证
-  const requiresAuth = to.matched.some(record => record.meta.requiresAuth)
-  const requiresGuest = to.matched.some(record => record.meta.requiresGuest)
+  const requiresAuth = to.matched.some((record) => record.meta.requiresAuth)
+  const requiresGuest = to.matched.some((record) => record.meta.requiresGuest)
 
   // 如果需要认证
   if (requiresAuth) {

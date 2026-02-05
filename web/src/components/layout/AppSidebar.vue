@@ -32,6 +32,7 @@ withDefaults(defineProps<Props>(), { isOpen: true })
   left: 0;
   top: 0;
   z-index: 100;
+  will-change: transform;
 }
 
 .sidebar-drawer {
@@ -56,6 +57,7 @@ withDefaults(defineProps<Props>(), { isOpen: true })
 @media (max-width: 767px) {
   .sidebar {
     transform: translate3d(-100%, 0, 0);
+    pointer-events: none;
   }
 
   .sidebar .sidebar-drawer {
@@ -66,11 +68,19 @@ withDefaults(defineProps<Props>(), { isOpen: true })
 
   .sidebar-open {
     transform: translate3d(0, 0, 0);
+    pointer-events: auto;
   }
 
   .sidebar-open .sidebar-drawer {
     opacity: 1;
     transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sidebar,
+  .sidebar-drawer {
+    transition: none !important;
   }
 }
 </style>
