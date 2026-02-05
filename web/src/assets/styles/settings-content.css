@@ -1,0 +1,137 @@
+/* Settings 子页面通用布局样式 */
+
+/* 页面容器 */
+.settings-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* 卡片容器 */
+.settings-card {
+  padding: 1.5rem;
+  background: var(--color-background-elevated);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+/* 卡片头部 */
+.settings-card__header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.settings-card__title {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.settings-card__subtitle {
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-size: 0.9rem;
+}
+
+/* 设置行 */
+.settings-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.75rem 0;
+  border-top: 1px dashed var(--color-border);
+}
+
+.settings-card .settings-row:first-of-type {
+  border-top: none;
+  padding-top: 0;
+}
+
+/* 信息区域 */
+.settings-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  min-width: 0;
+}
+
+.settings-label {
+  font-weight: 500;
+  color: var(--color-text);
+}
+
+.settings-desc {
+  font-size: 0.85rem;
+  color: var(--color-text-secondary);
+}
+
+/* 控制区域 */
+.settings-control {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* 表单控件 */
+.settings-input {
+  width: 220px;
+  padding: 6px 10px;
+  border-radius: 6px;
+}
+
+.settings-input--short {
+  width: 96px;
+  text-align: center;
+}
+
+.settings-textarea {
+  width: 260px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  min-height: 64px;
+  resize: vertical;
+}
+
+.settings-select {
+  width: 220px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  background: var(--color-background-elevated);
+  border: 1px solid var(--color-border);
+}
+
+.settings-unit {
+  color: var(--color-text-secondary);
+  font-size: 0.9rem;
+}
+
+.settings-input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* 响应式设计 */
+@media (max-width: 640px) {
+  .settings-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .settings-control {
+    width: 100%;
+  }
+
+  .settings-input,
+  .settings-input--short,
+  .settings-select,
+  .settings-textarea {
+    width: 100%;
+    text-align: left;
+  }
+}
