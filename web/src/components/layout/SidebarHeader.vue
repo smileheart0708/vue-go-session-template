@@ -2,7 +2,7 @@
   <div class="sidebar-header">
     <div class="logo-container">
       <img :src="logoSvg" alt="logo" class="logo-icon" />
-      <h2 class="sidebar-title">CodeHub</h2>
+      <h2 class="sidebar-title">web</h2>
     </div>
   </div>
 </template>

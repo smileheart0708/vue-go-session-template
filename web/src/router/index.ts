@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHistory, type RouteLocationNormalizedLoaded } from 'vue-router'
 import LoginView from '@/views/LoginView.vue'
 import MainLayout from '@/components/layout/MainLayout.vue'
 import { useAuthStore } from '@/stores/auth'
@@ -16,10 +16,28 @@ function createLoginRedirect(redirectPath: string) {
   }
 }
 
+const APP_NAME = 'web'
+
+function resolveRouteTitle(to: RouteLocationNormalizedLoaded): string {
+  const title = to.meta.title
+  if (typeof title !== 'string') return ''
+  return title.trim()
+}
+
+function updateDocumentTitle(to: RouteLocationNormalizedLoaded): void {
+  const routeTitle = resolveRouteTitle(to)
+  document.title = routeTitle ? `${APP_NAME}-${routeTitle}` : APP_NAME
+}
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
-    { path: '/login', name: 'login', component: LoginView, meta: { requiresGuest: true } },
+    {
+      path: '/login',
+      name: 'login',
+      component: LoginView,
+      meta: { title: '登录', requiresGuest: true },
+    },
     {
       path: '/',
       component: MainLayout,
@@ -107,6 +125,10 @@ router.beforeEach(async (to) => {
   }
 
   return true
+})
+
+router.afterEach((to) => {
+  updateDocumentTitle(to)
 })
 
 export default router
