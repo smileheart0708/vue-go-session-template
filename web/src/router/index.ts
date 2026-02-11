@@ -2,6 +2,19 @@ import { createRouter, createWebHistory } from 'vue-router'
 import LoginView from '@/views/LoginView.vue'
 import MainLayout from '@/components/layout/MainLayout.vue'
 import { useAuthStore } from '@/stores/auth'
+import { resolveRedirectPath } from '@/utils'
+
+function createLoginRedirect(redirectPath: string) {
+  const safeRedirectPath = resolveRedirectPath(redirectPath)
+  if (!safeRedirectPath) {
+    return { name: 'login' as const }
+  }
+
+  return {
+    name: 'login' as const,
+    query: { redirect: safeRedirectPath },
+  }
+}
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -58,7 +71,7 @@ const router = createRouter({
 })
 
 // 全局前置守卫
-router.beforeEach(async (to, _from, next) => {
+router.beforeEach(async (to) => {
   const authStore = useAuthStore()
 
   // 检查路由是否需要认证
@@ -69,8 +82,7 @@ router.beforeEach(async (to, _from, next) => {
   if (requiresAuth) {
     if (!authStore.isAuthenticated) {
       // 未登录，重定向到登录页
-      next({ name: 'login' })
-      return
+      return createLoginRedirect(to.fullPath)
     }
 
     // 已登录，验证 session 是否有效（非模拟模式）
@@ -79,20 +91,22 @@ router.beforeEach(async (to, _from, next) => {
       const isValid = await authStore.validateSession()
       if (!isValid) {
         // session 无效，重定向到登录页
-        next({ name: 'login' })
-        return
+        return createLoginRedirect(to.fullPath)
       }
     }
   }
 
   // 如果是登录页，但已经登录
   if (requiresGuest && authStore.isAuthenticated) {
+    const redirectPath = resolveRedirectPath(to.query.redirect)
+    if (redirectPath) {
+      return redirectPath
+    }
     // 已登录，重定向到仪表板
-    next({ name: 'dashboard' })
-    return
+    return { name: 'dashboard' }
   }
 
-  next()
+  return true
 })
 
 export default router

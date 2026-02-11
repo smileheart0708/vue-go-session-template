@@ -1,6 +1,7 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
+import { buildLoginRedirectPath } from '@/utils'
 import type { LogEntry } from '@/utils/logs'
 
 export type LogStreamStatus = 'connecting' | 'connected' | 'disconnected'
@@ -53,7 +54,7 @@ export function useLogStream(options: UseLogStreamOptions = {}) {
         authStore.validateSession().then((isValid) => {
           if (!isValid) {
             disconnect()
-            router.replace('/login')
+            router.replace(buildLoginRedirectPath(router.currentRoute.value.fullPath))
             return
           }
 

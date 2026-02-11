@@ -1,16 +1,43 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { computed, ref } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import ThemeToggle from '@/components/common/ThemeToggle.vue'
 import BaseButton from '@/components/common/BaseButton.vue'
 import { useToast } from '@/composables'
 import { useAuthStore } from '@/stores/auth'
+import { HttpError, http, resolveRedirectPath } from '@/utils'
 
+const route = useRoute()
 const router = useRouter()
 const authStore = useAuthStore()
 const authKey = ref('')
 const isLoading = ref(false)
 const { success, error: toastError } = useToast()
+
+interface LoginResponse {
+  success: boolean
+  message: string
+  session_id?: string
+}
+
+function extractErrorMessage(payload: unknown): string | null {
+  if (typeof payload === 'string') {
+    return payload.trim() || null
+  }
+
+  if (!payload || typeof payload !== 'object') {
+    return null
+  }
+
+  const message = (payload as Record<string, unknown>).message
+  if (typeof message !== 'string') {
+    return null
+  }
+
+  return message.trim() || null
+}
+
+const loginRedirectPath = computed(() => resolveRedirectPath(route.query.redirect) ?? '/dashboard')
 
 const handleLogin = async () => {
   if (!authKey.value.trim()) {
@@ -21,15 +48,13 @@ const handleLogin = async () => {
   isLoading.value = true
 
   try {
-    const response = await fetch('/api/login', {
+    const data = await http<LoginResponse>('/login', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ auth_key: authKey.value }),
+      body: { auth_key: authKey.value },
+      skipUnauthorizedHandler: true,
     })
 
-    const data = await response.json()
-
-    if (!response.ok || !data.success) {
+    if (!data.success || !data.session_id) {
       toastError(data.message || '认证失败，请重试')
       return
     }
@@ -38,11 +63,14 @@ const handleLogin = async () => {
     authStore.setAuthenticated(data.session_id)
     success('登录成功！')
 
-    // 跳转到 dashboard
-    setTimeout(() => {
-      router.push('/dashboard')
-    }, 500)
+    // 登录后回跳
+    await router.replace(loginRedirectPath.value)
   } catch (error) {
+    if (error instanceof HttpError) {
+      toastError(extractErrorMessage(error.data) || '认证失败，请重试')
+      return
+    }
+
     console.error('Login error:', error)
     toastError('网络错误，请重试')
   } finally {

@@ -1,6 +1,6 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
-import { formatStartTime, formatUptime } from '@/utils'
+import { formatStartTime, formatUptime, http } from '@/utils'
 
 export interface DashboardData {
   totalRequests: number
@@ -100,12 +100,7 @@ export const useDashboardStore = defineStore('dashboard', () => {
 
   async function fetchDashboardStats(): Promise<boolean> {
     try {
-      const response = await fetch('/api/dashboard/stats')
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}`)
-      }
-
-      const data = (await response.json()) as DashboardStatsResponse
+      const data = await http<DashboardStatsResponse>('/dashboard/stats')
       setDashboardStats(data)
       return true
     } catch (error) {
