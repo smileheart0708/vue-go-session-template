@@ -13,7 +13,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { useTemplateRef } from 'vue'
+
+defineOptions({
+  name: 'IconButton',
+})
 
 interface Props {
   title?: string
@@ -22,12 +26,7 @@ interface Props {
   toggle?: boolean
 }
 
-const props = withDefaults(defineProps<Props>(), {
-  title: '',
-  disabled: false,
-  size: 'medium',
-  toggle: false,
-})
+const { title = '', disabled = false, size = 'medium', toggle = false } = defineProps<Props>()
 
 const active = defineModel<boolean>('active', { default: false })
 
@@ -35,11 +34,11 @@ const emit = defineEmits<{
   click: [event: MouseEvent]
 }>()
 
-const buttonRef = ref<HTMLButtonElement | null>(null)
+const buttonRef = useTemplateRef<HTMLButtonElement>('buttonRef')
 
 function handleClick(event: MouseEvent) {
-  if (props.disabled) return
-  if (props.toggle) {
+  if (disabled) return
+  if (toggle) {
     active.value = !active.value
   }
   emit('click', event)

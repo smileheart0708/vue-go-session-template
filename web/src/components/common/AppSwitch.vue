@@ -1,45 +1,69 @@
 <script setup lang="ts">
-/**
- * WinSwitch.vue
- * Windows 11 风格的开关组件
- */
-import { computed } from 'vue'
+import { computed, useId } from 'vue'
+
+defineOptions({
+  name: 'AppSwitch',
+})
 
 interface Props {
   disabled?: boolean
+  id?: string
   label?: string
 }
 
-const props = withDefaults(defineProps<Props>(), { disabled: false, label: '' })
+const { disabled = false, id, label = '' } = defineProps<Props>()
+
 const modelValue = defineModel<boolean>({ required: true })
 
-const emit = defineEmits<{ change: [value: boolean] }>()
+const emit = defineEmits<{
+  change: [value: boolean]
+}>()
 
-const isChecked = computed({
+const generatedId = useId()
+
+const inputId = computed<string>(() => id || `app-switch-${generatedId}`)
+const labelId = computed<string>(() => `${inputId.value}-label`)
+
+const isChecked = computed<boolean>({
   get: () => modelValue.value,
-  set: (val: boolean) => {
-    if (props.disabled) return
-    modelValue.value = val
-    emit('change', val)
+  set: (value: boolean) => {
+    if (disabled) return
+    modelValue.value = value
+    emit('change', value)
   },
 })
 
-const toggle = () => {
-  isChecked.value = !isChecked.value
+function handleChange(event: Event): void {
+  const target = event.target as HTMLInputElement
+  isChecked.value = target.checked
 }
 </script>
 
 <template>
-  <div class="win-switch-container" :class="{ 'is-disabled': disabled }" @click="toggle">
-    <div class="win-switch" :class="{ 'is-checked': isChecked }">
-      <div class="win-switch-thumb" />
-    </div>
-    <span v-if="label" class="win-switch-label">{{ label }}</span>
+  <div class="app-switch" :class="{ 'app-switch--disabled': disabled }">
+    <input
+      :id="inputId"
+      class="app-switch__input"
+      type="checkbox"
+      role="switch"
+      :aria-labelledby="label ? labelId : undefined"
+      :checked="isChecked"
+      :disabled="disabled"
+      @change="handleChange"
+    />
+
+    <label class="app-switch__control" :for="inputId" aria-hidden="true">
+      <span class="app-switch__thumb" />
+    </label>
+
+    <label v-if="label" :id="labelId" class="app-switch__label" :for="inputId">
+      {{ label }}
+    </label>
   </div>
 </template>
 
 <style scoped>
-.win-switch-container {
+.app-switch {
   display: inline-flex;
   align-items: center;
   gap: 12px;
@@ -48,72 +72,82 @@ const toggle = () => {
   transition: opacity 0.2s ease;
 }
 
-.win-switch-container.is-disabled {
+.app-switch--disabled {
   cursor: not-allowed;
   opacity: 0.5;
 }
 
-/* 轨道样式 */
-.win-switch {
+.app-switch__input {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.app-switch__control {
   position: relative;
-  width: 40px;
-  height: 20px;
+  display: inline-flex;
+  align-items: center;
+  inline-size: 40px;
+  block-size: 20px;
   border-radius: 10px;
   background-color: transparent;
   border: 1px solid var(--color-border);
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   box-sizing: border-box;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: inherit;
 }
 
-/* 鼠标悬停轨道 */
-.win-switch-container:not(.is-disabled):hover .win-switch {
+.app-switch:not(.app-switch--disabled):hover .app-switch__control {
   border-color: var(--color-border-hover);
 }
 
-/* 选中状态轨道 */
-.win-switch.is-checked {
+.app-switch__input:checked + .app-switch__control {
   background-color: var(--color-primary);
   border-color: var(--color-primary);
 }
 
-.win-switch-container:not(.is-disabled):hover .win-switch.is-checked {
+.app-switch:not(.app-switch--disabled):hover .app-switch__input:checked + .app-switch__control {
   background-color: var(--color-primary-hover);
   border-color: var(--color-primary-hover);
 }
 
-/* 滑块样式 */
-.win-switch-thumb {
+.app-switch__thumb {
   position: absolute;
-  top: 50%;
-  left: 3px;
+  inset-block-start: 50%;
+  inset-inline-start: 3px;
   transform: translateY(-50%);
-  width: 12px;
-  height: 12px;
+  inline-size: 12px;
+  block-size: 12px;
   border-radius: 50%;
   background-color: var(--color-text-secondary);
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* 选中状态滑块 */
-.win-switch.is-checked .win-switch-thumb {
-  left: calc(100% - 15px);
+.app-switch__input:checked + .app-switch__control .app-switch__thumb {
+  inset-inline-start: calc(100% - 15px);
   background-color: #ffffff;
-  width: 12px;
-  height: 12px;
 }
 
-/* 点击时的拉伸效果 (Windows 11 特色) */
-.win-switch-container:not(.is-disabled):active .win-switch-thumb {
-  width: 16px;
+.app-switch:not(.app-switch--disabled):active .app-switch__thumb {
+  inline-size: 16px;
   border-radius: 8px;
 }
 
-.win-switch-container:not(.is-disabled):active .win-switch.is-checked .win-switch-thumb {
-  left: calc(100% - 19px);
+.app-switch:not(.app-switch--disabled):active .app-switch__input:checked + .app-switch__control .app-switch__thumb {
+  inset-inline-start: calc(100% - 19px);
 }
 
-.win-switch-label {
+.app-switch__input:focus-visible + .app-switch__control {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.app-switch__label {
   font-size: 14px;
   color: var(--color-text);
+  cursor: inherit;
 }
 </style>

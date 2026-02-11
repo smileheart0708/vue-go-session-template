@@ -45,16 +45,20 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onUnmounted } from 'vue'
+import { computed, onUnmounted, ref, useTemplateRef } from 'vue'
 import { Sun, Moon, Monitor } from 'lucide-vue-next'
 import DropdownDrawer from './DropdownDrawer.vue'
 import IconButton from './IconButton.vue'
 import { useTheme } from '@/composables'
 import type { ThemeMode } from '@/composables'
 
+defineOptions({
+  name: 'ThemeToggle',
+})
+
 const { mode, setTheme } = useTheme()
 
-const buttonRef = ref<InstanceType<typeof IconButton> | null>(null)
+const buttonRef = useTemplateRef<InstanceType<typeof IconButton>>('buttonRef')
 const anchorEl = computed<HTMLElement | null>(() => buttonRef.value?.$el ?? null)
 
 const showDropdown = ref(false)

@@ -17,37 +17,44 @@
 
 <script setup lang="ts">
 import { computed, type Component } from 'vue'
-import type { PropType } from 'vue'
 
-const props = defineProps({
-  // 按钮宽度（必需）
-  width: { type: [String, Number], required: true },
-  // 按钮高度（必需）
-  height: { type: [String, Number], required: true },
-  // 按钮文字（必需）
-  text: { type: String, required: true },
-  // 是否使用主题色（默认 false）
-  primary: { type: Boolean, default: false },
-  // 图标组件（可选，支持 lucide 图标）
-  icon: { type: [String, Object, Function] as PropType<string | Component>, default: null },
-  // 是否禁用
-  disabled: { type: Boolean, default: false },
+defineOptions({
+  name: 'BaseButton',
 })
 
-const emit = defineEmits(['click'])
+type CssSize = string | number
+
+interface Props {
+  width: CssSize
+  height: CssSize
+  text: string
+  primary?: boolean
+  icon?: string | Component | null
+  disabled?: boolean
+}
+
+const {
+  width,
+  height,
+  text,
+  primary = false,
+  icon = null,
+  disabled = false,
+} = defineProps<Props>()
+
+const emit = defineEmits<{
+  click: [event: MouseEvent]
+}>()
 
 // 处理尺寸单位
-const buttonStyle = computed(() => {
-  const formatSize = (size: string | number): string => {
-    if (typeof size === 'number') return `${size}px`
-    return size
-  }
+const buttonStyle = computed<Record<string, string>>(() => {
+  const formatSize = (size: CssSize): string => (typeof size === 'number' ? `${size}px` : size)
 
-  return { width: formatSize(props.width), height: formatSize(props.height) }
+  return { width: formatSize(width), height: formatSize(height) }
 })
 
-const handleClick = (event: MouseEvent) => {
-  if (!props.disabled) {
+function handleClick(event: MouseEvent): void {
+  if (!disabled) {
     emit('click', event)
   }
 }

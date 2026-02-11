@@ -16,9 +16,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, nextTick, onUnmounted, useAttrs } from 'vue'
+import { nextTick, onUnmounted, ref, useAttrs, useTemplateRef, watch } from 'vue'
 
 defineOptions({
+  name: 'DropdownDrawer',
   inheritAttrs: false,
 })
 
@@ -32,34 +33,34 @@ interface Props {
   closeOnEscape?: boolean
 }
 
-const props = withDefaults(defineProps<Props>(), {
-  offset: 8,
-  align: 'end',
-  teleportTo: 'body',
-  minWidth: 140,
-  closeOnOutside: true,
-  closeOnEscape: true,
-})
+const {
+  anchorEl,
+  offset = 8,
+  align = 'end',
+  teleportTo = 'body',
+  minWidth = 140,
+  closeOnOutside = true,
+  closeOnEscape = true,
+} = defineProps<Props>()
 
 const open = defineModel<boolean>({ default: false })
 
 const attrs = useAttrs()
-const drawerRef = ref<HTMLElement | null>(null)
+const drawerRef = useTemplateRef<HTMLElement>('drawerRef')
 const drawerStyle = ref<Record<string, string>>({})
 
 let listenersActive = false
 
-function updatePosition() {
-  const anchor = props.anchorEl
+function updatePosition(): void {
+  const anchor = anchorEl
   if (!anchor) return
   const rect = anchor.getBoundingClientRect()
-  const offset = props.offset
   const style: Record<string, string> = {
     top: `${rect.bottom + offset}px`,
-    '--dropdown-min-width': `${props.minWidth}px`,
+    '--dropdown-min-width': `${minWidth}px`,
   }
 
-  if (props.align === 'start') {
+  if (align === 'start') {
     style.left = `${Math.max(8, rect.left)}px`
   } else {
     style.right = `${Math.max(8, window.innerWidth - rect.right)}px`
@@ -68,40 +69,40 @@ function updatePosition() {
   drawerStyle.value = style
 }
 
-function handleWindowChange() {
+function handleWindowChange(): void {
   if (!open.value) return
   updatePosition()
 }
 
-function handleClickOutside(event: MouseEvent) {
-  if (!open.value || !props.closeOnOutside) return
+function handleClickOutside(event: MouseEvent): void {
+  if (!open.value || !closeOnOutside) return
   const target = event.target as Node
   if (drawerRef.value?.contains(target)) return
-  if (props.anchorEl?.contains(target)) return
+  if (anchorEl?.contains(target)) return
   open.value = false
 }
 
-function handleKeydown(event: KeyboardEvent) {
-  if (!open.value || !props.closeOnEscape) return
+function handleKeydown(event: KeyboardEvent): void {
+  if (!open.value || !closeOnEscape) return
   if (event.key === 'Escape') {
     open.value = false
   }
 }
 
-function addGlobalListeners() {
+function addGlobalListeners(): void {
   if (listenersActive) return
   listenersActive = true
-  if (props.closeOnOutside) {
+  if (closeOnOutside) {
     document.addEventListener('click', handleClickOutside)
   }
-  if (props.closeOnEscape) {
+  if (closeOnEscape) {
     window.addEventListener('keydown', handleKeydown)
   }
   window.addEventListener('resize', handleWindowChange)
   window.addEventListener('scroll', handleWindowChange, true)
 }
 
-function removeGlobalListeners() {
+function removeGlobalListeners(): void {
   if (!listenersActive) return
   listenersActive = false
   document.removeEventListener('click', handleClickOutside)
@@ -115,7 +116,7 @@ watch(
   async (isOpen) => {
     if (isOpen) {
       await nextTick()
-      if (!props.anchorEl) {
+      if (!anchorEl) {
         open.value = false
         return
       }
@@ -129,7 +130,7 @@ watch(
 )
 
 watch(
-  () => [props.anchorEl, props.align, props.offset, props.minWidth],
+  () => [anchorEl, align, offset, minWidth],
   () => {
     if (open.value) {
       updatePosition()

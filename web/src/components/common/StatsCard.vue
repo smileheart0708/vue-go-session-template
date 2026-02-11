@@ -17,6 +17,10 @@
 <script setup lang="ts">
 import { Circle } from 'lucide-vue-next'
 
+defineOptions({
+  name: 'StatsCard',
+})
+
 interface Props {
   label: string
   value: string | number
@@ -24,7 +28,7 @@ interface Props {
   color: string
 }
 
-withDefaults(defineProps<Props>(), { change: '' })
+const { label, value, change = '', color } = defineProps<Props>()
 </script>
 
 <style scoped>

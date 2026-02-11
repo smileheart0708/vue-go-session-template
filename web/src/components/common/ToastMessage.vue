@@ -21,7 +21,7 @@
           <button
             class="toast-close"
             type="button"
-            aria-label="关闭"
+            :aria-label="closeAriaLabel"
             @click="removeToast(toast.id)"
           >
             <X :size="14" />
@@ -41,6 +41,16 @@
 <script setup lang="ts">
 import { Check, XCircle, AlertTriangle, Info, X } from 'lucide-vue-next'
 import { useToast } from '@/composables'
+
+defineOptions({
+  name: 'ToastMessage',
+})
+
+interface Props {
+  closeAriaLabel?: string
+}
+
+const { closeAriaLabel = 'Close notification' } = defineProps<Props>()
 
 const { toasts, removeToast } = useToast()
 </script>
