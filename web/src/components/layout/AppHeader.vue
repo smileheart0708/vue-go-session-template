@@ -50,14 +50,6 @@ const currentTitle = computed(() => {
   z-index: 90;
 }
 
-@media (max-width: 767px) {
-  .mobile-header {
-    position: fixed;
-    left: 0;
-    right: 0;
-  }
-}
-
 .header-title {
   flex: 1;
   min-width: 0;

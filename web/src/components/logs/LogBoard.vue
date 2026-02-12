@@ -29,13 +29,13 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted, nextTick } from 'vue'
+import { ref, onMounted, onUnmounted, nextTick, useTemplateRef } from 'vue'
 import { Info } from 'lucide-vue-next'
 import LogBoardToolbar from '@/components/logs/LogBoardToolbar.vue'
 import { useLogExport, useLogStream } from '@/composables'
 import { formatLogMessage, getLevelClass } from '@/utils/logs'
 
-const logContainer = ref<HTMLElement | null>(null)
+const logContainer = useTemplateRef<HTMLElement>('logContainer')
 const autoScroll = ref(true)
 
 function scrollToBottom() {
@@ -97,6 +97,7 @@ onUnmounted(() => {
 .log-board {
   display: flex;
   flex-direction: column;
+  flex: 1;
   height: 100%;
   min-width: 0;
   min-height: 0;
@@ -108,6 +109,8 @@ onUnmounted(() => {
 .log-board-content {
   flex: 1;
   overflow: auto;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable both-edges;
   padding: 0;
   display: flex;
   flex-direction: column;

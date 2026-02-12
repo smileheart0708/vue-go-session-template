@@ -49,8 +49,9 @@ onUnmounted(() => {
 <style scoped>
 .main-layout {
   display: flex;
-  min-height: 100vh;
   width: 100%;
+  height: 100vh;
+  height: 100dvh;
   overflow: hidden;
 }
 
@@ -59,16 +60,20 @@ onUnmounted(() => {
   display: flex;
   flex-direction: column;
   margin-left: var(--sidebar-width);
-  min-height: 100vh;
   min-width: 0;
+  min-height: 0;
+  height: 100%;
   overflow: hidden;
 }
 
 .content {
   flex: 1;
+  display: flex;
+  flex-direction: column;
   padding: 1.5rem;
   overflow-y: auto;
   overflow-x: hidden;
+  overscroll-behavior-y: contain;
   min-width: 0;
   min-height: 0;
 }
@@ -95,10 +100,6 @@ onUnmounted(() => {
 @media (max-width: 767px) {
   .main-content {
     margin-left: 0;
-  }
-
-  .content {
-    padding-top: calc(1.5rem + var(--header-height));
   }
 }
 </style>
