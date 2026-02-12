@@ -57,6 +57,12 @@ const router = createRouter({
           meta: { title: '日志', requiresAuth: true },
         },
         {
+          path: 'keys',
+          name: 'keys',
+          component: () => import('@/views/KeysView.vue'),
+          meta: { title: '密钥', requiresAuth: true },
+        },
+        {
           path: 'settings',
           name: 'settings',
           component: () => import('@/views/SettingsView.vue'),

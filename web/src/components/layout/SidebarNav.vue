@@ -22,7 +22,7 @@
 <script setup lang="ts">
 import { ref, watch, nextTick, onMounted, type Component } from 'vue'
 import { useRoute } from 'vue-router'
-import { LayoutGrid, FileText, Settings } from 'lucide-vue-next'
+import { LayoutGrid, FileText, Key, Settings } from 'lucide-vue-next'
 
 interface MenuItem {
   path: string
@@ -33,6 +33,7 @@ interface MenuItem {
 const menuItems: MenuItem[] = [
   { path: '/dashboard', label: '仪表板', icon: LayoutGrid },
   { path: '/logs', label: '日志', icon: FileText },
+  { path: '/keys', label: '密钥', icon: Key },
   { path: '/settings', label: '设置', icon: Settings },
 ]
 
