@@ -8,6 +8,9 @@
   --color-primary: #0078d4;
   --color-primary-hover: #106ebe;
   --color-primary-active: #005a9e;
+  --color-primary-rgb: 0, 120, 212;
+  --color-primary-hover-rgb: 16, 110, 190;
+  --color-primary-active-rgb: 0, 90, 158;
 
   /* 浅色主题 */
   --color-bg-light: #85aeca38;
@@ -47,6 +50,12 @@
 
   --color-border: var(--color-border-light);
   --color-border-hover: var(--color-border-light-hover);
+
+  /* 滚动条 */
+  --scrollbar-track: transparent;
+  --scrollbar-thumb: rgba(var(--color-primary-rgb), 0.3);
+  --scrollbar-thumb-hover: rgba(var(--color-primary-hover-rgb), 0.5);
+  --scrollbar-thumb-active: rgba(var(--color-primary-active-rgb), 0.6);
 
   /* 错误状态 - 浅色 */
   --color-error-bg: #fef0f0;

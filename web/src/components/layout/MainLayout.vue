@@ -18,9 +18,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, onUnmounted } from 'vue'
+import { onMounted, onUnmounted, ref } from 'vue'
 import AppSidebar from './AppSidebar.vue'
 import AppHeader from './AppHeader.vue'
+
+const BODY_SCROLL_LOCK_CLASS = 'main-layout-scroll-lock'
 
 const sidebarOpen = ref(false)
 
@@ -28,20 +30,12 @@ function toggleSidebar() {
   sidebarOpen.value = !sidebarOpen.value
 }
 
-// 监听侧边栏状态，在移动端控制 body 滚动
-watch(sidebarOpen, (isOpen) => {
-  // 只在移动端（宽度小于 768px）禁止滚动
-  if (window.innerWidth < 768) {
-    if (isOpen) {
-      document.body.style.overflow = 'hidden'
-    } else {
-      document.body.style.overflow = ''
-    }
-  }
+onMounted(() => {
+  document.body.classList.add(BODY_SCROLL_LOCK_CLASS)
 })
 
-// 组件卸载时恢复滚动
 onUnmounted(() => {
+  document.body.classList.remove(BODY_SCROLL_LOCK_CLASS)
   document.body.style.overflow = ''
 })
 </script>
@@ -95,6 +89,10 @@ onUnmounted(() => {
 .fade-enter-from,
 .fade-leave-to {
   opacity: 0;
+}
+
+:global(body.main-layout-scroll-lock) {
+  overflow: hidden;
 }
 
 @media (max-width: 767px) {
