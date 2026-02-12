@@ -1,10 +1,6 @@
 <template>
   <header class="mobile-header">
-    <IconButton
-      class="menu-toggle"
-      title="切换侧边栏"
-      @click="emit('toggle-sidebar')"
-    >
+    <IconButton class="menu-toggle" title="切换侧边栏" @click="emit('toggle-sidebar')">
       <Menu />
     </IconButton>
 
@@ -30,7 +26,7 @@ const route = useRoute()
 const currentTitle = computed(() => {
   // 从路由 meta 中获取标题
   const title = route.meta.title as string | undefined
-  return title || '仪表板'
+  return title
 })
 </script>
 
