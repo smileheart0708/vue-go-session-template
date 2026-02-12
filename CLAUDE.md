@@ -24,7 +24,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 - **Vue 3.5.27** + **TypeScript 5.9.3**
 - **Vite 7.3.1** (构建工具)
-- **Bun 1.3.7** (包管理器)
+- **pnpm 10.29.1** (包管理器)
 - **Pinia 3.0.4** (状态管理 - Setup Store 写法)
 - **Vue Router 4.6.4** (路由)
 - **@vueuse/core 14.2.0** (组合式工具库)
@@ -86,14 +86,14 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 cd web
 
 # 安装依赖
-bun install
+pnpm install
 
 # 类型检查
-bun run typecheck
+pnpm run typecheck
 
 # 代码检查和格式化
-bun run lint        # 运行 Oxlint + ESLint
-bun run format      # Prettier 格式化
+pnpm run lint        # 运行 Oxlint + ESLint
+pnpm run format      # Prettier 格式化
 
 ```
 

@@ -2,26 +2,26 @@
 
 > **项目**: Vue-Go 全栈模板 (Golang Embed + Vue 3 SPA)
 > **技术栈**: Go 1.25+ (Gin) + Vue 3.5+ (TypeScript) + Pinia + Vite
-> **包管理器**: Bun (前端) + Go Modules (后端)
+> **包管理器**: pnpm (前端) + Go Modules (后端)
 
 ## 1. 构建与检查命令 (Build & Check Commands)
 
 ### 1.1 前端开发 (web/ 目录)
 ```bash
 # 开发服务器 (端口 5173)
-bun run dev
+pnpm run dev
 
 # 生产构建 (输出到 web/dist/)
-bun run build
+pnpm run build
 
 # 类型检查
-bun run typecheck
+pnpm run typecheck
 
 # 代码检查 (oxlint + eslint，自动修复)
-bun run lint
+pnpm run lint
 
 # 代码格式化 (Prettier)
-bun run format
+pnpm run format
 ```
 
 ### 1.2 后端开发 (根目录)
