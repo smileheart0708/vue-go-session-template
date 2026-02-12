@@ -3,6 +3,7 @@ import { useLocalStorage } from '@vueuse/core'
 import { defineStore } from 'pinia'
 import { useDashboardStore } from './dashboard'
 import { HttpError, http, setUnauthorizedHandler } from '@/utils'
+import { isMockAuthEnabled } from '@/utils/env'
 
 const STORAGE_KEY = 'vue-go-session-auth'
 
@@ -79,6 +80,10 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   async function validateSession(): Promise<boolean> {
+    if (isMockAuthEnabled) {
+      return isAuthenticated.value
+    }
+
     if (!sessionId.value) {
       handleUnauthorized()
       return false

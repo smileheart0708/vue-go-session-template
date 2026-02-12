@@ -6,21 +6,44 @@ import { createPinia } from 'pinia'
 import App from './App.vue'
 import router from './router'
 import { useAuthStore } from './stores/auth'
+import { isMockApiEnabled, isMockAuthEnabled } from './utils'
 
-const app = createApp(App)
+async function enableApiMocking(): Promise<void> {
+  if (!import.meta.env.DEV || !isMockApiEnabled) {
+    return
+  }
 
-const pinia = createPinia()
-app.use(pinia)
-app.use(router)
-
-// 初始化 auth store
-const authStore = useAuthStore()
-authStore.init()
-
-// 如果开启了模拟认证模式，且当前未登录，则自动模拟登录
-const isMockAuth = import.meta.env.VITE_MOCK_AUTH === 'true'
-if (isMockAuth && !authStore.isAuthenticated) {
-  authStore.mockLogin()
+  const { worker } = await import('./mocks/browser')
+  await worker.start({
+    quiet: true,
+    onUnhandledRequest(request, print) {
+      const requestUrl = new URL(request.url)
+      if (requestUrl.pathname === '/api' || requestUrl.pathname.startsWith('/api/')) {
+        print.error()
+      }
+    },
+  })
 }
 
-app.mount('#app')
+async function bootstrap(): Promise<void> {
+  await enableApiMocking()
+
+  const app = createApp(App)
+  const pinia = createPinia()
+  app.use(pinia)
+
+  // 初始化 auth store
+  const authStore = useAuthStore()
+  authStore.init()
+
+  // 如果开启了模拟认证模式，且当前未登录，则自动模拟登录
+  if (isMockAuthEnabled && !authStore.isAuthenticated) {
+    authStore.mockLogin()
+  }
+
+  app.use(router)
+  await router.isReady()
+  app.mount('#app')
+}
+
+void bootstrap()

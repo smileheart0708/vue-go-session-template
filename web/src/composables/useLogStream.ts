@@ -2,6 +2,7 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import { buildLoginRedirectPath } from '@/utils'
+import { isMockApiEnabled } from '@/utils/env'
 import type { LogEntry } from '@/utils/logs'
 
 export type LogStreamStatus = 'connecting' | 'connected' | 'disconnected'
@@ -51,6 +52,12 @@ export function useLogStream(options: UseLogStreamOptions = {}) {
 
       if (eventSource?.readyState === EventSource.CLOSED) {
         status.value = 'disconnected'
+        if (isMockApiEnabled) {
+          disconnect()
+          scheduleReconnect()
+          return
+        }
+
         authStore.validateSession().then((isValid) => {
           if (!isValid) {
             disconnect()
