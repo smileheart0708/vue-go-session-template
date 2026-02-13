@@ -32,8 +32,8 @@ interface MenuItem {
 
 const menuItems: MenuItem[] = [
   { path: '/dashboard', label: '仪表板', icon: LayoutGrid },
-  { path: '/logs', label: '日志', icon: FileText },
   { path: '/keys', label: '密钥', icon: Key },
+  { path: '/logs', label: '日志', icon: FileText },
   { path: '/settings', label: '设置', icon: Settings },
 ]
 
