@@ -227,3 +227,14 @@ func generateSessionID() (string, error) {
 	}
 	return hex.EncodeToString(bytes), nil
 }
+
+// StartCleanup 启动定期清理过期 session 的后台任务
+func (m *Manager) StartCleanup(interval time.Duration) {
+	go func() {
+		ticker := time.NewTicker(interval)
+		defer ticker.Stop()
+		for range ticker.C {
+			m.CleanExpiredSessions()
+		}
+	}()
+}
