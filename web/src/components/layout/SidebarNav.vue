@@ -91,6 +91,7 @@ onMounted(() => {
 .sidebar-nav {
   --nav-item-x: 0.75rem;
   --nav-item-height: 44px;
+
   flex: 1;
   padding: 0.5rem 0;
   overflow-y: auto;
@@ -107,9 +108,9 @@ onMounted(() => {
   left: var(--nav-item-x);
   width: 4px;
   height: calc(var(--nav-item-height) / 2);
-  background: var(--color-primary);
+  background: var(--sys-color-accent);
   border-radius: 999px;
-  box-shadow: var(--shadow-primary-glow);
+  box-shadow: var(--sys-shadow-accent-glow);
   transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
   will-change: transform;
   z-index: 10;
@@ -122,7 +123,7 @@ onMounted(() => {
   gap: 0.75rem;
   padding: 0 1rem 0 2.5rem;
   height: var(--nav-item-height);
-  color: var(--color-text-secondary);
+  color: var(--sys-color-text-secondary);
   text-decoration: none;
   border-radius: 12px;
   margin: 0 var(--nav-item-x);
@@ -137,23 +138,23 @@ onMounted(() => {
 }
 
 .nav-item:hover {
-  background: var(--color-component-muted);
-  color: var(--color-text);
+  background: var(--sys-color-bg-component-muted);
+  color: var(--sys-color-text-primary);
   transform: translate3d(2px, 0, 0);
 }
 
 .nav-item.active {
-  background: var(--color-component);
-  color: var(--color-primary);
+  background: var(--sys-color-bg-component);
+  color: var(--sys-color-accent);
   font-weight: 600;
-  box-shadow: inset 0 0 0 1px var(--color-border);
+  box-shadow: inset 0 0 0 1px var(--sys-color-border);
 }
 
 .nav-item:focus-visible {
   outline: none;
   box-shadow:
-    0 0 0 2px var(--color-focus-ring),
-    inset 0 0 0 1px var(--color-border);
+    0 0 0 2px var(--sys-color-focus-ring),
+    inset 0 0 0 1px var(--sys-color-border);
 }
 
 .nav-icon {

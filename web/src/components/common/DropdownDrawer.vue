@@ -148,12 +148,12 @@ onUnmounted(() => {
   position: fixed;
   min-width: var(--dropdown-min-width, 140px);
   padding: 4px;
-  background-color: var(--color-background-glass);
+  background-color: var(--sys-color-bg-glass);
   backdrop-filter: blur(12px) saturate(140%);
-  -webkit-backdrop-filter: blur(12px) saturate(140%);
-  border: 1px solid var(--color-border);
+  backdrop-filter: blur(12px) saturate(140%);
+  border: 1px solid var(--sys-color-border);
   border-radius: 8px;
-  box-shadow: var(--shadow-floating);
+  box-shadow: var(--sys-shadow-floating);
   z-index: var(--dropdown-z-index, 1000);
 }
 
@@ -167,19 +167,19 @@ onUnmounted(() => {
   border: none;
   border-radius: 6px;
   cursor: pointer;
-  color: var(--color-text);
+  color: var(--sys-color-text-primary);
   font-size: 14px;
   text-align: left;
   transition: background-color 0.2s;
 }
 
 :deep(.dropdown-item:hover) {
-  background: var(--color-component-muted);
+  background: var(--sys-color-bg-component-muted);
 }
 
 :deep(.dropdown-item.active) {
-  background: var(--dropdown-active-bg, var(--color-primary));
-  color: var(--dropdown-active-color, var(--color-on-primary));
+  background: var(--cmp-dropdown-active-bg, var(--sys-color-accent));
+  color: var(--cmp-dropdown-active-color, var(--sys-color-on-accent));
 }
 
 :deep(.dropdown-icon) {

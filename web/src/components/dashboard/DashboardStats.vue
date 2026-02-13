@@ -4,7 +4,7 @@
       label="24小时总请求"
       :value="operationCount"
       :change="operationChange"
-      color="var(--toast-error)"
+      color="var(--state-color-danger)"
     >
       <template #icon>
         <TrendingUp />
@@ -15,7 +15,7 @@
       label="额度消耗"
       :value="tokenUsage"
       :change="tokenDetail"
-      color="var(--toast-info)"
+      color="var(--state-color-info)"
     >
       <template #icon>
         <Coins />
@@ -26,7 +26,7 @@
       label="内存占用"
       :value="memoryUsage"
       :change="memoryDetail"
-      color="var(--toast-warning)"
+      color="var(--state-color-warning)"
     >
       <template #icon>
         <IconMemory />
@@ -37,7 +37,7 @@
       label="运行时间"
       :value="dashboardStore.uptime"
       :change="dashboardStore.startTime"
-      color="var(--toast-success)"
+      color="var(--state-color-success)"
     >
       <template #icon>
         <Clock />
@@ -103,13 +103,13 @@ const memoryDetail = computed(() => {
   gap: 1.5rem;
 }
 
-@media (max-width: 1280px) {
+@media (width <= 1280px) {
   .stats-grid {
     grid-template-columns: repeat(2, 1fr);
   }
 }
 
-@media (max-width: 640px) {
+@media (width <= 640px) {
   .stats-grid {
     grid-template-columns: 1fr;
   }

@@ -1,0 +1,14 @@
+/*
+ * Component tokens
+ * Component-level contract built on top of system tokens.
+ */
+:root {
+  --cmp-header-bg: var(--sys-color-bg-glass);
+  --cmp-header-border: var(--sys-color-border);
+  --cmp-dropdown-active-bg: var(--sys-color-accent);
+  --cmp-dropdown-active-color: var(--sys-color-on-accent);
+  --cmp-log-row-error-bg: rgba(var(--state-color-danger-rgb), 0.22);
+  --cmp-log-row-warning-bg: rgba(var(--state-color-warning-rgb), 0.22);
+  --cmp-log-row-debug-bg: rgba(var(--state-color-info-rgb), 0.22);
+  --cmp-log-row-info-bg: var(--sys-color-bg-surface);
+}

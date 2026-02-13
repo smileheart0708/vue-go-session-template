@@ -101,7 +101,7 @@ onUnmounted(() => {
   height: 100%;
   min-width: 0;
   min-height: 0;
-  background: var(--color-background-elevated);
+  background: var(--sys-color-bg-surface);
   border-radius: 12px;
   overflow: hidden;
 }
@@ -124,7 +124,7 @@ onUnmounted(() => {
   align-items: center;
   justify-content: center;
   height: 100%;
-  color: var(--color-text-tertiary);
+  color: var(--sys-color-text-tertiary);
   gap: 1rem;
 }
 
@@ -135,7 +135,7 @@ onUnmounted(() => {
 
 .log-board-empty-hint {
   font-size: 0.875rem;
-  color: var(--color-text-tertiary);
+  color: var(--sys-color-text-tertiary);
 }
 
 .log-list {
@@ -149,7 +149,7 @@ onUnmounted(() => {
   align-items: center;
   padding: 0.5rem 1rem;
   white-space: nowrap;
-  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-family: Consolas, Monaco, 'Courier New', monospace;
   font-size: 0.875rem;
   line-height: 1.5;
   min-width: 100%;
@@ -157,37 +157,37 @@ onUnmounted(() => {
 }
 
 .log-row:hover {
-  background: var(--color-background-secondary);
+  background: var(--sys-color-bg-subtle);
 }
 
 /* 日志等级背景色 */
 .log-row-error {
-  background: var(--log-row-error-bg);
+  background: var(--cmp-log-row-error-bg);
 }
 
 .log-row-warn {
-  background: var(--log-row-warn-bg);
+  background: var(--cmp-log-row-warning-bg);
 }
 
 .log-row-debug {
-  background: var(--log-row-debug-bg);
+  background: var(--cmp-log-row-debug-bg);
 }
 
 .log-row-info {
-  background: var(--log-row-info-bg);
+  background: var(--cmp-log-row-info-bg);
 }
 
 /* 时间列 */
 .log-time {
   flex-shrink: 0;
   width: 180px;
-  color: var(--color-text-tertiary);
+  color: var(--sys-color-text-tertiary);
   font-size: 0.8125rem;
 }
 
 /* 消息列 */
 .log-message {
-  color: var(--color-text);
+  color: var(--sys-color-text-primary);
   flex: 0 0 auto;
 }
 
@@ -211,7 +211,7 @@ onUnmounted(() => {
 }
 
 /* 响应式适配 */
-@media (max-width: 768px) {
+@media (width <= 768px) {
   .log-time {
     width: 140px;
     font-size: 0.75rem;

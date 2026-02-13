@@ -35,16 +35,16 @@ const currentTitle = computed(() => {
   display: flex;
   align-items: center;
   gap: 1rem;
-  height: var(--header-height);
+  height: var(--sys-layout-header-height);
   padding: 0 1.5rem;
-  background: var(--color-header-background);
+  background: var(--cmp-header-bg);
   backdrop-filter: blur(12px) saturate(140%);
-  -webkit-backdrop-filter: blur(12px) saturate(140%);
-  border-bottom: 1px solid var(--color-header-border);
+  backdrop-filter: blur(12px) saturate(140%);
+  border-bottom: 1px solid var(--cmp-header-border);
   position: fixed;
   top: 0;
   right: 0;
-  left: var(--sidebar-width);
+  left: var(--sys-layout-sidebar-width);
   z-index: 90;
 }
 
@@ -56,7 +56,7 @@ const currentTitle = computed(() => {
   white-space: nowrap;
   font-size: 1.125rem;
   font-weight: 600;
-  color: var(--color-text);
+  color: var(--sys-color-text-primary);
   margin: 0;
 }
 
@@ -66,13 +66,13 @@ const currentTitle = computed(() => {
   gap: 0.5rem;
 }
 
-@media (min-width: 768px) {
+@media (width >= 768px) {
   .menu-toggle {
     display: none;
   }
 }
 
-@media (max-width: 767px) {
+@media (width <= 767px) {
   .mobile-header {
     left: 0;
   }

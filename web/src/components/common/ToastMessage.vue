@@ -75,11 +75,11 @@ const { toasts, removeToast } = useToast()
   align-items: center;
   gap: 1rem;
   padding: 1rem 1.25rem;
-  background: var(--color-background-elevated);
+  background: var(--sys-color-bg-surface);
   backdrop-filter: blur(12px) saturate(180%);
-  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  backdrop-filter: blur(12px) saturate(180%);
   border-radius: 14px;
-  box-shadow: var(--shadow-toast);
+  box-shadow: var(--sys-shadow-toast);
   pointer-events: auto;
   min-height: 64px;
   overflow: hidden;
@@ -88,16 +88,19 @@ const { toasts, removeToast } = useToast()
 
 /* 状态样式 - 使用 CSS 变量统一管理 */
 .toast-success {
-  border: 1px solid rgba(var(--toast-success-rgb), 0.3);
+  border: 1px solid rgba(var(--state-color-success-rgb), 0.3);
 }
+
 .toast-error {
-  border: 1px solid rgba(var(--toast-error-rgb), 0.3);
+  border: 1px solid rgba(var(--state-color-danger-rgb), 0.3);
 }
+
 .toast-warning {
-  border: 1px solid rgba(var(--toast-warning-rgb), 0.3);
+  border: 1px solid rgba(var(--state-color-warning-rgb), 0.3);
 }
+
 .toast-info {
-  border: 1px solid rgba(var(--toast-info-rgb), 0.3);
+  border: 1px solid rgba(var(--state-color-info-rgb), 0.3);
 }
 
 /* 发光效果 */
@@ -110,28 +113,31 @@ const { toasts, removeToast } = useToast()
 .toast-success .toast-glow {
   background: radial-gradient(
     circle at 0% 0%,
-    rgba(var(--toast-success-rgb), 0.15) 0%,
+    rgba(var(--state-color-success-rgb), 0.15) 0%,
     transparent 50%
   );
 }
+
 .toast-error .toast-glow {
   background: radial-gradient(
     circle at 0% 0%,
-    rgba(var(--toast-error-rgb), 0.15) 0%,
+    rgba(var(--state-color-danger-rgb), 0.15) 0%,
     transparent 50%
   );
 }
+
 .toast-warning .toast-glow {
   background: radial-gradient(
     circle at 0% 0%,
-    rgba(var(--toast-warning-rgb), 0.15) 0%,
+    rgba(var(--state-color-warning-rgb), 0.15) 0%,
     transparent 50%
   );
 }
+
 .toast-info .toast-glow {
   background: radial-gradient(
     circle at 0% 0%,
-    rgba(var(--toast-info-rgb), 0.15) 0%,
+    rgba(var(--state-color-info-rgb), 0.15) 0%,
     transparent 50%
   );
 }
@@ -153,20 +159,23 @@ const { toasts, removeToast } = useToast()
 }
 
 .toast-success .toast-icon {
-  color: var(--toast-success);
-  background: rgba(var(--toast-success-rgb), 0.1);
+  color: var(--state-color-success);
+  background: rgba(var(--state-color-success-rgb), 0.1);
 }
+
 .toast-error .toast-icon {
-  color: var(--toast-error);
-  background: rgba(var(--toast-error-rgb), 0.1);
+  color: var(--state-color-danger);
+  background: rgba(var(--state-color-danger-rgb), 0.1);
 }
+
 .toast-warning .toast-icon {
-  color: var(--toast-warning);
-  background: rgba(var(--toast-warning-rgb), 0.1);
+  color: var(--state-color-warning);
+  background: rgba(var(--state-color-warning-rgb), 0.1);
 }
+
 .toast-info .toast-icon {
-  color: var(--toast-info);
-  background: rgba(var(--toast-info-rgb), 0.1);
+  color: var(--state-color-info);
+  background: rgba(var(--state-color-info-rgb), 0.1);
 }
 
 .toast-content {
@@ -175,11 +184,11 @@ const { toasts, removeToast } = useToast()
 }
 
 .toast-message {
-  color: var(--color-text);
+  color: var(--sys-color-text-primary);
   font-size: 0.9375rem;
   font-weight: 500;
   line-height: 1.5;
-  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 .toast-close {
@@ -192,7 +201,7 @@ const { toasts, removeToast } = useToast()
   background: transparent;
   border: none;
   border-radius: 8px;
-  color: var(--color-text-tertiary);
+  color: var(--sys-color-text-tertiary);
   cursor: pointer;
   transition: all 0.2s ease;
   padding: 0;
@@ -200,8 +209,8 @@ const { toasts, removeToast } = useToast()
 }
 
 .toast-close:hover {
-  background: var(--color-background-secondary);
-  color: var(--color-text);
+  background: var(--sys-color-bg-subtle);
+  color: var(--sys-color-text-primary);
   opacity: 1;
   transform: rotate(90deg);
 }
@@ -213,34 +222,38 @@ const { toasts, removeToast } = useToast()
   left: 0;
   width: 100%;
   height: 3px;
-  background: var(--color-progress-track);
+  background: var(--sys-color-progress-track);
 }
 
 .toast-progress-bar {
   height: 100%;
   width: 100%;
-  background: currentColor;
+  background: currentcolor;
   transform-origin: left;
   animation: progress linear forwards;
 }
 
 .toast-success .toast-progress-bar {
-  color: var(--toast-success);
+  color: var(--state-color-success);
 }
+
 .toast-error .toast-progress-bar {
-  color: var(--toast-error);
+  color: var(--state-color-danger);
 }
+
 .toast-warning .toast-progress-bar {
-  color: var(--toast-warning);
+  color: var(--state-color-warning);
 }
+
 .toast-info .toast-progress-bar {
-  color: var(--toast-info);
+  color: var(--state-color-info);
 }
 
 @keyframes progress {
   from {
     transform: scaleX(1);
   }
+
   to {
     transform: scaleX(0);
   }
@@ -266,7 +279,7 @@ const { toasts, removeToast } = useToast()
 }
 
 /* 响应式适配 */
-@media (max-width: 480px) {
+@media (width <= 480px) {
   .toast-container {
     top: 1rem;
     right: 50%;

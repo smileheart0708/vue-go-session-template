@@ -1,0 +1,62 @@
+/*
+ * Reference tokens
+ * Raw design values only. Do not consume these directly in components.
+ */
+:root {
+  /* Layout */
+  --ref-size-sidebar-width: 200px;
+  --ref-size-header-height: 60px;
+
+  /* Brand */
+  --ref-color-brand-primary: #0078d4;
+  --ref-color-brand-primary-hover: #106ebe;
+  --ref-color-brand-primary-active: #005a9e;
+  --ref-color-brand-primary-rgb: 0, 120, 212;
+  --ref-color-brand-primary-hover-rgb: 16, 110, 190;
+  --ref-color-brand-primary-active-rgb: 0, 90, 158;
+  --ref-color-brand-on-primary: #fff;
+
+  /* Light surfaces */
+  --ref-color-surface-light-page: #f3f7ff;
+  --ref-color-surface-light-surface: #fbfdff;
+  --ref-color-surface-light-subtle: #eef3ff;
+  --ref-color-surface-light-component: #dce9ff;
+  --ref-color-surface-light-glass: rgb(251 253 255 / 88%);
+
+  /* Dark surfaces */
+  --ref-color-surface-dark-page: #0f1523;
+  --ref-color-surface-dark-surface: #171f31;
+  --ref-color-surface-dark-subtle: #202c45;
+  --ref-color-surface-dark-component: #2a3b5c;
+  --ref-color-surface-dark-glass: rgb(15 21 35 / 86%);
+
+  /* Text */
+  --ref-color-text-light-primary: #111827;
+  --ref-color-text-light-secondary: #4b5565;
+  --ref-color-text-light-tertiary: #6b7280;
+  --ref-color-text-dark-primary: #eef3ff;
+  --ref-color-text-dark-secondary: #c1cce3;
+  --ref-color-text-dark-tertiary: #94a3b8;
+
+  /* Border */
+  --ref-color-border-light: #d4def1;
+  --ref-color-border-light-hover: #bac8df;
+  --ref-color-border-dark: #2e3b57;
+  --ref-color-border-dark-hover: #415273;
+
+  /* Overlay and shadows */
+  --ref-color-overlay-light: rgb(10 16 30 / 42%);
+  --ref-color-overlay-dark: rgb(1 4 10 / 62%);
+  --ref-color-shadow-light-rgb: 15, 23, 42;
+  --ref-color-shadow-dark-rgb: 2, 8, 23;
+
+  /* State */
+  --ref-color-state-success: #22c55e;
+  --ref-color-state-success-rgb: 34, 197, 94;
+  --ref-color-state-danger: #ef4444;
+  --ref-color-state-danger-rgb: 239, 68, 68;
+  --ref-color-state-warning: #f59e0b;
+  --ref-color-state-warning-rgb: 245, 158, 11;
+  --ref-color-state-info: #3b82f6;
+  --ref-color-state-info-rgb: 59, 130, 246;
+}

@@ -10,7 +10,7 @@
     <!-- 自定义两栏图例 -->
     <div class="custom-legend">
       <div v-for="(item, index) in chartData" :key="item.name" class="legend-item">
-        <span class="legend-dot" :style="{ backgroundColor: getChartColors()[index] }"></span>
+        <span class="legend-dot" :style="{ backgroundColor: PIE_CHART_COLORS[index] }"></span>
         <span class="legend-text" :title="item.name">{{ item.name }}</span>
       </div>
     </div>
@@ -31,6 +31,15 @@ const { isDark } = useTheme()
 const chartRef = ref<HTMLElement>()
 let chartInstance: echarts.ECharts | null = null
 let resizeObserver: ResizeObserver | null = null
+
+const PIE_CHART_COLORS: string[] = [
+  '#0078d4',
+  '#22c55e',
+  '#3b82f6',
+  '#f59e0b',
+  '#ef4444',
+  '#adb5bd',
+]
 
 // 模拟数据 - 后续可替换为真实 API 数据
 const mockData = [
@@ -62,18 +71,6 @@ const chartData = computed(() => {
   ]
 })
 
-// 从 CSS 变量获取图表颜色
-const getChartColors = () => {
-  return [
-    getComputedStyleValue('--color-primary') || '#2378ff',
-    getComputedStyleValue('--toast-success') || '#22c55e',
-    getComputedStyleValue('--toast-info') || '#3b82f6',
-    getComputedStyleValue('--toast-warning') || '#f59e0b',
-    getComputedStyleValue('--toast-error') || '#ef4444',
-    getComputedStyleValue('--color-text-tertiary') || '#adb5bd', // 灰色用于"其他"
-  ]
-}
-
 const total = computed(() => chartData.value.reduce((acc, item) => acc + item.value, 0))
 
 const getComputedStyleValue = (variable: string) => {
@@ -83,15 +80,14 @@ const getComputedStyleValue = (variable: string) => {
 const updateChart = () => {
   if (!chartInstance) return
 
-  const textColor = getComputedStyleValue('--color-text-secondary') || '#666666'
-  const textPrimary = getComputedStyleValue('--color-text') || '#1a1a1a'
-  const tooltipBg = getComputedStyleValue('--color-tooltip-bg') || '#ffffff'
-  const tooltipBorderColor = getComputedStyleValue('--color-tooltip-border') || '#d4d4d4'
-  const tooltipTextColor = getComputedStyleValue('--color-tooltip-text') || '#333333'
-  const chartColors = getChartColors()
+  const textColor = getComputedStyleValue('--sys-color-text-secondary') || '#666666'
+  const textPrimary = getComputedStyleValue('--sys-color-text-primary') || '#1a1a1a'
+  const tooltipBg = getComputedStyleValue('--sys-color-tooltip-bg') || '#ffffff'
+  const tooltipBorderColor = getComputedStyleValue('--sys-color-tooltip-border') || '#d4d4d4'
+  const tooltipTextColor = getComputedStyleValue('--sys-color-tooltip-text') || '#333333'
 
   const option = {
-    color: chartColors,
+    color: PIE_CHART_COLORS,
     tooltip: {
       trigger: 'item',
       formatter: '{b}: {c} ({d}%)',
@@ -179,8 +175,8 @@ onUnmounted(() => {
 <style scoped>
 .content-card {
   padding: 1.5rem;
-  background: var(--color-background-elevated);
-  border: 1px solid var(--color-border);
+  background: var(--sys-color-bg-surface);
+  border: 1px solid var(--sys-color-border);
   border-radius: 12px;
   display: flex;
   flex-direction: column;
@@ -197,7 +193,7 @@ onUnmounted(() => {
 .card-title {
   font-size: 1.25rem;
   font-weight: 600;
-  color: var(--color-text);
+  color: var(--sys-color-text-primary);
   margin: 0;
   white-space: nowrap;
 }
@@ -240,7 +236,7 @@ onUnmounted(() => {
 
 .legend-text {
   font-size: 0.75rem;
-  color: var(--color-text-secondary);
+  color: var(--sys-color-text-secondary);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;

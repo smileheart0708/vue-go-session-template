@@ -1,5 +1,5 @@
-@import './base.css';
-@import './styles/settings-content.css';
+@import url('./base.css');
+@import url('./styles/settings-content.css');
 
 #app {
   width: 100%;

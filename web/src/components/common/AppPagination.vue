@@ -185,7 +185,7 @@ function goNext(): void {
   width: 100%;
   margin: 0;
   text-align: center;
-  color: var(--color-text-secondary);
+  color: var(--sys-color-text-secondary);
   font-size: clamp(0.875rem, 1vw, 1.125rem);
   line-height: 1.25;
   letter-spacing: 0.02em;
@@ -204,9 +204,9 @@ function goNext(): void {
   width: 2rem;
   height: 2rem;
   border-radius: 6px;
-  border: 1px solid var(--color-border);
-  background: var(--color-background-elevated);
-  color: var(--color-text);
+  border: 1px solid var(--sys-color-border);
+  background: var(--sys-color-bg-surface);
+  color: var(--sys-color-text-primary);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -222,8 +222,8 @@ function goNext(): void {
 }
 
 .app-pagination__button:not(:disabled):hover {
-  border-color: var(--color-primary);
-  color: var(--color-primary);
+  border-color: var(--sys-color-accent);
+  color: var(--sys-color-accent);
 }
 
 .app-pagination__button:not(:disabled):active {
@@ -232,15 +232,15 @@ function goNext(): void {
 
 .app-pagination__button.is-active,
 .app-pagination__button.is-active:hover {
-  border-color: var(--color-primary);
-  background: var(--color-primary);
-  color: var(--color-on-primary);
+  border-color: var(--sys-color-accent);
+  background: var(--sys-color-accent);
+  color: var(--sys-color-on-accent);
 }
 
 .app-pagination__button:disabled {
   cursor: not-allowed;
-  color: var(--color-text-tertiary);
-  border-color: var(--color-border);
+  color: var(--sys-color-text-tertiary);
+  border-color: var(--sys-color-border);
   opacity: 0.7;
 }
 
@@ -251,7 +251,7 @@ function goNext(): void {
 .app-pagination__ellipsis {
   width: 0.75rem;
   text-align: center;
-  color: var(--color-text-tertiary);
+  color: var(--sys-color-text-tertiary);
   font-size: 0.5625rem;
   line-height: 1;
 }

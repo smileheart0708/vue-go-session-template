@@ -38,8 +38,8 @@ const { label, value, change = '', color } = defineProps<Props>()
   align-items: flex-start;
   gap: 1rem;
   padding: 1.5rem;
-  background: var(--color-background-elevated);
-  border: 1px solid var(--color-border);
+  background: var(--sys-color-bg-surface);
+  border: 1px solid var(--sys-color-border);
   border-radius: 12px;
   transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
   box-sizing: border-box;
@@ -78,7 +78,7 @@ const { label, value, change = '', color } = defineProps<Props>()
   .stats-card:hover .stats-label,
   .stats-card:hover .stats-value,
   .stats-card:hover .stats-change {
-    color: white;
+    color: var(--sys-color-on-accent);
   }
 
   .stats-card:hover .stats-icon {
@@ -95,7 +95,7 @@ const { label, value, change = '', color } = defineProps<Props>()
   height: 48px;
   padding: 10px;
   border-radius: 10px;
-  color: white;
+  color: var(--sys-color-on-accent);
   flex-shrink: 0;
   box-sizing: border-box;
   transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -113,7 +113,7 @@ const { label, value, change = '', color } = defineProps<Props>()
 
 .stats-label {
   font-size: 0.875rem;
-  color: var(--color-text-secondary);
+  color: var(--sys-color-text-secondary);
   margin: 0 0 0.25rem;
   transition: color 0.3s ease;
 }
@@ -121,7 +121,7 @@ const { label, value, change = '', color } = defineProps<Props>()
 .stats-value {
   font-size: clamp(1.25rem, 2vw, 1.875rem);
   font-weight: 700;
-  color: var(--color-text);
+  color: var(--sys-color-text-primary);
   margin: 0 0 0.25rem;
   line-height: 1.2;
   transition: color 0.3s ease;
@@ -129,7 +129,7 @@ const { label, value, change = '', color } = defineProps<Props>()
 
 .stats-change {
   font-size: 0.875rem;
-  color: var(--color-text-secondary);
+  color: var(--sys-color-text-secondary);
   margin: 0;
   transition: color 0.3s ease;
 }

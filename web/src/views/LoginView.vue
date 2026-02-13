@@ -134,10 +134,10 @@ const handleLogin = async () => {
   width: 100%;
   max-width: 400px;
   padding: 40px;
-  background: var(--color-background-elevated);
-  border: 1px solid var(--color-border);
+  background: var(--sys-color-bg-surface);
+  border: 1px solid var(--sys-color-border);
   border-radius: 8px;
-  box-shadow: var(--shadow-card);
+  box-shadow: var(--sys-shadow-card);
 }
 
 .login-title {
@@ -145,7 +145,7 @@ const handleLogin = async () => {
   font-size: 24px;
   font-weight: 600;
   text-align: center;
-  color: var(--color-text);
+  color: var(--sys-color-text-primary);
 }
 
 .login-form {
@@ -163,7 +163,7 @@ const handleLogin = async () => {
 .form-label {
   font-size: 14px;
   font-weight: 500;
-  color: var(--color-text);
+  color: var(--sys-color-text-primary);
 }
 
 .form-input {

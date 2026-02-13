@@ -53,7 +53,7 @@ onUnmounted(() => {
   flex: 1;
   display: flex;
   flex-direction: column;
-  margin-left: var(--sidebar-width);
+  margin-left: var(--sys-layout-sidebar-width);
   min-width: 0;
   min-height: 0;
   height: 100%;
@@ -64,20 +64,19 @@ onUnmounted(() => {
   flex: 1;
   display: flex;
   flex-direction: column;
-  padding: calc(var(--header-height) + 1.5rem) 1.5rem 1.5rem;
+  padding: calc(var(--sys-layout-header-height) + 1.5rem) 1.5rem 1.5rem;
   min-width: 0;
   min-height: 0;
-  overflow-y: auto;
-  overflow-x: hidden;
+  overflow: hidden auto;
   overscroll-behavior-y: contain;
 }
 
 .sidebar-overlay {
   position: fixed;
   inset: 0;
-  background: var(--color-overlay);
+  background: var(--sys-color-overlay);
   backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
   z-index: 99;
 }
 
@@ -95,7 +94,7 @@ onUnmounted(() => {
   overflow: hidden;
 }
 
-@media (max-width: 767px) {
+@media (width <= 767px) {
   .main-content {
     margin-left: 0;
   }

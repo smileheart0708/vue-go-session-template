@@ -32,7 +32,7 @@ import logoSvg from '@/assets/logo.svg'
 .sidebar-title {
   font-size: 1.25rem;
   font-weight: 600;
-  color: var(--color-primary);
+  color: var(--sys-color-accent);
   margin: 0;
 }
 </style>

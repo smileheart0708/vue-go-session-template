@@ -133,16 +133,16 @@ function formatCellValue(value: unknown, context: { column: AppTableColumn<ApiKe
   margin: 0;
   font-size: 1.5rem;
   font-weight: 700;
-  color: var(--color-text);
+  color: var(--sys-color-text-primary);
 }
 
 .keys-view__description {
   margin: 0;
-  color: var(--color-text-secondary);
+  color: var(--sys-color-text-secondary);
   font-size: 0.95rem;
 }
 
-@media (max-width: 768px) {
+@media (width <= 768px) {
   .keys-view {
     gap: 1rem;
   }

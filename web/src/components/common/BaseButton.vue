@@ -84,9 +84,9 @@ function handleClick(event: MouseEvent): void {
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 
   /* 默认模式：背景使用 elevated 背景色，边框和文字使用主题色 */
-  background-color: var(--color-background-elevated);
-  border: 1px solid var(--color-primary);
-  color: var(--color-primary);
+  background-color: var(--sys-color-bg-surface);
+  border: 1px solid var(--sys-color-accent);
+  color: var(--sys-color-accent);
 }
 
 /* 图标容器 */
@@ -105,35 +105,35 @@ function handleClick(event: MouseEvent): void {
 }
 
 /* 默认模式 Hover：背景变为主题色，文字变白 */
-.base-button:not(.is-primary):not(:disabled):hover {
-  background-color: var(--color-primary);
-  color: var(--color-on-primary);
-  border-color: var(--color-primary);
+.base-button:not(.is-primary, :disabled):hover {
+  background-color: var(--sys-color-accent);
+  color: var(--sys-color-on-accent);
+  border-color: var(--sys-color-accent);
 }
 
 /* 默认模式 Active：使用更深主题色 */
-.base-button:not(.is-primary):not(:disabled):active {
-  background-color: var(--color-primary-active);
-  border-color: var(--color-primary-active);
+.base-button:not(.is-primary, :disabled):active {
+  background-color: var(--sys-color-accent-active);
+  border-color: var(--sys-color-accent-active);
 }
 
 /* 主题色模式：背景使用主题色，文字白色，无边框或边框同色 */
 .base-button.is-primary {
-  background-color: var(--color-primary);
-  border: 1px solid var(--color-primary);
-  color: var(--color-on-primary);
+  background-color: var(--sys-color-accent);
+  border: 1px solid var(--sys-color-accent);
+  color: var(--sys-color-on-accent);
 }
 
 /* 主题色模式 Hover */
 .base-button.is-primary:not(:disabled):hover {
-  background-color: var(--color-primary-hover);
-  border-color: var(--color-primary-hover);
+  background-color: var(--sys-color-accent-hover);
+  border-color: var(--sys-color-accent-hover);
 }
 
 /* 主题色模式 Active */
 .base-button.is-primary:not(:disabled):active {
-  background-color: var(--color-primary-active);
-  border-color: var(--color-primary-active);
+  background-color: var(--sys-color-accent-active);
+  border-color: var(--sys-color-accent-active);
 }
 
 /* 禁用状态 */
@@ -144,12 +144,12 @@ function handleClick(event: MouseEvent): void {
 
 /* 深色主题适配 - 确保对比度 */
 :root[data-theme='dark'] .base-button:not(.is-primary) {
-  background-color: var(--color-background-elevated);
+  background-color: var(--sys-color-bg-surface);
 }
 
 /* 焦点状态 - 添加轮廓 */
 .base-button:focus-visible {
-  outline: 2px solid var(--color-focus-ring);
+  outline: 2px solid var(--sys-color-focus-ring);
   outline-offset: 2px;
 }
 </style>

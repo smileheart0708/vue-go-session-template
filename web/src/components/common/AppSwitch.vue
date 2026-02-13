@@ -94,24 +94,24 @@ function handleChange(event: Event): void {
   block-size: 20px;
   border-radius: 10px;
   background-color: transparent;
-  border: 1px solid var(--color-border);
+  border: 1px solid var(--sys-color-border);
   box-sizing: border-box;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   cursor: inherit;
 }
 
 .app-switch:not(.app-switch--disabled):hover .app-switch__control {
-  border-color: var(--color-border-hover);
+  border-color: var(--sys-color-border-hover);
 }
 
 .app-switch__input:checked + .app-switch__control {
-  background-color: var(--color-primary);
-  border-color: var(--color-primary);
+  background-color: var(--sys-color-accent);
+  border-color: var(--sys-color-accent);
 }
 
 .app-switch:not(.app-switch--disabled):hover .app-switch__input:checked + .app-switch__control {
-  background-color: var(--color-primary-hover);
-  border-color: var(--color-primary-hover);
+  background-color: var(--sys-color-accent-hover);
+  border-color: var(--sys-color-accent-hover);
 }
 
 .app-switch__thumb {
@@ -122,13 +122,13 @@ function handleChange(event: Event): void {
   inline-size: 12px;
   block-size: 12px;
   border-radius: 50%;
-  background-color: var(--color-text-secondary);
+  background-color: var(--sys-color-text-secondary);
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .app-switch__input:checked + .app-switch__control .app-switch__thumb {
   inset-inline-start: calc(100% - 15px);
-  background-color: var(--color-on-primary);
+  background-color: var(--sys-color-on-accent);
 }
 
 .app-switch:not(.app-switch--disabled):active .app-switch__thumb {
@@ -141,13 +141,13 @@ function handleChange(event: Event): void {
 }
 
 .app-switch__input:focus-visible + .app-switch__control {
-  outline: 2px solid var(--color-focus-ring);
+  outline: 2px solid var(--sys-color-focus-ring);
   outline-offset: 2px;
 }
 
 .app-switch__label {
   font-size: 14px;
-  color: var(--color-text);
+  color: var(--sys-color-text-primary);
   cursor: inherit;
 }
 </style>

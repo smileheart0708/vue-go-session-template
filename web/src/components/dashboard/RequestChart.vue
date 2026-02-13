@@ -47,6 +47,11 @@ const chartRef = ref<HTMLElement>()
 let chartInstance: echarts.ECharts | null = null
 let resizeObserver: ResizeObserver | null = null
 
+const LINE_SERIES_COLORS = {
+  success: '#22c55e',
+  failed: '#ef4444',
+} as const
+
 const getComputedStyleValue = (variable: string) => {
   return getComputedStyle(document.documentElement).getPropertyValue(variable).trim()
 }
@@ -98,13 +103,13 @@ const chartData = computed(() => {
 const updateChart = () => {
   if (!chartInstance) return
 
-  const successColor = getComputedStyleValue('--toast-success') || '#22c55e'
-  const errorColor = getComputedStyleValue('--color-error-text') || '#ef4444'
-  const textColor = getComputedStyleValue('--color-text-secondary') || '#6c757d'
-  const tooltipBg = getComputedStyleValue('--color-tooltip-bg') || '#ffffff'
-  const tooltipBorderColor = getComputedStyleValue('--color-tooltip-border') || '#d4d3cc'
-  const tooltipTextColor = getComputedStyleValue('--color-tooltip-text') || '#333333'
-  const borderColor = getComputedStyleValue('--color-border') || '#d4d3cc'
+  const successColor = LINE_SERIES_COLORS.success
+  const errorColor = LINE_SERIES_COLORS.failed
+  const textColor = getComputedStyleValue('--sys-color-text-secondary') || '#6c757d'
+  const tooltipBg = getComputedStyleValue('--sys-color-tooltip-bg') || '#ffffff'
+  const tooltipBorderColor = getComputedStyleValue('--sys-color-tooltip-border') || '#d4d3cc'
+  const tooltipTextColor = getComputedStyleValue('--sys-color-tooltip-text') || '#333333'
+  const borderColor = getComputedStyleValue('--sys-color-border') || '#d4d3cc'
 
   const { xAxisData, successData, failedData } = chartData.value
 
@@ -271,8 +276,8 @@ onUnmounted(() => {
 <style scoped>
 .content-card {
   padding: 1.5rem;
-  background: var(--color-background-elevated);
-  border: 1px solid var(--color-border);
+  background: var(--sys-color-bg-surface);
+  border: 1px solid var(--sys-color-border);
   border-radius: 12px;
   display: flex;
   flex-direction: column;
@@ -295,7 +300,7 @@ onUnmounted(() => {
 .card-title {
   font-size: 1.25rem;
   font-weight: 600;
-  color: var(--color-text);
+  color: var(--sys-color-text-primary);
   margin: 0;
 }
 
@@ -305,7 +310,7 @@ onUnmounted(() => {
   width: 100%;
 }
 
-@media (max-width: 768px) {
+@media (width <= 768px) {
   .content-card {
     padding: 1rem;
   }

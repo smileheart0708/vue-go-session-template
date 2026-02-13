@@ -24,7 +24,7 @@ withDefaults(defineProps<Props>(), { isOpen: true })
 .sidebar {
   display: flex;
   flex-direction: column;
-  width: var(--sidebar-width);
+  width: var(--sys-layout-sidebar-width);
   height: 100vh;
   background: transparent;
   transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
@@ -40,12 +40,12 @@ withDefaults(defineProps<Props>(), { isOpen: true })
   flex-direction: column;
   width: 100%;
   height: 100%;
-  background: var(--color-background-glass);
-  border-right: 1px solid var(--color-border);
+  background: var(--sys-color-bg-glass);
+  border-right: 1px solid var(--sys-color-border);
   border-radius: 0;
   box-shadow: none;
   backdrop-filter: blur(28px) saturate(1.1);
-  -webkit-backdrop-filter: blur(28px) saturate(1.1);
+  backdrop-filter: blur(28px) saturate(1.1);
   overflow: hidden;
   transition:
     transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1),
@@ -54,7 +54,7 @@ withDefaults(defineProps<Props>(), { isOpen: true })
   will-change: transform, opacity;
 }
 
-@media (max-width: 767px) {
+@media (width <= 767px) {
   .sidebar {
     transform: translate3d(-100%, 0, 0);
     pointer-events: none;

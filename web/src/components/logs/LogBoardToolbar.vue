@@ -108,8 +108,8 @@ function handleToggleAutoScroll() {
   align-items: center;
   justify-content: space-between;
   padding: 1.25rem 1.5rem;
-  background: var(--color-background-elevated);
-  border-bottom: 1px solid var(--color-border);
+  background: var(--sys-color-bg-surface);
+  border-bottom: 1px solid var(--sys-color-border);
   flex-shrink: 0;
 }
 
@@ -122,7 +122,7 @@ function handleToggleAutoScroll() {
 .log-board-title h2 {
   font-size: 1.25rem;
   font-weight: 600;
-  color: var(--color-text);
+  color: var(--sys-color-text-primary);
   margin: 0;
 }
 
@@ -136,7 +136,7 @@ function handleToggleAutoScroll() {
   position: relative;
 }
 
-@media (max-width: 768px) {
+@media (width <= 768px) {
   .log-board-header {
     flex-direction: row;
     align-items: center;

@@ -59,15 +59,15 @@ defineExpose({
   border: 1px solid transparent;
   border-radius: 8px;
   cursor: pointer;
-  color: var(--color-text);
+  color: var(--sys-color-text-primary);
   transition:
     all 0.2s,
     transform 0.1s;
 }
 
 .icon-button:hover:not(:disabled) {
-  background: var(--color-component-muted);
-  border-color: var(--color-border);
+  background: var(--sys-color-bg-component-muted);
+  border-color: var(--sys-color-border);
 }
 
 .icon-button:active:not(:disabled) {
@@ -80,8 +80,8 @@ defineExpose({
 }
 
 .icon-button.active {
-  background: var(--color-primary);
-  color: var(--color-on-primary);
+  background: var(--sys-color-accent);
+  color: var(--sys-color-on-accent);
 }
 
 /* 尺寸变体 */

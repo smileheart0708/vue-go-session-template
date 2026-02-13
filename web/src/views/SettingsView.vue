@@ -115,7 +115,7 @@ onUnmounted(() => {
   gap: 1.5rem;
   align-items: flex-end;
   padding-bottom: 0.75rem;
-  border-bottom: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--sys-color-border);
   overflow-x: auto;
   scrollbar-width: none;
 }
@@ -132,9 +132,9 @@ onUnmounted(() => {
   height: 3px;
   width: v-bind(indicatorWidthPx);
   transform: translate3d(v-bind(indicatorOffsetPx), 0, 0);
-  background: var(--color-primary);
+  background: var(--sys-color-accent);
   border-radius: 999px;
-  box-shadow: var(--shadow-primary-glow);
+  box-shadow: var(--sys-shadow-accent-glow);
   transition:
     transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1),
     width 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
@@ -147,7 +147,7 @@ onUnmounted(() => {
   flex-direction: column;
   gap: 0.2rem;
   padding: 0.2rem 0.5rem 0.55rem;
-  color: var(--color-text-secondary);
+  color: var(--sys-color-text-secondary);
   font-weight: 500;
   text-decoration: none;
   transition: color 0.2s ease;
@@ -155,11 +155,11 @@ onUnmounted(() => {
 }
 
 .settings-tab:hover {
-  color: var(--color-text);
+  color: var(--sys-color-text-primary);
 }
 
 .settings-tab.active {
-  color: var(--color-primary);
+  color: var(--sys-color-accent);
 }
 
 .settings-tab__label {
@@ -168,11 +168,11 @@ onUnmounted(() => {
 
 .settings-tab__desc {
   font-size: 0.8rem;
-  color: var(--color-text-tertiary);
+  color: var(--sys-color-text-tertiary);
 }
 
 .settings-tab.active .settings-tab__desc {
-  color: var(--color-primary-hover);
+  color: var(--sys-color-accent-hover);
 }
 
 /* 内容区域 */
@@ -204,7 +204,7 @@ onUnmounted(() => {
 }
 
 /* 响应式设计 */
-@media (max-width: 640px) {
+@media (width <= 640px) {
   .settings-tab {
     padding-inline: 0.25rem;
   }

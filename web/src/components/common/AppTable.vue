@@ -185,12 +185,12 @@ function resolveRowKey(row: TRow, index: number): RowIdentity {
 <style scoped>
 .app-table {
   width: 100%;
-  background: var(--color-background-glass);
-  border: 1px solid var(--color-border);
+  background: var(--sys-color-bg-glass);
+  border: 1px solid var(--sys-color-border);
   border-radius: 14px;
   overflow: hidden;
   backdrop-filter: blur(18px) saturate(140%);
-  -webkit-backdrop-filter: blur(18px) saturate(140%);
+  backdrop-filter: blur(18px) saturate(140%);
 }
 
 .app-table__header {
@@ -199,10 +199,10 @@ function resolveRowKey(row: TRow, index: number): RowIdentity {
   justify-content: space-between;
   gap: 1rem;
   padding: 1rem 1.25rem;
-  background: var(--color-background-elevated);
-  border-bottom: 1px solid var(--color-border);
+  background: var(--sys-color-bg-surface);
+  border-bottom: 1px solid var(--sys-color-border);
   backdrop-filter: blur(20px) saturate(160%);
-  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  backdrop-filter: blur(20px) saturate(160%);
 }
 
 .app-table__title {
@@ -213,7 +213,7 @@ function resolveRowKey(row: TRow, index: number): RowIdentity {
   font-size: 1.125rem;
   font-weight: 600;
   margin: 0;
-  color: var(--color-text);
+  color: var(--sys-color-text-primary);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -247,8 +247,8 @@ thead th {
   padding: 0.75rem 1.25rem;
   font-size: 0.875rem;
   font-weight: 600;
-  color: var(--color-text-secondary);
-  border-bottom: 1px solid var(--color-border);
+  color: var(--sys-color-text-secondary);
+  border-bottom: 1px solid var(--sys-color-border);
   white-space: nowrap;
 }
 
@@ -256,16 +256,16 @@ thead.is-sticky th {
   position: sticky;
   top: 0;
   z-index: 2;
-  background: var(--color-background-elevated);
+  background: var(--sys-color-bg-surface);
   backdrop-filter: blur(16px) saturate(160%);
-  -webkit-backdrop-filter: blur(16px) saturate(160%);
+  backdrop-filter: blur(16px) saturate(160%);
 }
 
 tbody td {
   padding: 0.875rem 1.25rem;
   font-size: 0.875rem;
-  color: var(--color-text);
-  border-bottom: 1px solid var(--color-border);
+  color: var(--sys-color-text-primary);
+  border-bottom: 1px solid var(--sys-color-border);
   white-space: nowrap;
 }
 
@@ -278,13 +278,13 @@ tbody tr:last-child td {
 }
 
 .app-table__row:hover {
-  background: var(--color-background-secondary);
+  background: var(--sys-color-bg-subtle);
 }
 
 .app-table__empty {
   padding: 2rem 1.25rem;
   text-align: center;
-  color: var(--color-text-tertiary);
+  color: var(--sys-color-text-tertiary);
 }
 
 .is-left {
@@ -299,7 +299,7 @@ tbody tr:last-child td {
   text-align: right;
 }
 
-@media (max-width: 768px) {
+@media (width <= 768px) {
   .app-table__header {
     padding: 0.75rem 1rem;
     gap: 0.75rem;

@@ -10,8 +10,8 @@
 /* 卡片容器 */
 .settings-card {
   padding: 1.5rem;
-  background: var(--color-background-elevated);
-  border: 1px solid var(--color-border);
+  background: var(--sys-color-bg-surface);
+  border: 1px solid var(--sys-color-border);
   border-radius: 12px;
   display: flex;
   flex-direction: column;
@@ -29,12 +29,12 @@
   margin: 0;
   font-size: 1.1rem;
   font-weight: 600;
-  color: var(--color-text);
+  color: var(--sys-color-text-primary);
 }
 
 .settings-card__subtitle {
   margin: 0;
-  color: var(--color-text-secondary);
+  color: var(--sys-color-text-secondary);
   font-size: 0.9rem;
 }
 
@@ -45,7 +45,7 @@
   justify-content: space-between;
   gap: 1rem;
   padding: 0.75rem 0;
-  border-top: 1px dashed var(--color-border);
+  border-top: 1px dashed var(--sys-color-border);
 }
 
 .settings-card .settings-row:first-of-type {
@@ -63,12 +63,12 @@
 
 .settings-label {
   font-weight: 500;
-  color: var(--color-text);
+  color: var(--sys-color-text-primary);
 }
 
 .settings-desc {
   font-size: 0.85rem;
-  color: var(--color-text-secondary);
+  color: var(--sys-color-text-secondary);
 }
 
 /* 控制区域 */
@@ -102,12 +102,12 @@
   width: 220px;
   padding: 6px 10px;
   border-radius: 6px;
-  background: var(--color-background-elevated);
-  border: 1px solid var(--color-border);
+  background: var(--sys-color-bg-surface);
+  border: 1px solid var(--sys-color-border);
 }
 
 .settings-unit {
-  color: var(--color-text-secondary);
+  color: var(--sys-color-text-secondary);
   font-size: 0.9rem;
 }
 

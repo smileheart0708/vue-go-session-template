@@ -1,0 +1,105 @@
+/*
+ * System tokens
+ * Theme-aware semantic tokens consumed by app styles.
+ */
+:root {
+  /* Layout */
+  --sys-layout-sidebar-width: var(--ref-size-sidebar-width);
+  --sys-layout-header-height: var(--ref-size-header-height);
+
+  /* Accent */
+  --sys-color-accent: var(--ref-color-brand-primary);
+  --sys-color-accent-hover: var(--ref-color-brand-primary-hover);
+  --sys-color-accent-active: var(--ref-color-brand-primary-active);
+  --sys-color-accent-rgb: var(--ref-color-brand-primary-rgb);
+  --sys-color-accent-hover-rgb: var(--ref-color-brand-primary-hover-rgb);
+  --sys-color-accent-active-rgb: var(--ref-color-brand-primary-active-rgb);
+  --sys-color-on-accent: var(--ref-color-brand-on-primary);
+
+  /* Surface */
+  --sys-color-bg-page: var(--ref-color-surface-light-page);
+  --sys-color-bg-surface: var(--ref-color-surface-light-surface);
+  --sys-color-bg-subtle: var(--ref-color-surface-light-subtle);
+  --sys-color-bg-glass: var(--ref-color-surface-light-glass);
+  --sys-color-bg-component: var(--ref-color-surface-light-component);
+  --sys-color-bg-component-muted: color-mix(
+    in srgb,
+    var(--sys-color-bg-component) 56%,
+    var(--sys-color-bg-page) 44%
+  );
+
+  /* Text */
+  --sys-color-text-primary: var(--ref-color-text-light-primary);
+  --sys-color-text-secondary: var(--ref-color-text-light-secondary);
+  --sys-color-text-tertiary: var(--ref-color-text-light-tertiary);
+
+  /* Border */
+  --sys-color-border: var(--ref-color-border-light);
+  --sys-color-border-hover: var(--ref-color-border-light-hover);
+
+  /* Utility */
+  --sys-color-overlay: var(--ref-color-overlay-light);
+  --sys-color-tooltip-bg: var(--sys-color-bg-surface);
+  --sys-color-tooltip-border: var(--sys-color-border);
+  --sys-color-tooltip-text: var(--sys-color-text-primary);
+  --sys-color-focus-ring: rgba(var(--sys-color-accent-rgb), 0.35);
+  --sys-color-progress-track: rgba(var(--ref-color-shadow-light-rgb), 0.08);
+
+  /* Shadow */
+  --sys-shadow-card: 0 6px 18px rgba(var(--ref-color-shadow-light-rgb), 0.1);
+  --sys-shadow-floating:
+    0 12px 28px rgba(var(--ref-color-shadow-light-rgb), 0.18),
+    0 6px 12px rgba(var(--ref-color-shadow-light-rgb), 0.12);
+  --sys-shadow-accent-glow: 0 0 16px rgba(var(--sys-color-accent-rgb), 0.32);
+  --sys-shadow-toast:
+    0 10px 22px -10px rgba(var(--ref-color-shadow-light-rgb), 0.36),
+    0 6px 12px -8px rgba(var(--ref-color-shadow-light-rgb), 0.22);
+
+  /* Scrollbar */
+  --sys-scrollbar-track: transparent;
+  --sys-scrollbar-thumb: rgba(var(--sys-color-accent-rgb), 0.32);
+  --sys-scrollbar-thumb-hover: rgba(var(--sys-color-accent-hover-rgb), 0.54);
+  --sys-scrollbar-thumb-active: rgba(var(--sys-color-accent-active-rgb), 0.64);
+
+  /* State */
+  --state-color-success: var(--ref-color-state-success);
+  --state-color-success-rgb: var(--ref-color-state-success-rgb);
+  --state-color-danger: var(--ref-color-state-danger);
+  --state-color-danger-rgb: var(--ref-color-state-danger-rgb);
+  --state-color-warning: var(--ref-color-state-warning);
+  --state-color-warning-rgb: var(--ref-color-state-warning-rgb);
+  --state-color-info: var(--ref-color-state-info);
+  --state-color-info-rgb: var(--ref-color-state-info-rgb);
+}
+
+:root[data-theme='dark'] {
+  --sys-color-bg-page: var(--ref-color-surface-dark-page);
+  --sys-color-bg-surface: var(--ref-color-surface-dark-surface);
+  --sys-color-bg-subtle: var(--ref-color-surface-dark-subtle);
+  --sys-color-bg-glass: var(--ref-color-surface-dark-glass);
+  --sys-color-bg-component: var(--ref-color-surface-dark-component);
+  --sys-color-bg-component-muted: color-mix(
+    in srgb,
+    var(--sys-color-bg-component) 66%,
+    var(--sys-color-bg-page) 34%
+  );
+  --sys-color-text-primary: var(--ref-color-text-dark-primary);
+  --sys-color-text-secondary: var(--ref-color-text-dark-secondary);
+  --sys-color-text-tertiary: var(--ref-color-text-dark-tertiary);
+  --sys-color-border: var(--ref-color-border-dark);
+  --sys-color-border-hover: var(--ref-color-border-dark-hover);
+  --sys-color-overlay: var(--ref-color-overlay-dark);
+  --sys-color-tooltip-bg: color-mix(in srgb, var(--sys-color-bg-surface) 92%, rgb(0 0 0) 8%);
+  --sys-color-tooltip-border: var(--sys-color-border);
+  --sys-color-tooltip-text: var(--sys-color-text-primary);
+  --sys-color-focus-ring: rgba(var(--sys-color-accent-rgb), 0.45);
+  --sys-color-progress-track: rgb(255 255 255 / 10%);
+  --sys-shadow-card: 0 10px 26px rgba(var(--ref-color-shadow-dark-rgb), 0.45);
+  --sys-shadow-floating:
+    0 20px 40px rgba(var(--ref-color-shadow-dark-rgb), 0.52),
+    0 10px 20px rgba(var(--ref-color-shadow-dark-rgb), 0.42);
+  --sys-shadow-accent-glow: 0 0 18px rgba(var(--sys-color-accent-rgb), 0.4);
+  --sys-shadow-toast:
+    0 14px 26px -10px rgba(var(--ref-color-shadow-dark-rgb), 0.65),
+    0 8px 14px -8px rgba(var(--ref-color-shadow-dark-rgb), 0.45);
+}

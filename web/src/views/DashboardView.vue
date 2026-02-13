@@ -61,7 +61,7 @@ onUnmounted(() => {
   align-items: stretch;
 }
 
-@media (max-width: 1024px) {
+@media (width <= 1024px) {
   .chart-grid {
     grid-template-columns: 1fr;
   }
