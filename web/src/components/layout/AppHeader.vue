@@ -36,13 +36,15 @@ const currentTitle = computed(() => {
   align-items: center;
   gap: 1rem;
   height: var(--header-height);
-  padding: 0 1rem;
-  background: var(--color-header-background);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  padding: 0 1.5rem;
+  background: var(--color-background-glass);
+  backdrop-filter: blur(12px) saturate(140%);
+  -webkit-backdrop-filter: blur(12px) saturate(140%);
   border-bottom: 1px solid var(--color-header-border);
-  position: sticky;
+  position: fixed;
   top: 0;
+  right: 0;
+  left: var(--sidebar-width);
   z-index: 90;
 }
 
@@ -67,6 +69,12 @@ const currentTitle = computed(() => {
 @media (min-width: 768px) {
   .menu-toggle {
     display: none;
+  }
+}
+
+@media (max-width: 767px) {
+  .mobile-header {
+    left: 0;
   }
 }
 </style>

@@ -64,12 +64,12 @@ onUnmounted(() => {
   flex: 1;
   display: flex;
   flex-direction: column;
-  padding: 1.5rem;
+  padding: calc(var(--header-height) + 1.5rem) 1.5rem 1.5rem;
+  min-width: 0;
+  min-height: 0;
   overflow-y: auto;
   overflow-x: hidden;
   overscroll-behavior-y: contain;
-  min-width: 0;
-  min-height: 0;
 }
 
 .sidebar-overlay {
