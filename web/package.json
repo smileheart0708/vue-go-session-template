@@ -7,9 +7,10 @@
     "preview": "vite preview",
     "build": "vite build",
     "typecheck": "vue-tsc --build",
-    "lint": "run-s oxlint eslint",
+    "lint": "run-s oxlint eslint lint:css",
     "oxlint": "oxlint . --fix",
     "eslint": "eslint . --fix --cache",
+    "lint:css": "stylelint \"src/**/*.{css,vue}\"",
     "format": "prettier --write --experimental-cli src/"
   },
   "dependencies": {
@@ -35,6 +36,9 @@
     "npm-run-all2": "^8.0.4",
     "oxlint": "~1.42.0",
     "prettier": "3.8.1",
+    "stylelint": "^17.3.0",
+    "stylelint-config-recommended-vue": "^1.6.1",
+    "stylelint-config-standard": "^40.0.0",
     "typescript": "~5.9.3",
     "vite": "^7.3.1",
     "vite-plugin-compression2": "^2.4.0",
