@@ -66,7 +66,7 @@ defineExpose({
 }
 
 .icon-button:hover:not(:disabled) {
-  background: var(--color-background-secondary);
+  background: var(--color-component-muted);
   border-color: var(--color-border);
 }
 
@@ -81,7 +81,7 @@ defineExpose({
 
 .icon-button.active {
   background: var(--color-primary);
-  color: white;
+  color: var(--color-on-primary);
 }
 
 /* 尺寸变体 */

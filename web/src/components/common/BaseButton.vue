@@ -107,7 +107,7 @@ function handleClick(event: MouseEvent): void {
 /* 默认模式 Hover：背景变为主题色，文字变白 */
 .base-button:not(.is-primary):not(:disabled):hover {
   background-color: var(--color-primary);
-  color: #ffffff;
+  color: var(--color-on-primary);
   border-color: var(--color-primary);
 }
 
@@ -121,7 +121,7 @@ function handleClick(event: MouseEvent): void {
 .base-button.is-primary {
   background-color: var(--color-primary);
   border: 1px solid var(--color-primary);
-  color: #ffffff;
+  color: var(--color-on-primary);
 }
 
 /* 主题色模式 Hover */
@@ -149,7 +149,7 @@ function handleClick(event: MouseEvent): void {
 
 /* 焦点状态 - 添加轮廓 */
 .base-button:focus-visible {
-  outline: 2px solid var(--color-primary);
+  outline: 2px solid var(--color-focus-ring);
   outline-offset: 2px;
 }
 </style>

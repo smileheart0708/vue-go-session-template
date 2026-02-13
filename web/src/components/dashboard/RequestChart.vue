@@ -101,6 +101,9 @@ const updateChart = () => {
   const successColor = getComputedStyleValue('--toast-success') || '#22c55e'
   const errorColor = getComputedStyleValue('--color-error-text') || '#ef4444'
   const textColor = getComputedStyleValue('--color-text-secondary') || '#6c757d'
+  const tooltipBg = getComputedStyleValue('--color-tooltip-bg') || '#ffffff'
+  const tooltipBorderColor = getComputedStyleValue('--color-tooltip-border') || '#d4d3cc'
+  const tooltipTextColor = getComputedStyleValue('--color-tooltip-text') || '#333333'
   const borderColor = getComputedStyleValue('--color-border') || '#d4d3cc'
 
   const { xAxisData, successData, failedData } = chartData.value
@@ -109,11 +112,11 @@ const updateChart = () => {
     color: [successColor, errorColor],
     tooltip: {
       trigger: 'axis',
-      backgroundColor: isDark.value ? 'rgba(32, 32, 32, 0.9)' : 'rgba(255, 255, 255, 0.9)',
-      borderColor: borderColor,
+      backgroundColor: tooltipBg,
+      borderColor: tooltipBorderColor,
       borderWidth: 1,
       textStyle: {
-        color: isDark.value ? '#f0f0f0' : '#333',
+        color: tooltipTextColor,
       },
       axisPointer: {
         type: 'line',

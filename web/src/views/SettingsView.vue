@@ -134,7 +134,7 @@ onUnmounted(() => {
   transform: translate3d(v-bind(indicatorOffsetPx), 0, 0);
   background: var(--color-primary);
   border-radius: 999px;
-  box-shadow: 0 8px 18px rgba(0, 120, 212, 0.25);
+  box-shadow: var(--shadow-primary-glow);
   transition:
     transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1),
     width 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);

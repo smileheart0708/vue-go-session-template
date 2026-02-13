@@ -27,7 +27,7 @@ import { useTheme } from '@/composables/useTheme'
 
 echarts.use([PieChart, TitleComponent, TooltipComponent, LegendComponent, CanvasRenderer])
 
-const { mode } = useTheme()
+const { isDark } = useTheme()
 const chartRef = ref<HTMLElement>()
 let chartInstance: echarts.ECharts | null = null
 let resizeObserver: ResizeObserver | null = null
@@ -65,7 +65,7 @@ const chartData = computed(() => {
 // 从 CSS 变量获取图表颜色
 const getChartColors = () => {
   return [
-    getComputedStyleValue('--color-primary') || '#0078d4',
+    getComputedStyleValue('--color-primary') || '#2378ff',
     getComputedStyleValue('--toast-success') || '#22c55e',
     getComputedStyleValue('--toast-info') || '#3b82f6',
     getComputedStyleValue('--toast-warning') || '#f59e0b',
@@ -85,18 +85,20 @@ const updateChart = () => {
 
   const textColor = getComputedStyleValue('--color-text-secondary') || '#666666'
   const textPrimary = getComputedStyleValue('--color-text') || '#1a1a1a'
+  const tooltipBg = getComputedStyleValue('--color-tooltip-bg') || '#ffffff'
+  const tooltipBorderColor = getComputedStyleValue('--color-tooltip-border') || '#d4d4d4'
+  const tooltipTextColor = getComputedStyleValue('--color-tooltip-text') || '#333333'
   const chartColors = getChartColors()
-  const isDark = mode.value === 'dark'
 
   const option = {
     color: chartColors,
     tooltip: {
       trigger: 'item',
       formatter: '{b}: {c} ({d}%)',
-      backgroundColor: isDark ? 'rgba(32, 32, 32, 0.9)' : 'rgba(255, 255, 255, 0.9)',
-      borderColor: isDark ? '#3d3d3d' : '#d4d4d4',
+      backgroundColor: tooltipBg,
+      borderColor: tooltipBorderColor,
       borderWidth: 1,
-      textStyle: { color: isDark ? '#f0f0f0' : '#333' },
+      textStyle: { color: tooltipTextColor },
     },
     legend: { show: false },
     title: {
@@ -158,7 +160,7 @@ onMounted(() => {
   }
 })
 
-watch(mode, () => {
+watch(isDark, () => {
   setTimeout(updateChart, 50)
 })
 

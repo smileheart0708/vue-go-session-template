@@ -153,10 +153,7 @@ onUnmounted(() => {
   -webkit-backdrop-filter: blur(12px) saturate(140%);
   border: 1px solid var(--color-border);
   border-radius: 8px;
-  box-shadow:
-    0 12px 28px rgba(0, 0, 0, 0.18),
-    0 6px 12px rgba(0, 0, 0, 0.1),
-    0 0 0 1px rgba(255, 255, 255, 0.08) inset;
+  box-shadow: var(--shadow-floating);
   z-index: var(--dropdown-z-index, 1000);
 }
 
@@ -177,12 +174,12 @@ onUnmounted(() => {
 }
 
 :deep(.dropdown-item:hover) {
-  background: var(--color-background-secondary);
+  background: var(--color-component-muted);
 }
 
 :deep(.dropdown-item.active) {
   background: var(--dropdown-active-bg, var(--color-primary));
-  color: var(--dropdown-active-color, wheat);
+  color: var(--dropdown-active-color, var(--color-on-primary));
 }
 
 :deep(.dropdown-icon) {

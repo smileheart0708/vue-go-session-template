@@ -234,7 +234,7 @@ function goNext(): void {
 .app-pagination__button.is-active:hover {
   border-color: var(--color-primary);
   background: var(--color-primary);
-  color: #ffffff;
+  color: var(--color-on-primary);
 }
 
 .app-pagination__button:disabled {

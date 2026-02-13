@@ -75,7 +75,7 @@ onUnmounted(() => {
 .sidebar-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(10, 12, 16, 0.35);
+  background: var(--color-overlay);
   backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);
   z-index: 99;

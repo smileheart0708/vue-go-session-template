@@ -4,20 +4,30 @@
       label="24小时总请求"
       :value="operationCount"
       :change="operationChange"
-      color="#ed6d4f"
+      color="var(--toast-error)"
     >
       <template #icon>
         <TrendingUp />
       </template>
     </StatsCard>
 
-    <StatsCard label="额度消耗" :value="tokenUsage" :change="tokenDetail" color="#3b82f6">
+    <StatsCard
+      label="额度消耗"
+      :value="tokenUsage"
+      :change="tokenDetail"
+      color="var(--toast-info)"
+    >
       <template #icon>
         <Coins />
       </template>
     </StatsCard>
 
-    <StatsCard label="内存占用" :value="memoryUsage" :change="memoryDetail" color="orange">
+    <StatsCard
+      label="内存占用"
+      :value="memoryUsage"
+      :change="memoryDetail"
+      color="var(--toast-warning)"
+    >
       <template #icon>
         <IconMemory />
       </template>
@@ -27,7 +37,7 @@
       label="运行时间"
       :value="dashboardStore.uptime"
       :change="dashboardStore.startTime"
-      color="#10b981"
+      color="var(--toast-success)"
     >
       <template #icon>
         <Clock />

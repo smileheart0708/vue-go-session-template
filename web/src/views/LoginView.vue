@@ -137,7 +137,7 @@ const handleLogin = async () => {
   background: var(--color-background-elevated);
   border: 1px solid var(--color-border);
   border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-card);
 }
 
 .login-title {

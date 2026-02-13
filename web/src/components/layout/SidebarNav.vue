@@ -109,7 +109,7 @@ onMounted(() => {
   height: calc(var(--nav-item-height) / 2);
   background: var(--color-primary);
   border-radius: 999px;
-  box-shadow: 0 0 12px rgba(0, 120, 212, 0.35);
+  box-shadow: var(--shadow-primary-glow);
   transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
   will-change: transform;
   z-index: 10;
@@ -137,13 +137,13 @@ onMounted(() => {
 }
 
 .nav-item:hover {
-  background: var(--color-background-secondary);
+  background: var(--color-component-muted);
   color: var(--color-text);
   transform: translate3d(2px, 0, 0);
 }
 
 .nav-item.active {
-  background: var(--color-background-secondary);
+  background: var(--color-component);
   color: var(--color-primary);
   font-weight: 600;
   box-shadow: inset 0 0 0 1px var(--color-border);
@@ -152,7 +152,7 @@ onMounted(() => {
 .nav-item:focus-visible {
   outline: none;
   box-shadow:
-    0 0 0 2px rgba(0, 120, 212, 0.35),
+    0 0 0 2px var(--color-focus-ring),
     inset 0 0 0 1px var(--color-border);
 }
 

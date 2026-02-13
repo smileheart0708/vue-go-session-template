@@ -79,9 +79,7 @@ const { toasts, removeToast } = useToast()
   backdrop-filter: blur(12px) saturate(180%);
   -webkit-backdrop-filter: blur(12px) saturate(180%);
   border-radius: 14px;
-  box-shadow:
-    0 10px 15px -3px rgba(0, 0, 0, 0.1),
-    0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--shadow-toast);
   pointer-events: auto;
   min-height: 64px;
   overflow: hidden;
@@ -215,7 +213,7 @@ const { toasts, removeToast } = useToast()
   left: 0;
   width: 100%;
   height: 3px;
-  background: rgba(0, 0, 0, 0.05);
+  background: var(--color-progress-track);
 }
 
 .toast-progress-bar {

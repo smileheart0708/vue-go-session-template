@@ -4,45 +4,73 @@
   --sidebar-width: 200px;
   --header-height: 60px;
 
-  /* 主题色 */
+  /*
+   * 主题主色：后续只需替换这一组值，即可驱动整套语义色变化
+   * 组件若需要透明度，请优先使用 rgb 版本
+   */
   --color-primary: #0078d4;
   --color-primary-hover: #106ebe;
   --color-primary-active: #005a9e;
-  --color-primary-rgb: 0, 120, 212;
-  --color-primary-hover-rgb: 16, 110, 190;
-  --color-primary-active-rgb: 0, 90, 158;
+  --color-primary-rgb: 35, 120, 255;
+  --color-primary-hover-rgb: 27, 99, 222;
+  --color-primary-active-rgb: 21, 78, 189;
+  --color-on-primary: #ffffff;
 
-  /* 浅色主题 */
-  --color-bg-light: #85aeca38;
-  --color-bg-light-elevated: #ffffffad;
-  --color-bg-light-secondary: #e8e8e8;
-  --color-bg-light-glass: rgba(255, 255, 255, 0.9);
+  /*
+   * 浅色主题色板
+   * 说明：
+   * - bg: 页面主背景（轻微主题色染色）
+   * - elevated: 卡片/浮层主表面
+   * - secondary: 常规次级表面
+   * - component: 介于背景色与主题色之间的组件色
+   */
+  --color-bg-light: #f3f7ff;
+  --color-bg-light-elevated: #fbfdff;
+  --color-bg-light-secondary: #eef3ff;
+  --color-bg-light-component: #dce9ff;
+  --color-bg-light-glass: rgba(251, 253, 255, 0.88);
 
-  --color-text-light-primary: #1a1a1a;
-  --color-text-light-secondary: #666666;
-  --color-text-light-tertiary: #999999;
+  --color-text-light-primary: #111827;
+  --color-text-light-secondary: #4b5565;
+  --color-text-light-tertiary: #6b7280;
 
-  --color-border-light: #d4d4d4;
-  --color-border-light-hover: #b8b8b8;
+  --color-border-light: #d4def1;
+  --color-border-light-hover: #bac8df;
 
-  /* 深色主题 */
-  --color-bg-dark: #202020;
-  --color-bg-dark-elevated: #2d2d2d;
-  --color-bg-dark-secondary: #1a1a1a;
-  --color-bg-dark-glass: rgba(32, 32, 32, 0.9);
+  --color-overlay-light: rgba(10, 16, 30, 0.42);
+  --color-shadow-light-rgb: 15, 23, 42;
 
-  --color-text-dark-primary: #f0f0f0;
-  --color-text-dark-secondary: #b8b8b8;
-  --color-text-dark-tertiary: #8a8a8a;
+  /* 深色主题色板 */
+  --color-bg-dark: #0f1523;
+  --color-bg-dark-elevated: #171f31;
+  --color-bg-dark-secondary: #202c45;
+  --color-bg-dark-component: #2a3b5c;
+  --color-bg-dark-glass: rgba(15, 21, 35, 0.86);
 
-  --color-border-dark: #3d3d3d;
-  --color-border-dark-hover: #525252;
+  --color-text-dark-primary: #eef3ff;
+  --color-text-dark-secondary: #c1cce3;
+  --color-text-dark-tertiary: #94a3b8;
+
+  --color-border-dark: #2e3b57;
+  --color-border-dark-hover: #415273;
+
+  --color-overlay-dark: rgba(1, 4, 10, 0.62);
+  --color-shadow-dark-rgb: 2, 8, 23;
 
   /* 语义化颜色变量 - 默认浅色主题 */
   --color-background: var(--color-bg-light);
   --color-background-elevated: var(--color-bg-light-elevated);
   --color-background-secondary: var(--color-bg-light-secondary);
   --color-background-glass: var(--color-bg-light-glass);
+  --color-component: var(--color-bg-light-component);
+  --color-component-muted: color-mix(
+    in srgb,
+    var(--color-component) 56%,
+    var(--color-background) 44%
+  );
+
+  --color-header-background: var(--color-background);
+  --color-header-border: var(--color-border);
 
   --color-text: var(--color-text-light-primary);
   --color-text-secondary: var(--color-text-light-secondary);
@@ -51,11 +79,30 @@
   --color-border: var(--color-border-light);
   --color-border-hover: var(--color-border-light-hover);
 
+  --color-overlay: var(--color-overlay-light);
+  --color-tooltip-bg: var(--color-background-elevated);
+  --color-tooltip-border: var(--color-border);
+  --color-tooltip-text: var(--color-text);
+  --color-focus-ring: rgba(var(--color-primary-rgb), 0.35);
+
+  --shadow-card: 0 6px 18px rgba(var(--color-shadow-light-rgb), 0.1);
+  --shadow-floating:
+    0 12px 28px rgba(var(--color-shadow-light-rgb), 0.18),
+    0 6px 12px rgba(var(--color-shadow-light-rgb), 0.12);
+  --shadow-primary-glow: 0 0 16px rgba(var(--color-primary-rgb), 0.32);
+  --shadow-toast:
+    0 10px 22px -10px rgba(var(--color-shadow-light-rgb), 0.36),
+    0 6px 12px -8px rgba(var(--color-shadow-light-rgb), 0.22);
+  --color-progress-track: rgba(var(--color-shadow-light-rgb), 0.08);
+
+  --dropdown-active-bg: var(--color-primary);
+  --dropdown-active-color: var(--color-on-primary);
+
   /* 滚动条 */
   --scrollbar-track: transparent;
-  --scrollbar-thumb: rgba(var(--color-primary-rgb), 0.3);
-  --scrollbar-thumb-hover: rgba(var(--color-primary-hover-rgb), 0.5);
-  --scrollbar-thumb-active: rgba(var(--color-primary-active-rgb), 0.6);
+  --scrollbar-thumb: rgba(var(--color-primary-rgb), 0.32);
+  --scrollbar-thumb-hover: rgba(var(--color-primary-hover-rgb), 0.54);
+  --scrollbar-thumb-active: rgba(var(--color-primary-active-rgb), 0.64);
 
   /* 错误状态 - 浅色 */
   --color-error-bg: #fef0f0;
@@ -65,17 +112,17 @@
   /* Toast 状态颜色 */
   --toast-success: #22c55e;
   --toast-success-rgb: 34, 197, 94;
-  --toast-error: red;
+  --toast-error: #ef4444;
   --toast-error-rgb: 239, 68, 68;
-  --toast-warning: orange;
+  --toast-warning: #f59e0b;
   --toast-warning-rgb: 245, 158, 11;
   --toast-info: #3b82f6;
   --toast-info-rgb: 59, 130, 246;
 
   /* 日志行背景色 */
-  --log-row-error-bg: rgba(239, 68, 68, 0.3);
-  --log-row-warn-bg: rgba(245, 158, 11, 0.3);
-  --log-row-debug-bg: rgba(59, 130, 246, 0.3);
+  --log-row-error-bg: rgba(var(--toast-error-rgb), 0.22);
+  --log-row-warn-bg: rgba(var(--toast-warning-rgb), 0.22);
+  --log-row-debug-bg: rgba(var(--toast-info-rgb), 0.22);
   --log-row-info-bg: var(--color-background-elevated);
 }
 
@@ -85,6 +132,15 @@
   --color-background-elevated: var(--color-bg-dark-elevated);
   --color-background-secondary: var(--color-bg-dark-secondary);
   --color-background-glass: var(--color-bg-dark-glass);
+  --color-component: var(--color-bg-dark-component);
+  --color-component-muted: color-mix(
+    in srgb,
+    var(--color-component) 66%,
+    var(--color-background) 34%
+  );
+
+  --color-header-background: var(--color-background);
+  --color-header-border: var(--color-border);
 
   --color-text: var(--color-text-dark-primary);
   --color-text-secondary: var(--color-text-dark-secondary);
@@ -92,6 +148,22 @@
 
   --color-border: var(--color-border-dark);
   --color-border-hover: var(--color-border-dark-hover);
+
+  --color-overlay: var(--color-overlay-dark);
+  --color-tooltip-bg: color-mix(in srgb, var(--color-background-elevated) 92%, #000000 8%);
+  --color-tooltip-border: var(--color-border);
+  --color-tooltip-text: var(--color-text);
+  --color-focus-ring: rgba(var(--color-primary-rgb), 0.45);
+
+  --shadow-card: 0 10px 26px rgba(var(--color-shadow-dark-rgb), 0.45);
+  --shadow-floating:
+    0 20px 40px rgba(var(--color-shadow-dark-rgb), 0.52),
+    0 10px 20px rgba(var(--color-shadow-dark-rgb), 0.42);
+  --shadow-primary-glow: 0 0 18px rgba(var(--color-primary-rgb), 0.4);
+  --shadow-toast:
+    0 14px 26px -10px rgba(var(--color-shadow-dark-rgb), 0.65),
+    0 8px 14px -8px rgba(var(--color-shadow-dark-rgb), 0.45);
+  --color-progress-track: rgba(255, 255, 255, 0.1);
 
   /* 错误状态 - 深色 */
   --color-error-bg: #3d2020;

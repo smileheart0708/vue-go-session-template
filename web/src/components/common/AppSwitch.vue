@@ -128,7 +128,7 @@ function handleChange(event: Event): void {
 
 .app-switch__input:checked + .app-switch__control .app-switch__thumb {
   inset-inline-start: calc(100% - 15px);
-  background-color: #ffffff;
+  background-color: var(--color-on-primary);
 }
 
 .app-switch:not(.app-switch--disabled):active .app-switch__thumb {
@@ -141,7 +141,7 @@ function handleChange(event: Event): void {
 }
 
 .app-switch__input:focus-visible + .app-switch__control {
-  outline: 2px solid var(--color-primary);
+  outline: 2px solid var(--color-focus-ring);
   outline-offset: 2px;
 }
 
