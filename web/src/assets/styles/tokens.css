@@ -11,9 +11,9 @@
   --color-primary: #0078d4;
   --color-primary-hover: #106ebe;
   --color-primary-active: #005a9e;
-  --color-primary-rgb: 35, 120, 255;
-  --color-primary-hover-rgb: 27, 99, 222;
-  --color-primary-active-rgb: 21, 78, 189;
+  --color-primary-rgb: 0, 120, 212;
+  --color-primary-hover-rgb: 16, 110, 190;
+  --color-primary-active-rgb: 0, 90, 158;
   --color-on-primary: #ffffff;
 
   /*
@@ -69,7 +69,7 @@
     var(--color-background) 44%
   );
 
-  --color-header-background: var(--color-background);
+  --color-header-background: var(--color-background-glass);
   --color-header-border: var(--color-border);
 
   --color-text: var(--color-text-light-primary);
@@ -104,9 +104,6 @@
   --scrollbar-thumb-hover: rgba(var(--color-primary-hover-rgb), 0.54);
   --scrollbar-thumb-active: rgba(var(--color-primary-active-rgb), 0.64);
 
-  /* 错误状态 - 浅色 */
-  --color-error-bg: #fef0f0;
-  --color-error-border: #fde2e2;
   --color-error-text: #c53030;
 
   /* Toast 状态颜色 */
@@ -139,7 +136,7 @@
     var(--color-background) 34%
   );
 
-  --color-header-background: var(--color-background);
+  --color-header-background: var(--color-background-glass);
   --color-header-border: var(--color-border);
 
   --color-text: var(--color-text-dark-primary);
@@ -165,8 +162,5 @@
     0 8px 14px -8px rgba(var(--color-shadow-dark-rgb), 0.45);
   --color-progress-track: rgba(255, 255, 255, 0.1);
 
-  /* 错误状态 - 深色 */
-  --color-error-bg: #3d2020;
-  --color-error-border: #5a2020;
   --color-error-text: #fc8181;
 }
