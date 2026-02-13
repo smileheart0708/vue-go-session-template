@@ -178,6 +178,7 @@ onUnmounted(() => {
 /* 内容区域 */
 .settings-content {
   min-height: 240px;
+  overflow-anchor: none;
 }
 
 /* RouterView 过渡动画 */

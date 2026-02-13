@@ -64,6 +64,7 @@ function handleChange(event: Event): void {
 
 <style scoped>
 .app-switch {
+  position: relative;
   display: inline-flex;
   align-items: center;
   gap: 12px;
@@ -79,11 +80,12 @@ function handleChange(event: Event): void {
 
 .app-switch__input {
   position: absolute;
-  inline-size: 1px;
-  block-size: 1px;
-  overflow: hidden;
-  clip-path: inset(50%);
-  white-space: nowrap;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  margin: 0;
+  opacity: 0;
+  pointer-events: none;
 }
 
 .app-switch__control {
@@ -96,7 +98,9 @@ function handleChange(event: Event): void {
   background-color: transparent;
   border: 1px solid var(--sys-color-border);
   box-sizing: border-box;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transition:
+    background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+    border-color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   cursor: inherit;
 }
 
@@ -123,7 +127,11 @@ function handleChange(event: Event): void {
   block-size: 12px;
   border-radius: 50%;
   background-color: var(--sys-color-text-secondary);
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transition:
+    inset-inline-start 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+    inline-size 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+    border-radius 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+    background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .app-switch__input:checked + .app-switch__control .app-switch__thumb {

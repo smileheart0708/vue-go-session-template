@@ -69,6 +69,7 @@ onUnmounted(() => {
   min-height: 0;
   overflow: hidden auto;
   overscroll-behavior-y: contain;
+  scrollbar-gutter: stable both-edges;
 }
 
 .sidebar-overlay {
