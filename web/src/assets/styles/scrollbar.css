@@ -4,17 +4,25 @@
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
+  border-radius: 100px;
 }
 
 ::-webkit-scrollbar-track {
   background: var(--sys-scrollbar-track);
+  border-radius: 100px;
 }
 
 ::-webkit-scrollbar-thumb {
   background: var(--sys-scrollbar-thumb);
   border-radius: 100px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
   backdrop-filter: blur(40px);
   transition: background 0.2s;
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb:hover {
