@@ -69,41 +69,41 @@ go mod tidy
 
 ```ts
 // 1. Vue 核心
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted } from "vue";
 
 // 2. 第三方库
-import { useLocalStorage } from '@vueuse/core'
-import { defineStore } from 'pinia'
+import { useLocalStorage } from "@vueuse/core";
+import { defineStore } from "pinia";
 
 // 3. 本地组件/模块
-import { useDashboardStore } from '@/stores/dashboard'
-import { http } from '@/utils/http'
+import { useDashboardStore } from "@/stores/dashboard";
+import { http } from "@/utils/http";
 
 // 4. 类型定义
-import type { User } from '@/types'
+import type { User } from "@/types";
 ```
 
 ### 2.3 组件结构
 
 ```vue
 <script setup lang="ts">
-import { ref, computed } from 'vue'
-import type { ThemeMode } from '@/types'
+import { ref, computed } from "vue";
+import type { ThemeMode } from "@/types";
 
 interface Props {
-  modelValue: string
-  disabled?: boolean
+  modelValue: string;
+  disabled?: boolean;
 }
-const props = withDefaults(defineProps<Props>(), { disabled: false })
+const props = withDefaults(defineProps<Props>(), { disabled: false });
 
 const emit = defineEmits<{
-  'update:modelValue': [value: string]
-  'submit': []
-}>()
+  "update:modelValue": [value: string];
+  submit: [];
+}>();
 
-const localValue = ref(props.modelValue)
+const localValue = ref(props.modelValue);
 
-onMounted(() => {})
+onMounted(() => {});
 </script>
 
 <template>
@@ -124,14 +124,16 @@ onMounted(() => {})
 - **持久化**: 使用 `@vueuse/core` 的 `useLocalStorage`
 
 ```ts
-export const useUserStore = defineStore('user', () => {
-  const user = ref<User | null>(null)
-  const isAuthenticated = computed(() => !!user.value)
+export const useUserStore = defineStore("user", () => {
+  const user = ref<User | null>(null);
+  const isAuthenticated = computed(() => !!user.value);
 
-  function login() { /* ... */ }
+  function login() {
+    /* ... */
+  }
 
-  return { user, isAuthenticated, login }
-})
+  return { user, isAuthenticated, login };
+});
 ```
 
 ### 2.5 目录结构
@@ -222,12 +224,11 @@ type CreateUserRequest struct {
 
 ## 5. 开发原则
 
-| 原则 | 说明 |
-| :--- | :--- |
+| 原则         | 说明                                          |
+| :----------- | :-------------------------------------------- |
 | **单一职责** | 文件/函数/组件只做一件事，超过 250 行必须拆分 |
-| **类型安全** | 前端禁用 `any`，后端必须用 `any` |
-| **逻辑分离** | UI 展示，Composables 逻辑，Utils 纯计算 |
-| **就近原则** | 私有组件/样式靠近使用位置 |
+| **类型安全** | 前端禁用 `any`，后端必须用 `any`              |
+| **逻辑分离** | UI 展示，Composables 逻辑，Utils 纯计算       |
 
 **注意**: 发现同一文件超过 3 个主要函数或组件臃肿时，应立即重构或拆分文件。
 
