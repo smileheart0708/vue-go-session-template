@@ -1,12 +1,15 @@
 package main
 
 import (
+	"context"
 	"embed"
 	"fmt"
 	"log/slog"
+	"path/filepath"
 	"time"
 
 	"main/internal/config"
+	"main/internal/database"
 	"main/internal/middleware"
 	"main/internal/server"
 	"main/internal/session"
@@ -23,6 +26,7 @@ func printBanner(cfg *config.Config) {
 	fmt.Printf("服务地址: http://localhost:%d\n", cfg.Port)
 	fmt.Printf("日志级别: %s\n", cfg.LogLevel)
 	fmt.Printf("数据目录: %s\n", cfg.DataDir)
+	fmt.Printf("数据库文件: %s\n", filepath.Join(cfg.DataDir, "data.db"))
 	fmt.Println(separator)
 }
 
@@ -44,6 +48,23 @@ func main() {
 	if cfg.IsAutoAuthKey {
 		slog.Info("自动生成的 AUTH_KEY", "auth_key", cfg.AuthKey)
 	}
+
+	// 初始化 SQLite 数据库
+	dbCtx, dbCancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer dbCancel()
+
+	dbPath := filepath.Join(cfg.DataDir, "data.db")
+	dbContainer, err := database.Open(dbCtx, database.Options{Path: dbPath})
+	if err != nil {
+		slog.Error("failed to initialize database", "error", err)
+		return
+	}
+	defer func() {
+		if err := dbContainer.Close(); err != nil {
+			slog.Warn("failed to close database", "error", err)
+		}
+	}()
+	slog.Info("database initialized", "path", dbContainer.Path())
 
 	// 初始化 session 管理器
 	sessionManager, err := session.NewManager(cfg.DataDir)
