@@ -24,7 +24,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
+import { computed, nextTick, onMounted, onUnmounted, ref, useTemplateRef, watch } from 'vue'
 import { useRoute } from 'vue-router'
 
 type SettingsRouteName = 'settings-general' | 'settings-upstream' | 'settings-proxy'
@@ -47,7 +47,7 @@ const routeKey = computed<string>(() => route.fullPath)
 
 const transitionName = ref<string>('settings-slide-forward')
 
-const tabsRef = ref<HTMLElement | null>(null)
+const tabsRef = useTemplateRef<HTMLElement>('tabsRef')
 const indicatorOffset = ref<number>(0)
 const indicatorWidth = ref<number>(0)
 const showIndicator = ref<boolean>(false)

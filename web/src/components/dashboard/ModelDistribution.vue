@@ -18,7 +18,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted, watch, computed } from 'vue'
+import { computed, onMounted, onUnmounted, onWatcherCleanup, useTemplateRef, watch } from 'vue'
 import * as echarts from 'echarts/core'
 import { PieChart } from 'echarts/charts'
 import { TitleComponent, TooltipComponent, LegendComponent } from 'echarts/components'
@@ -28,7 +28,7 @@ import { useTheme } from '@/composables/useTheme'
 echarts.use([PieChart, TitleComponent, TooltipComponent, LegendComponent, CanvasRenderer])
 
 const { isDark } = useTheme()
-const chartRef = ref<HTMLElement>()
+const chartRef = useTemplateRef<HTMLElement>('chartRef')
 let chartInstance: echarts.ECharts | null = null
 let resizeObserver: ResizeObserver | null = null
 
@@ -43,11 +43,11 @@ const PIE_CHART_COLORS: string[] = [
 
 // 模拟数据 - 后续可替换为真实 API 数据
 const mockData = [
-  { model: 'GPT-4', count: 1250 },
-  { model: 'GPT-3.5', count: 890 },
-  { model: 'Claude-3', count: 640 },
-  { model: 'Gemini Pro', count: 420 },
-  { model: 'Llama 3', count: 280 },
+  { model: 'GPT-5-3-codex', count: 1250 },
+  { model: 'GPT-5.2', count: 890 },
+  { model: 'Claude-4.6', count: 640 },
+  { model: 'Gemini 3 Pro', count: 420 },
+  { model: 'Grok 4.2', count: 280 },
 ]
 
 // 处理数据：最多显示5个，剩下的合并为"其他"
@@ -157,7 +157,8 @@ onMounted(() => {
 })
 
 watch(isDark, () => {
-  setTimeout(updateChart, 50)
+  const timer = setTimeout(updateChart, 50)
+  onWatcherCleanup(() => clearTimeout(timer))
 })
 
 onUnmounted(() => {

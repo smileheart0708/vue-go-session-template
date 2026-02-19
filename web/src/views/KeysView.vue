@@ -24,9 +24,7 @@ import { computed, ref } from 'vue'
 import AppPagination from '@/components/common/AppPagination.vue'
 import AppTable, { type AppTableColumn } from '@/components/common/AppTable.vue'
 
-defineOptions({
-  name: 'KeysView',
-})
+defineOptions({ name: 'KeysView' })
 
 type ApiKeyStatus = 'active' | 'disabled' | 'revoked'
 

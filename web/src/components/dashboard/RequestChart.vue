@@ -1,31 +1,29 @@
 <template>
   <section class="content-card chart-card">
     <div class="card-header">
-      <h2 class="card-title">{{ props.title }}</h2>
+      <h2 class="card-title">{{ title }}</h2>
     </div>
     <div ref="chartRef" class="chart-container"></div>
   </section>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted, nextTick, watch, computed } from 'vue'
+import {
+  computed,
+  nextTick,
+  onMounted,
+  onUnmounted,
+  onWatcherCleanup,
+  useTemplateRef,
+  watch,
+} from 'vue'
 import * as echarts from 'echarts/core'
 import { LineChart } from 'echarts/charts'
-import {
-  TooltipComponent,
-  GridComponent,
-  LegendComponent,
-} from 'echarts/components'
+import { TooltipComponent, GridComponent, LegendComponent } from 'echarts/components'
 import { CanvasRenderer } from 'echarts/renderers'
 import { useTheme } from '@/composables/useTheme'
 
-echarts.use([
-  LineChart,
-  TooltipComponent,
-  GridComponent,
-  LegendComponent,
-  CanvasRenderer,
-])
+echarts.use([LineChart, TooltipComponent, GridComponent, LegendComponent, CanvasRenderer])
 
 interface HourlyRequestStat {
   timestamp: number
@@ -38,19 +36,14 @@ interface Props {
   stats?: HourlyRequestStat[]
 }
 
-const props = withDefaults(defineProps<Props>(), {
-  title: '请求趋势',
-})
+const { title = '请求趋势', stats } = defineProps<Props>()
 
 const { isDark } = useTheme()
-const chartRef = ref<HTMLElement>()
+const chartRef = useTemplateRef<HTMLElement>('chartRef')
 let chartInstance: echarts.ECharts | null = null
 let resizeObserver: ResizeObserver | null = null
 
-const LINE_SERIES_COLORS = {
-  success: '#22c55e',
-  failed: '#ef4444',
-} as const
+const LINE_SERIES_COLORS = { success: '#22c55e', failed: '#ef4444' } as const
 
 const getComputedStyleValue = (variable: string) => {
   return getComputedStyle(document.documentElement).getPropertyValue(variable).trim()
@@ -75,7 +68,7 @@ const createMockHourlyStats = (hours = 24): HourlyRequestStat[] => {
 const mockHourlyStats = createMockHourlyStats()
 
 const resolvedStats = computed(() => {
-  return props.stats === undefined ? mockHourlyStats : props.stats
+  return stats === undefined ? mockHourlyStats : stats
 })
 
 // 计算图表数据
@@ -120,66 +113,31 @@ const updateChart = () => {
       backgroundColor: tooltipBg,
       borderColor: tooltipBorderColor,
       borderWidth: 1,
-      textStyle: {
-        color: tooltipTextColor,
-      },
-      axisPointer: {
-        type: 'line',
-        lineStyle: {
-          color: borderColor,
-          type: 'dashed',
-        },
-      },
+      textStyle: { color: tooltipTextColor },
+      axisPointer: { type: 'line', lineStyle: { color: borderColor, type: 'dashed' } },
     },
     legend: {
       data: ['成功请求', '失败请求'],
       bottom: 0,
       padding: [5, 0],
-      textStyle: {
-        color: textColor,
-        fontSize: 12,
-      },
+      textStyle: { color: textColor, fontSize: 12 },
       itemWidth: 14,
       itemHeight: 14,
     },
-    grid: {
-      top: '15%',
-      left: '2%',
-      right: '2%',
-      bottom: '15%',
-      containLabel: true,
-    },
+    grid: { top: '15%', left: '2%', right: '2%', bottom: '15%', containLabel: true },
     xAxis: {
       type: 'category',
       boundaryGap: false,
       data: xAxisData,
-      axisLine: {
-        lineStyle: {
-          color: borderColor,
-        },
-      },
-      axisLabel: {
-        color: textColor,
-        fontSize: 11,
-        interval: 'auto',
-      },
+      axisLine: { lineStyle: { color: borderColor } },
+      axisLabel: { color: textColor, fontSize: 11, interval: 'auto' },
     },
     yAxis: {
       type: 'value',
       minInterval: 1,
-      axisLine: {
-        show: false,
-      },
-      axisLabel: {
-        color: textColor,
-        fontSize: 11,
-      },
-      splitLine: {
-        lineStyle: {
-          color: borderColor,
-          type: 'dashed',
-        },
-      },
+      axisLine: { show: false },
+      axisLabel: { color: textColor, fontSize: 11 },
+      splitLine: { lineStyle: { color: borderColor, type: 'dashed' } },
     },
     series: [
       {
@@ -190,9 +148,7 @@ const updateChart = () => {
         data: successData,
         animationDuration: 1000,
         animationEasing: 'cubicOut',
-        lineStyle: {
-          width: 3,
-        },
+        lineStyle: { width: 3 },
         areaStyle: {
           color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
             { offset: 0, color: `${successColor}4D` },
@@ -208,9 +164,7 @@ const updateChart = () => {
         data: failedData,
         animationDuration: 1000,
         animationEasing: 'cubicOut',
-        lineStyle: {
-          width: 2,
-        },
+        lineStyle: { width: 2 },
         areaStyle: {
           color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
             { offset: 0, color: `${errorColor}33` },
@@ -253,13 +207,18 @@ onMounted(async () => {
 
 // 监听主题变化
 watch(isDark, () => {
-  setTimeout(updateChart, 50)
+  const timer = setTimeout(updateChart, 50)
+  onWatcherCleanup(() => clearTimeout(timer))
 })
 
 // 监听数据变化
-watch(resolvedStats, () => {
-  updateChart()
-}, { deep: true })
+watch(
+  resolvedStats,
+  () => {
+    updateChart()
+  },
+  { deep: true },
+)
 
 onUnmounted(() => {
   if (resizeObserver) {

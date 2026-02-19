@@ -54,7 +54,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { computed, ref, useTemplateRef } from 'vue'
 import { Trash2, ArrowDownToLine, ArrowDown, Download } from 'lucide-vue-next'
 import BaseButton from '@/components/common/BaseButton.vue'
 import DropdownDrawer from '@/components/common/DropdownDrawer.vue'
@@ -66,9 +66,7 @@ interface Props {
   title?: string
 }
 
-const props = withDefaults(defineProps<Props>(), {
-  title: '实时日志',
-})
+const { logsCount, autoScroll, title = '实时日志' } = defineProps<Props>()
 
 const emit = defineEmits<{
   clear: []
@@ -77,11 +75,11 @@ const emit = defineEmits<{
 }>()
 
 const showExportMenu = ref(false)
-const exportAnchorRef = ref<HTMLElement | null>(null)
+const exportAnchorRef = useTemplateRef<HTMLElement>('exportAnchorRef')
 const exportAnchorEl = computed<HTMLElement | null>(() => exportAnchorRef.value)
 
-const exportDisabled = computed(() => props.logsCount === 0)
-const autoScrollText = computed(() => (props.autoScroll ? '自动滚动: 开' : '自动滚动: 关'))
+const exportDisabled = computed(() => logsCount === 0)
+const autoScrollText = computed(() => (autoScroll ? '自动滚动: 开' : '自动滚动: 关'))
 
 function toggleExportMenu() {
   if (exportDisabled.value) return

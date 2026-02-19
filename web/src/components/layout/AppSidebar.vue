@@ -17,7 +17,7 @@ interface Props {
   isOpen?: boolean
 }
 
-withDefaults(defineProps<Props>(), { isOpen: true })
+const { isOpen = true } = defineProps<Props>()
 </script>
 
 <style scoped>
