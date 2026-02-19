@@ -14,7 +14,11 @@
     <div class="app-table__scroll" role="region" :aria-label="regionLabel || undefined">
       <table
         class="app-table__table"
-        :class="{ 'app-table__table--compact': isCompact, 'app-table__table--fit': fitContent, 'app-table__table--auto-layout': autoLayout }"
+        :class="{
+          'app-table__table--compact': isCompact,
+          'app-table__table--fit': fitContent,
+          'app-table__table--auto-layout': autoLayout,
+        }"
       >
         <thead :class="{ 'is-sticky': stickyHeader }">
           <tr>
@@ -37,15 +41,15 @@
         </thead>
 
         <tbody v-if="rows.length > 0">
-          <tr v-for="(row, rowIndex) in rows" :key="resolveRowKey(row, rowIndex)" class="app-table__row">
+          <tr
+            v-for="(row, rowIndex) in rows"
+            :key="resolveRowKey(row, rowIndex)"
+            class="app-table__row"
+          >
             <td
               v-for="(column, colIndex) in columns"
               :key="column.key"
-              :class="[
-                getAlignClass(column.align),
-                getFixedClass(column.fixed),
-                column.cellClass,
-              ]"
+              :class="[getAlignClass(column.align), getFixedClass(column.fixed), column.cellClass]"
               :style="getColumnStyle(column, colIndex)"
             >
               <slot
@@ -98,10 +102,7 @@ export type GlassTableColumn<TRow extends object = Record<string, unknown>> = Ap
 import { computed, useAttrs, useSlots } from 'vue'
 import { useMediaQuery } from '@vueuse/core'
 
-defineOptions({
-  name: 'AppTable',
-  inheritAttrs: false,
-})
+defineOptions({ name: 'AppTable', inheritAttrs: false })
 
 type RowIdentity = string | number
 

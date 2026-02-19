@@ -16,10 +16,7 @@ interface ValidateSessionResponse {
   valid: boolean
 }
 
-const DEFAULT_AUTH_STATE: StoredAuthState = {
-  sessionId: '',
-  isAuthenticated: false,
-}
+const DEFAULT_AUTH_STATE: StoredAuthState = { sessionId: '', isAuthenticated: false }
 
 function isValidStoredAuthState(value: unknown): value is StoredAuthState {
   if (!value || typeof value !== 'object') {
@@ -31,9 +28,7 @@ function isValidStoredAuthState(value: unknown): value is StoredAuthState {
 }
 
 export const useAuthStore = defineStore('auth', () => {
-  const storedState = useLocalStorage<StoredAuthState>(STORAGE_KEY, {
-    ...DEFAULT_AUTH_STATE,
-  })
+  const storedState = useLocalStorage<StoredAuthState>(STORAGE_KEY, { ...DEFAULT_AUTH_STATE })
 
   const sessionId = computed(() => storedState.value.sessionId)
   const isAuthenticated = computed(() => storedState.value.isAuthenticated)
@@ -65,18 +60,12 @@ export const useAuthStore = defineStore('auth', () => {
 
   function mockLogin(): void {
     const mockSessionId = `mock-session-${Date.now()}`
-    applyState({
-      sessionId: mockSessionId,
-      isAuthenticated: true,
-    })
+    applyState({ sessionId: mockSessionId, isAuthenticated: true })
     console.log('[MOCK AUTH] 模拟登录成功:', mockSessionId)
   }
 
   function setAuthenticated(newSessionId: string): void {
-    applyState({
-      sessionId: newSessionId,
-      isAuthenticated: true,
-    })
+    applyState({ sessionId: newSessionId, isAuthenticated: true })
   }
 
   async function validateSession(): Promise<boolean> {
@@ -92,9 +81,7 @@ export const useAuthStore = defineStore('auth', () => {
     try {
       const data = await http<ValidateSessionResponse>('/validate-session', {
         method: 'POST',
-        body: {
-          session_id: sessionId.value,
-        },
+        body: { session_id: sessionId.value },
         skipUnauthorizedHandler: true,
       })
 
@@ -103,10 +90,7 @@ export const useAuthStore = defineStore('auth', () => {
         return false
       }
 
-      applyState({
-        sessionId: sessionId.value,
-        isAuthenticated: true,
-      })
+      applyState({ sessionId: sessionId.value, isAuthenticated: true })
       return true
     } catch (error) {
       if (!(error instanceof HttpError)) {

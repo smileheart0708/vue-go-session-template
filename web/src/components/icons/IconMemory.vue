@@ -27,7 +27,5 @@
 </template>
 
 <script setup lang="ts">
-defineOptions({
-  name: 'IconMemory',
-})
+defineOptions({ name: 'IconMemory' })
 </script>

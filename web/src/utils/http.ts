@@ -5,8 +5,10 @@ type QueryValue = string | number | boolean | null | undefined
 export type HttpQuery = Record<string, QueryValue | QueryValue[]>
 export type HttpResponseType = 'json' | 'text' | 'blob' | 'arrayBuffer' | 'response'
 
-export interface HttpOptions
-  extends Omit<RequestInit, 'body' | 'headers' | 'method' | 'credentials'> {
+export interface HttpOptions extends Omit<
+  RequestInit,
+  'body' | 'headers' | 'method' | 'credentials'
+> {
   method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE' | 'HEAD' | 'OPTIONS'
   headers?: HeadersInit
   body?: BodyInit | Record<string, unknown> | unknown[] | null
@@ -139,12 +141,7 @@ function createRequestInit(options: HttpOptions): RequestInit {
   } = options
 
   const requestHeaders = new Headers(headers ?? {})
-  const requestInit: RequestInit = {
-    ...rest,
-    method,
-    headers: requestHeaders,
-    credentials,
-  }
+  const requestInit: RequestInit = { ...rest, method, headers: requestHeaders, credentials }
 
   if (body === undefined || body === null) {
     return requestInit
@@ -313,10 +310,7 @@ export async function http<T = unknown>(endpoint: string, options: HttpOptions =
   const requestInit = createRequestInit(options)
 
   let response = await fetch(requestUrl, requestInit)
-  const context: HttpContext = {
-    options,
-    requestUrl,
-  }
+  const context: HttpContext = { options, requestUrl }
 
   for (const interceptor of responseInterceptors) {
     response = await interceptor(response, context)

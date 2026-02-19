@@ -50,9 +50,7 @@ import { Sun, Moon, Monitor } from 'lucide-vue-next'
 import DropdownDrawer from './DropdownDrawer.vue'
 import IconButton from './IconButton.vue'
 
-defineOptions({
-  name: 'ThemeToggle',
-})
+defineOptions({ name: 'ThemeToggle' })
 
 type ThemeMode = 'light' | 'dark' | 'auto'
 
@@ -81,9 +79,7 @@ const {
 
 const mode = defineModel<ThemeMode>({ required: true })
 
-const emit = defineEmits<{
-  change: [mode: ThemeMode, event: MouseEvent | undefined]
-}>()
+const emit = defineEmits<{ change: [mode: ThemeMode, event: MouseEvent | undefined] }>()
 
 const buttonRef = useTemplateRef<InstanceType<typeof IconButton>>('buttonRef')
 const anchorEl = computed<HTMLElement | null>(() => buttonRef.value?.$el ?? null)

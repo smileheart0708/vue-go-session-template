@@ -13,4 +13,3 @@ function resolveApiMode(value: string | undefined): ApiMode {
 export const isMockAuthEnabled = normalizeFlag(import.meta.env.VITE_MOCK_AUTH)
 export const apiMode = resolveApiMode(import.meta.env.VITE_API_MODE)
 export const isMockApiEnabled = apiMode === 'mock'
-

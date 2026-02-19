@@ -18,10 +18,7 @@
 <script setup lang="ts">
 import { nextTick, onWatcherCleanup, ref, useAttrs, useTemplateRef, watch } from 'vue'
 
-defineOptions({
-  name: 'DropdownDrawer',
-  inheritAttrs: false,
-})
+defineOptions({ name: 'DropdownDrawer', inheritAttrs: false })
 
 interface Props {
   anchorEl: HTMLElement | null

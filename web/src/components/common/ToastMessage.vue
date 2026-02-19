@@ -41,9 +41,7 @@
 <script setup lang="ts">
 import { Check, XCircle, AlertTriangle, Info, X } from 'lucide-vue-next'
 
-defineOptions({
-  name: 'ToastMessage',
-})
+defineOptions({ name: 'ToastMessage' })
 
 type ToastType = 'success' | 'error' | 'warning' | 'info'
 type ToastId = number
@@ -62,9 +60,7 @@ interface Props {
 
 const { toasts, closeAriaLabel = 'Close notification' } = defineProps<Props>()
 
-const emit = defineEmits<{
-  close: [id: ToastId]
-}>()
+const emit = defineEmits<{ close: [id: ToastId] }>()
 
 function handleClose(id: ToastId): void {
   emit('close', id)

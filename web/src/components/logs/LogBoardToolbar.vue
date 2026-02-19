@@ -18,12 +18,8 @@
           :aria-expanded="showExportMenu"
         />
         <DropdownDrawer v-model="showExportMenu" :anchor-el="exportAnchorEl" :min-width="160">
-          <button class="dropdown-item" type="button" @click="handleExport('txt')">
-            导出 TXT
-          </button>
-          <button class="dropdown-item" type="button" @click="handleExport('csv')">
-            导出 CSV
-          </button>
+          <button class="dropdown-item" type="button" @click="handleExport('txt')">导出 TXT</button>
+          <button class="dropdown-item" type="button" @click="handleExport('csv')">导出 CSV</button>
           <button class="dropdown-item" type="button" @click="handleExport('json')">
             导出 JSON
           </button>
@@ -67,11 +63,7 @@ interface Props {
 
 const { logsCount, autoScroll, title = '实时日志' } = defineProps<Props>()
 
-const emit = defineEmits<{
-  clear: []
-  'toggle-auto-scroll': []
-  export: [type: LogExportType]
-}>()
+const emit = defineEmits<{ clear: []; 'toggle-auto-scroll': []; export: [type: LogExportType] }>()
 
 const showExportMenu = ref(false)
 const exportAnchorRef = useTemplateRef<HTMLElement>('exportAnchorRef')
@@ -122,7 +114,6 @@ function handleToggleAutoScroll() {
   color: var(--sys-color-text-primary);
   margin: 0;
 }
-
 
 .log-board-actions {
   display: flex;

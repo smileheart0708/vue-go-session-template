@@ -32,7 +32,10 @@ export const useRefreshStore = defineStore('refresh', () => {
   // 1. 配置状态 (持久化)
   // ==========================
   const isEnabled = useLocalStorage('settings.refresh_enabled', true)
-  const intervalSeconds = useLocalStorage('settings.refresh_interval_seconds', DEFAULT_INTERVAL_SECONDS)
+  const intervalSeconds = useLocalStorage(
+    'settings.refresh_interval_seconds',
+    DEFAULT_INTERVAL_SECONDS,
+  )
 
   // ==========================
   // 2. 运行时环境检测 (VueUse)

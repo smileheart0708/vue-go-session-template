@@ -18,9 +18,7 @@
 <script setup lang="ts">
 import { computed, type Component } from 'vue'
 
-defineOptions({
-  name: 'BaseButton',
-})
+defineOptions({ name: 'BaseButton' })
 
 type CssSize = string | number
 
@@ -42,9 +40,7 @@ const {
   disabled = false,
 } = defineProps<Props>()
 
-const emit = defineEmits<{
-  click: [event: MouseEvent]
-}>()
+const emit = defineEmits<{ click: [event: MouseEvent] }>()
 
 // 处理尺寸单位
 const buttonStyle = computed<Record<string, string>>(() => {

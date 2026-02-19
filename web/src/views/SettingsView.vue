@@ -55,7 +55,9 @@ const showIndicator = ref<boolean>(false)
 const indicatorOffsetPx = computed<string>(() => `${indicatorOffset.value}px`)
 const indicatorWidthPx = computed<string>(() => `${indicatorWidth.value}px`)
 
-const activeIndex = computed<number>(() => tabs.findIndex((tab) => tab.name === activeTabName.value))
+const activeIndex = computed<number>(() =>
+  tabs.findIndex((tab) => tab.name === activeTabName.value),
+)
 
 function updateIndicatorPosition(): void {
   const container = tabsRef.value

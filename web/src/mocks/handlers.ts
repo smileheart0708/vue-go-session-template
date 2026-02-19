@@ -108,18 +108,11 @@ async function parseJsonBody<T>(request: Request): Promise<T | null> {
 }
 
 function buildLoginSuccessResponse(sessionId: string): LoginResponse {
-  return {
-    success: true,
-    message: '登录成功（Mock）',
-    session_id: sessionId,
-  }
+  return { success: true, message: '登录成功（Mock）', session_id: sessionId }
 }
 
 function buildLoginInvalidResponse(message: string): LoginResponse {
-  return {
-    success: false,
-    message,
-  }
+  return { success: false, message }
 }
 
 export const handlers = [

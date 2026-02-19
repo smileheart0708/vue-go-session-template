@@ -10,10 +10,7 @@ function createLoginRedirect(redirectPath: string) {
     return { name: 'login' as const }
   }
 
-  return {
-    name: 'login' as const,
-    query: { redirect: safeRedirectPath },
-  }
+  return { name: 'login' as const, query: { redirect: safeRedirectPath } }
 }
 
 const APP_NAME = 'web'

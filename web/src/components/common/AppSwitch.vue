@@ -1,9 +1,7 @@
 <script setup lang="ts">
 import { computed, useId } from 'vue'
 
-defineOptions({
-  name: 'AppSwitch',
-})
+defineOptions({ name: 'AppSwitch' })
 
 interface Props {
   disabled?: boolean
@@ -15,9 +13,7 @@ const { disabled = false, id, label = '' } = defineProps<Props>()
 
 const modelValue = defineModel<boolean>({ required: true })
 
-const emit = defineEmits<{
-  change: [value: boolean]
-}>()
+const emit = defineEmits<{ change: [value: boolean] }>()
 
 const generatedId = useId()
 
@@ -144,7 +140,10 @@ function handleChange(event: Event): void {
   border-radius: 8px;
 }
 
-.app-switch:not(.app-switch--disabled):active .app-switch__input:checked + .app-switch__control .app-switch__thumb {
+.app-switch:not(.app-switch--disabled):active
+  .app-switch__input:checked
+  + .app-switch__control
+  .app-switch__thumb {
   inset-inline-start: calc(100% - 19px);
 }
 

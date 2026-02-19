@@ -17,9 +17,7 @@
 <script setup lang="ts">
 import { Circle } from 'lucide-vue-next'
 
-defineOptions({
-  name: 'StatsCard',
-})
+defineOptions({ name: 'StatsCard' })
 
 interface Props {
   label: string

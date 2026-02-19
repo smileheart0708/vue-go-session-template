@@ -15,9 +15,7 @@
 <script setup lang="ts">
 import { useTemplateRef } from 'vue'
 
-defineOptions({
-  name: 'IconButton',
-})
+defineOptions({ name: 'IconButton' })
 
 interface Props {
   title?: string
@@ -30,9 +28,7 @@ const { title = '', disabled = false, size = 'medium', toggle = false } = define
 
 const active = defineModel<boolean>('active', { default: false })
 
-const emit = defineEmits<{
-  click: [event: MouseEvent]
-}>()
+const emit = defineEmits<{ click: [event: MouseEvent] }>()
 
 const buttonRef = useTemplateRef<HTMLButtonElement>('buttonRef')
 
@@ -44,9 +40,7 @@ function handleClick(event: MouseEvent) {
   emit('click', event)
 }
 
-defineExpose({
-  $el: buttonRef,
-})
+defineExpose({ $el: buttonRef })
 </script>
 
 <style scoped>
