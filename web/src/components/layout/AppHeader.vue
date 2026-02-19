@@ -16,8 +16,7 @@
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { Menu } from 'lucide-vue-next'
-import IconButton from '@/components/common/IconButton.vue'
-import ThemeToggle from '@/components/common/ThemeToggle.vue'
+import { IconButton, ThemeToggle } from '@/components/common'
 
 const emit = defineEmits<{ 'toggle-sidebar': [] }>()
 

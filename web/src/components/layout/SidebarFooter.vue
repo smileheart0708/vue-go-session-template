@@ -7,7 +7,7 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
 import { LogOut } from 'lucide-vue-next'
-import BaseButton from '@/components/common/BaseButton.vue'
+import { BaseButton } from '@/components/common'
 import { useAuthStore } from '@/stores/auth'
 
 const router = useRouter()

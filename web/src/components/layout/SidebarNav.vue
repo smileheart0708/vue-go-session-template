@@ -1,5 +1,5 @@
 <template>
-  <nav class="sidebar-nav">
+  <nav ref="navRef" class="sidebar-nav">
     <div
       v-show="showIndicator"
       class="nav-indicator"
@@ -20,7 +20,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, nextTick, onMounted, type Component } from 'vue'
+import { nextTick, onMounted, ref, useTemplateRef, watch, type Component } from 'vue'
 import { useRoute } from 'vue-router'
 import { LayoutGrid, FileText, Key, Settings } from 'lucide-vue-next'
 
@@ -38,6 +38,7 @@ const menuItems: MenuItem[] = [
 ]
 
 const route = useRoute()
+const navRef = useTemplateRef<HTMLElement>('navRef')
 
 const indicatorOffset = ref(0)
 const showIndicator = ref(false)
@@ -51,25 +52,32 @@ function findActiveIndex(path: string): number {
   })
 }
 
-function updateIndicatorPosition() {
-  const index = findActiveIndex(route.path)
-  if (index >= 0) {
-    // 使用 getBoundingClientRect 获取实际位置
-    const navElement = document.querySelector('.sidebar-nav')
-    const activeElement = document.querySelectorAll('.nav-item')[index] as HTMLElement
-
-    if (navElement && activeElement) {
-      const navRect = navElement.getBoundingClientRect()
-      const activeRect = activeElement.getBoundingClientRect()
-      const indicatorOffsetAdjustment = activeRect.height / 4
-
-      // 计算相对于导航容器的偏移量
-      indicatorOffset.value = activeRect.top - navRect.top + indicatorOffsetAdjustment
-      showIndicator.value = true
-    }
-  } else {
+function updateIndicatorPosition(): void {
+  const navElement = navRef.value
+  if (!navElement) {
     showIndicator.value = false
+    return
   }
+
+  const index = findActiveIndex(route.path)
+  if (index < 0) {
+    showIndicator.value = false
+    return
+  }
+
+  const activeElements = navElement.querySelectorAll<HTMLElement>('.nav-item')
+  const activeElement = activeElements[index]
+  if (!activeElement) {
+    showIndicator.value = false
+    return
+  }
+
+  const navRect = navElement.getBoundingClientRect()
+  const activeRect = activeElement.getBoundingClientRect()
+  const indicatorOffsetAdjustment = activeRect.height / 4
+
+  indicatorOffset.value = activeRect.top - navRect.top + indicatorOffsetAdjustment
+  showIndicator.value = true
 }
 
 watch(

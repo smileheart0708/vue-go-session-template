@@ -106,7 +106,7 @@
 
 <script setup lang="ts">
 import { useLocalStorage } from '@vueuse/core'
-import AppSwitch from '@/components/common/AppSwitch.vue'
+import { AppSwitch } from '@/components/common'
 
 type ProxyMode = 'transparent' | 'rewrite' | 'mirror'
 type RateLimitLevel = 'off' | 'soft' | 'strict'

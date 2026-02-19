@@ -1,5 +1,5 @@
 <template>
-  <Teleport :to="teleportTo">
+  <Teleport defer :to="teleportTo">
     <Transition name="dropdown-drawer">
       <div
         v-if="open"
@@ -16,7 +16,7 @@
 </template>
 
 <script setup lang="ts">
-import { nextTick, onUnmounted, ref, useAttrs, useTemplateRef, watch } from 'vue'
+import { nextTick, onWatcherCleanup, ref, useAttrs, useTemplateRef, watch } from 'vue'
 
 defineOptions({
   name: 'DropdownDrawer',
@@ -48,8 +48,6 @@ const open = defineModel<boolean>({ default: false })
 const attrs = useAttrs()
 const drawerRef = useTemplateRef<HTMLElement>('drawerRef')
 const drawerStyle = ref<Record<string, string>>({})
-
-let listenersActive = false
 
 function updatePosition(): void {
   const anchor = anchorEl
@@ -89,42 +87,45 @@ function handleKeydown(event: KeyboardEvent): void {
   }
 }
 
-function addGlobalListeners(): void {
-  if (listenersActive) return
-  listenersActive = true
-  if (closeOnOutside) {
+function addGlobalListeners(shouldCloseOnOutside: boolean, shouldCloseOnEscape: boolean): void {
+  if (shouldCloseOnOutside) {
     document.addEventListener('click', handleClickOutside)
   }
-  if (closeOnEscape) {
+  if (shouldCloseOnEscape) {
     window.addEventListener('keydown', handleKeydown)
   }
   window.addEventListener('resize', handleWindowChange)
   window.addEventListener('scroll', handleWindowChange, true)
 }
 
-function removeGlobalListeners(): void {
-  if (!listenersActive) return
-  listenersActive = false
-  document.removeEventListener('click', handleClickOutside)
-  window.removeEventListener('keydown', handleKeydown)
+function removeGlobalListeners(shouldCloseOnOutside: boolean, shouldCloseOnEscape: boolean): void {
+  if (shouldCloseOnOutside) {
+    document.removeEventListener('click', handleClickOutside)
+  }
+  if (shouldCloseOnEscape) {
+    window.removeEventListener('keydown', handleKeydown)
+  }
   window.removeEventListener('resize', handleWindowChange)
   window.removeEventListener('scroll', handleWindowChange, true)
 }
 
 watch(
-  open,
-  async (isOpen) => {
-    if (isOpen) {
-      await nextTick()
-      if (!anchorEl) {
-        open.value = false
-        return
-      }
-      updatePosition()
-      addGlobalListeners()
-    } else {
-      removeGlobalListeners()
+  () => [open.value, closeOnOutside, closeOnEscape] as const,
+  async ([isOpen, shouldCloseOnOutside, shouldCloseOnEscape]) => {
+    if (!isOpen) return
+
+    await nextTick()
+    if (!anchorEl) {
+      open.value = false
+      return
     }
+
+    updatePosition()
+    addGlobalListeners(shouldCloseOnOutside, shouldCloseOnEscape)
+
+    onWatcherCleanup(() => {
+      removeGlobalListeners(shouldCloseOnOutside, shouldCloseOnEscape)
+    })
   },
   { immediate: true },
 )
@@ -137,10 +138,6 @@ watch(
     }
   },
 )
-
-onUnmounted(() => {
-  removeGlobalListeners()
-})
 </script>
 
 <style scoped>

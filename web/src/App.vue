@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { onMounted } from 'vue'
 import { RouterView } from 'vue-router'
+import { ToastMessage } from '@/components/common'
 import { useThemeStore } from '@/stores/theme'
-import ToastMessage from '@/components/common/ToastMessage.vue'
 
 const themeStore = useThemeStore()
 

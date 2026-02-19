@@ -217,7 +217,7 @@ watch(
   () => {
     updateChart()
   },
-  { deep: true },
+  { deep: 2 },
 )
 
 onUnmounted(() => {

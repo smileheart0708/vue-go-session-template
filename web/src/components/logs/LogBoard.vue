@@ -31,7 +31,7 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, nextTick, useTemplateRef } from 'vue'
 import { Info } from 'lucide-vue-next'
-import LogBoardToolbar from '@/components/logs/LogBoardToolbar.vue'
+import LogBoardToolbar from './LogBoardToolbar.vue'
 import { useLogExport, useLogStream } from '@/composables'
 import { formatLogMessage, getLevelClass } from '@/utils/logs'
 

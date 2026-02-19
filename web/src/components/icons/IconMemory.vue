@@ -25,3 +25,9 @@
     <path d="M 110 60 V 78" />
   </svg>
 </template>
+
+<script setup lang="ts">
+defineOptions({
+  name: 'IconMemory',
+})
+</script>

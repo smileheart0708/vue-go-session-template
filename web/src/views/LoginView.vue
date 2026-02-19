@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import ThemeToggle from '@/components/common/ThemeToggle.vue'
-import BaseButton from '@/components/common/BaseButton.vue'
+import { BaseButton, ThemeToggle } from '@/components/common'
 import { useToast } from '@/composables'
 import { useAuthStore } from '@/stores/auth'
 import { HttpError, http, resolveRedirectPath } from '@/utils'

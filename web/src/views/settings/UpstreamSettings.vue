@@ -97,7 +97,7 @@
 
 <script setup lang="ts">
 import { useLocalStorage } from '@vueuse/core'
-import AppSwitch from '@/components/common/AppSwitch.vue'
+import { AppSwitch } from '@/components/common'
 
 type TrafficMode = 'balanced' | 'low-latency' | 'high-throughput'
 type RetryPolicy = 'none' | 'conservative' | 'aggressive'

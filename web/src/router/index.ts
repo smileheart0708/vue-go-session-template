@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory, type RouteLocationNormalizedLoaded } from 'vue-router'
+import { MainLayout } from '@/components'
 import LoginView from '@/views/LoginView.vue'
-import MainLayout from '@/components/layout/MainLayout.vue'
 import { useAuthStore } from '@/stores/auth'
 import { resolveRedirectPath } from '@/utils'
 

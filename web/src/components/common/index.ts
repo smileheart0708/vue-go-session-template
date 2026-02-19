@@ -1,4 +1,5 @@
 import type { App, Plugin } from 'vue'
+import AppDialog from './AppDialog.vue'
 import AppPagination from './AppPagination.vue'
 import AppSwitch from './AppSwitch.vue'
 import AppTable from './AppTable.vue'
@@ -10,6 +11,7 @@ import ThemeToggle from './ThemeToggle.vue'
 import ToastMessage from './ToastMessage.vue'
 
 const commonComponents = [
+  ['AppDialog', AppDialog],
   ['AppPagination', AppPagination],
   ['AppSwitch', AppSwitch],
   ['AppTable', AppTable],
@@ -30,6 +32,7 @@ export const CommonComponentsPlugin: Plugin = {
 }
 
 export {
+  AppDialog,
   AppPagination,
   AppSwitch,
   AppTable,

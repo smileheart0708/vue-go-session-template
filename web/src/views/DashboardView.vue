@@ -11,9 +11,7 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted } from 'vue'
 import { useIntervalFn } from '@vueuse/core'
-import DashboardStats from '@/components/dashboard/DashboardStats.vue'
-import ModelDistribution from '@/components/dashboard/ModelDistribution.vue'
-import RequestChart from '@/components/dashboard/RequestChart.vue'
+import { DashboardStats, ModelDistribution, RequestChart } from '@/components'
 import { useDashboardStore } from '@/stores/dashboard'
 import { useRefreshStore } from '@/stores/refresh'
 

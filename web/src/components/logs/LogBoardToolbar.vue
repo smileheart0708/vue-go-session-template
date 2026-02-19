@@ -56,8 +56,7 @@
 <script setup lang="ts">
 import { computed, ref, useTemplateRef } from 'vue'
 import { Trash2, ArrowDownToLine, ArrowDown, Download } from 'lucide-vue-next'
-import BaseButton from '@/components/common/BaseButton.vue'
-import DropdownDrawer from '@/components/common/DropdownDrawer.vue'
+import { BaseButton, DropdownDrawer } from '@/components/common'
 import type { LogExportType } from '@/composables'
 
 interface Props {

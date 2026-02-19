@@ -49,8 +49,8 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { TrendingUp, Coins, Clock } from 'lucide-vue-next'
-import IconMemory from '@/components/icons/IconMemory.vue'
-import StatsCard from '@/components/common/StatsCard.vue'
+import { IconMemory } from '@/components/icons'
+import { StatsCard } from '@/components/common'
 import { useDashboardStore } from '@/stores/dashboard'
 import { formatNumber, formatBytes, formatTokens } from '@/utils'
 

@@ -5,7 +5,7 @@
 </template>
 
 <script setup lang="ts">
-import LogBoard from '@/components/logs/LogBoard.vue'
+import { LogBoard } from '@/components'
 </script>
 
 <style scoped>

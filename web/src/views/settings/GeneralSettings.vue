@@ -76,7 +76,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useLocalStorage } from '@vueuse/core'
-import AppSwitch from '@/components/common/AppSwitch.vue'
+import { AppSwitch } from '@/components/common'
 import { useRefreshStore } from '@/stores/refresh'
 
 type LandingPage = 'dashboard' | 'logs' | 'settings'

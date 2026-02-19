@@ -21,8 +21,7 @@
 
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-import AppPagination from '@/components/common/AppPagination.vue'
-import AppTable, { type AppTableColumn } from '@/components/common/AppTable.vue'
+import { AppPagination, AppTable, type AppTableColumn } from '@/components/common'
 
 defineOptions({ name: 'KeysView' })
 
