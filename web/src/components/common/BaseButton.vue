@@ -25,8 +25,8 @@ defineOptions({
 type CssSize = string | number
 
 interface Props {
-  width: CssSize
-  height: CssSize
+  width?: CssSize
+  height?: CssSize
   text: string
   primary?: boolean
   icon?: string | Component | null
@@ -34,8 +34,8 @@ interface Props {
 }
 
 const {
-  width,
-  height,
+  width = 'auto',
+  height = 40,
   text,
   primary = false,
   icon = null,

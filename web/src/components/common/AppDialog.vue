@@ -5,13 +5,8 @@
         <div class="dialog-container" @click.stop>
           <div class="dialog-header" :class="{ 'no-border': !showHeaderBorder }">
             <h3 class="dialog-title">{{ title }}</h3>
-            <button class="dialog-close" @click="handleClose" aria-label="关闭">
-              <svg viewBox="0 0 24 24" width="20" height="20">
-                <path
-                  fill="currentColor"
-                  d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
-                />
-              </svg>
+            <button class="dialog-close" @click="handleClose" :aria-label="closeAriaLabel">
+              <X :size="20" />
             </button>
           </div>
           <div class="dialog-body">
@@ -31,7 +26,7 @@
 </template>
 
 <script setup lang="ts">
-import { onWatcherCleanup, watch } from 'vue'
+import { X } from 'lucide-vue-next'
 
 defineOptions({ name: 'AppDialog' })
 
@@ -40,6 +35,7 @@ interface Props {
   closeOnOverlay?: boolean
   showHeaderBorder?: boolean
   showFooterBorder?: boolean
+  closeAriaLabel?: string
 }
 
 const {
@@ -47,26 +43,12 @@ const {
   closeOnOverlay = true,
   showHeaderBorder = true,
   showFooterBorder = true,
+  closeAriaLabel = 'Close dialog',
 } = defineProps<Props>()
 
 const emit = defineEmits<{ close: [] }>()
 
-const modelValue = defineModel<boolean>({ default: false })
-
-watch(
-  modelValue,
-  (visible) => {
-    if (!visible) return
-
-    const previousOverflow = document.body.style.overflow
-    document.body.style.overflow = 'hidden'
-
-    onWatcherCleanup(() => {
-      document.body.style.overflow = previousOverflow
-    })
-  },
-  { immediate: true },
-)
+const modelValue = defineModel<boolean>({ required: true })
 
 function handleClose(): void {
   modelValue.value = false

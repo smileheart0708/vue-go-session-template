@@ -22,7 +22,7 @@
             class="toast-close"
             type="button"
             :aria-label="closeAriaLabel"
-            @click="removeToast(toast.id)"
+            @click="handleClose(toast.id)"
           >
             <X :size="14" />
           </button>
@@ -40,19 +40,35 @@
 
 <script setup lang="ts">
 import { Check, XCircle, AlertTriangle, Info, X } from 'lucide-vue-next'
-import { useToast } from '@/composables'
 
 defineOptions({
   name: 'ToastMessage',
 })
 
+type ToastType = 'success' | 'error' | 'warning' | 'info'
+type ToastId = number
+
+interface ToastItem {
+  id: ToastId
+  message: string
+  type: ToastType
+  duration: number
+}
+
 interface Props {
+  toasts: ReadonlyArray<ToastItem>
   closeAriaLabel?: string
 }
 
-const { closeAriaLabel = 'Close notification' } = defineProps<Props>()
+const { toasts, closeAriaLabel = 'Close notification' } = defineProps<Props>()
 
-const { toasts, removeToast } = useToast()
+const emit = defineEmits<{
+  close: [id: ToastId]
+}>()
+
+function handleClose(id: ToastId): void {
+  emit('close', id)
+}
 </script>
 
 <style scoped>

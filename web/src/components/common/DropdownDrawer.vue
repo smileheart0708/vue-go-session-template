@@ -43,7 +43,7 @@ const {
   closeOnEscape = true,
 } = defineProps<Props>()
 
-const open = defineModel<boolean>({ default: false })
+const open = defineModel<boolean>({ required: true })
 
 const attrs = useAttrs()
 const drawerRef = useTemplateRef<HTMLElement>('drawerRef')

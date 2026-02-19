@@ -7,7 +7,15 @@
     <h1 class="header-title">{{ currentTitle }}</h1>
 
     <div class="header-actions">
-      <ThemeToggle />
+      <ThemeToggle
+        v-model="mode"
+        light-label="浅色"
+        dark-label="深色"
+        auto-label="自动"
+        tooltip-prefix="当前："
+        tooltip-suffix="（长按切换）"
+        @change="handleThemeChange"
+      />
     </div>
   </header>
 </template>
@@ -17,16 +25,23 @@ import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { Menu } from 'lucide-vue-next'
 import { IconButton, ThemeToggle } from '@/components/common'
+import { useTheme } from '@/composables'
+import type { ThemeMode } from '@/composables'
 
 const emit = defineEmits<{ 'toggle-sidebar': [] }>()
 
 const route = useRoute()
+const { mode, setTheme } = useTheme()
 
 const currentTitle = computed(() => {
   // 从路由 meta 中获取标题
   const title = route.meta.title as string | undefined
   return title
 })
+
+async function handleThemeChange(nextMode: ThemeMode, event?: MouseEvent): Promise<void> {
+  await setTheme(nextMode, event)
+}
 </script>
 
 <style scoped>

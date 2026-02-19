@@ -2,7 +2,7 @@
   <div class="app-pagination" :class="{ 'is-disabled': disabled }">
     <p v-if="showSummary" class="app-pagination__summary">
       <slot name="summary" :start="rangeStart" :end="rangeEnd" :total="total">
-        显示 {{ rangeStart }}-{{ rangeEnd }} / 共 {{ total }} 条
+        {{ summaryText }}
       </slot>
     </p>
 
@@ -11,7 +11,7 @@
         class="app-pagination__button app-pagination__button--icon"
         type="button"
         :disabled="!canGoPrevious"
-        aria-label="上一页"
+        :aria-label="previousAriaLabel"
         @click="goPrevious"
       >
         <ChevronLeft :size="14" />
@@ -36,7 +36,7 @@
         class="app-pagination__button app-pagination__button--icon"
         type="button"
         :disabled="!canGoNext"
-        aria-label="下一页"
+        :aria-label="nextAriaLabel"
         @click="goNext"
       >
         <ChevronRight :size="14" />
@@ -60,6 +60,9 @@ interface Props {
   disabled?: boolean
   showSummary?: boolean
   ariaLabel?: string
+  previousAriaLabel?: string
+  nextAriaLabel?: string
+  summaryFormatter?: (context: { start: number; end: number; total: number }) => string
 }
 
 const {
@@ -69,9 +72,12 @@ const {
   disabled = false,
   showSummary = true,
   ariaLabel = 'Pagination',
+  previousAriaLabel = 'Previous page',
+  nextAriaLabel = 'Next page',
+  summaryFormatter,
 } = defineProps<Props>()
 
-const page = defineModel<number>({ default: 1 })
+const page = defineModel<number>({ required: true })
 
 const normalizedPageSize = computed<number>(() => {
   const value = Math.trunc(pageSize)
@@ -91,6 +97,14 @@ const rangeStart = computed<number>(() => {
 const rangeEnd = computed<number>(() => {
   if (total <= 0) return 0
   return Math.min(total, page.value * normalizedPageSize.value)
+})
+
+const summaryText = computed<string>(() => {
+  const context = { start: rangeStart.value, end: rangeEnd.value, total }
+  if (summaryFormatter) {
+    return summaryFormatter(context)
+  }
+  return `Showing ${context.start}-${context.end} / Total ${context.total}`
 })
 
 const canGoPrevious = computed<boolean>(() => !disabled && page.value > 1)

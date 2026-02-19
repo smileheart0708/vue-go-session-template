@@ -19,26 +19,26 @@
       <button
         class="dropdown-item"
         :class="{ active: mode === 'light' }"
-        @click="selectMode('light')"
+        @click="selectMode('light', $event)"
       >
         <Sun class="dropdown-icon" />
-        <span>浅色</span>
+        <span>{{ lightLabel }}</span>
       </button>
       <button
         class="dropdown-item"
         :class="{ active: mode === 'dark' }"
-        @click="selectMode('dark')"
+        @click="selectMode('dark', $event)"
       >
         <Moon class="dropdown-icon" />
-        <span>深色</span>
+        <span>{{ darkLabel }}</span>
       </button>
       <button
         class="dropdown-item"
         :class="{ active: mode === 'auto' }"
-        @click="selectMode('auto')"
+        @click="selectMode('auto', $event)"
       >
         <Monitor class="dropdown-icon" />
-        <span>自动</span>
+        <span>{{ autoLabel }}</span>
       </button>
     </DropdownDrawer>
   </div>
@@ -49,14 +49,41 @@ import { computed, onUnmounted, ref, useTemplateRef } from 'vue'
 import { Sun, Moon, Monitor } from 'lucide-vue-next'
 import DropdownDrawer from './DropdownDrawer.vue'
 import IconButton from './IconButton.vue'
-import { useTheme } from '@/composables'
-import type { ThemeMode } from '@/composables'
 
 defineOptions({
   name: 'ThemeToggle',
 })
 
-const { mode, setTheme } = useTheme()
+type ThemeMode = 'light' | 'dark' | 'auto'
+
+interface TooltipContext {
+  mode: ThemeMode
+  modeLabel: string
+}
+
+interface Props {
+  lightLabel?: string
+  darkLabel?: string
+  autoLabel?: string
+  tooltipPrefix?: string
+  tooltipSuffix?: string
+  tooltipFormatter?: (context: TooltipContext) => string
+}
+
+const {
+  lightLabel = 'Light',
+  darkLabel = 'Dark',
+  autoLabel = 'Auto',
+  tooltipPrefix = 'Current:',
+  tooltipSuffix = '(Long press to switch)',
+  tooltipFormatter,
+} = defineProps<Props>()
+
+const mode = defineModel<ThemeMode>({ required: true })
+
+const emit = defineEmits<{
+  change: [mode: ThemeMode, event: MouseEvent | undefined]
+}>()
 
 const buttonRef = useTemplateRef<InstanceType<typeof IconButton>>('buttonRef')
 const anchorEl = computed<HTMLElement | null>(() => buttonRef.value?.$el ?? null)
@@ -68,14 +95,23 @@ const LONG_PRESS_DURATION = 500
 
 const tooltipText = computed(() => {
   const modeText: Record<ThemeMode, string> = {
-    light: '浅色模式',
-    dark: '深色模式',
-    auto: '自动模式',
+    light: lightLabel,
+    dark: darkLabel,
+    auto: autoLabel,
   }
-  return `当前：${modeText[mode.value]}（长按切换）`
+  const currentModeLabel = modeText[mode.value]
+  if (tooltipFormatter) {
+    return tooltipFormatter({ mode: mode.value, modeLabel: currentModeLabel })
+  }
+  return `${tooltipPrefix} ${currentModeLabel} ${tooltipSuffix}`.replace(/\s+/g, ' ').trim()
 })
 
-async function handleClick(event: MouseEvent) {
+async function applyMode(nextMode: ThemeMode, event?: MouseEvent): Promise<void> {
+  mode.value = nextMode
+  emit('change', nextMode, event)
+}
+
+async function handleClick(event: MouseEvent): Promise<void> {
   if (isLongPress) {
     isLongPress = false
     return
@@ -86,24 +122,16 @@ async function handleClick(event: MouseEvent) {
   const nextIndex = (currentIndex + 1) % modes.length
   const nextMode = modes[nextIndex]
   if (nextMode) {
-    await setTheme(nextMode, event)
+    await applyMode(nextMode, event)
   }
 }
 
-async function selectMode(newMode: ThemeMode) {
+async function selectMode(newMode: ThemeMode, event: MouseEvent): Promise<void> {
   showDropdown.value = false
-  const buttonEl = anchorEl.value
-  if (buttonEl) {
-    const rect = buttonEl.getBoundingClientRect()
-    const event = new MouseEvent('click', {
-      clientX: rect.left + rect.width / 2,
-      clientY: rect.top + rect.height / 2,
-    })
-    await setTheme(newMode, event)
-  }
+  await applyMode(newMode, event)
 }
 
-function handleMouseDown() {
+function handleMouseDown(): void {
   isLongPress = false
   longPressTimer = setTimeout(() => {
     isLongPress = true
@@ -111,14 +139,14 @@ function handleMouseDown() {
   }, LONG_PRESS_DURATION)
 }
 
-function handleMouseUp() {
+function handleMouseUp(): void {
   if (longPressTimer) {
     clearTimeout(longPressTimer)
     longPressTimer = null
   }
 }
 
-function handleTouchStart() {
+function handleTouchStart(): void {
   isLongPress = false
   longPressTimer = setTimeout(() => {
     isLongPress = true
@@ -126,7 +154,7 @@ function handleTouchStart() {
   }, LONG_PRESS_DURATION)
 }
 
-function handleTouchEnd() {
+function handleTouchEnd(): void {
   if (longPressTimer) {
     clearTimeout(longPressTimer)
     longPressTimer = null

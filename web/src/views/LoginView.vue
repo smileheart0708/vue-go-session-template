@@ -2,7 +2,8 @@
 import { computed, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { BaseButton, ThemeToggle } from '@/components/common'
-import { useToast } from '@/composables'
+import { useTheme, useToast } from '@/composables'
+import type { ThemeMode } from '@/composables'
 import { useAuthStore } from '@/stores/auth'
 import { HttpError, http, resolveRedirectPath } from '@/utils'
 
@@ -12,6 +13,7 @@ const authStore = useAuthStore()
 const authKey = ref('')
 const isLoading = ref(false)
 const { success, error: toastError } = useToast()
+const { mode, setTheme } = useTheme()
 
 interface LoginResponse {
   success: boolean
@@ -37,6 +39,10 @@ function extractErrorMessage(payload: unknown): string | null {
 }
 
 const loginRedirectPath = computed(() => resolveRedirectPath(route.query.redirect) ?? '/dashboard')
+
+async function handleThemeChange(nextMode: ThemeMode, event?: MouseEvent): Promise<void> {
+  await setTheme(nextMode, event)
+}
 
 const handleLogin = async () => {
   if (!authKey.value.trim()) {
@@ -82,7 +88,15 @@ const handleLogin = async () => {
   <div class="login-container">
     <div class="login-card">
       <div class="theme-toggle-wrapper">
-        <ThemeToggle />
+        <ThemeToggle
+          v-model="mode"
+          light-label="浅色"
+          dark-label="深色"
+          auto-label="自动"
+          tooltip-prefix="当前："
+          tooltip-suffix="（长按切换）"
+          @change="handleThemeChange"
+        />
       </div>
       <h1 class="login-title">身份认证</h1>
 
