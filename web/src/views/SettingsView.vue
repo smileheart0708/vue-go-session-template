@@ -63,7 +63,7 @@ function updateIndicatorPosition(): void {
   const container = tabsRef.value
   if (!container) return
 
-  const activeElement = container.querySelector('.settings-tab.active') as HTMLElement | null
+  const activeElement = container.querySelector<HTMLElement>('.settings-tab.active')
   if (!activeElement) {
     showIndicator.value = false
     return

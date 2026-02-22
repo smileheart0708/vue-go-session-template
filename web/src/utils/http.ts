@@ -167,7 +167,8 @@ async function parseErrorData(response: Response): Promise<unknown> {
   const contentType = response.headers.get('content-type')?.toLowerCase() ?? ''
   if (contentType.includes('application/json')) {
     try {
-      return (await response.json()) as unknown
+      const data: unknown = await response.json()
+      return data
     } catch {
       return null
     }
@@ -181,31 +182,35 @@ async function parseErrorData(response: Response): Promise<unknown> {
   }
 }
 
-async function parseSuccessData<T>(response: Response, responseType: HttpResponseType): Promise<T> {
+async function parseSuccessData(
+  response: Response,
+  responseType: HttpResponseType,
+): Promise<unknown> {
   if (responseType === 'response') {
-    return response as T
+    return response
   }
 
   if (response.status === 204 || response.status === 205) {
-    return undefined as T
+    return undefined
   }
 
   switch (responseType) {
     case 'text':
-      return (await response.text()) as T
+      return response.text()
     case 'blob':
-      return (await response.blob()) as T
+      return response.blob()
     case 'arrayBuffer':
-      return (await response.arrayBuffer()) as T
+      return response.arrayBuffer()
     case 'json': {
       const text = await response.text()
       if (!text) {
-        return undefined as T
+        return undefined
       }
-      return JSON.parse(text) as T
+      const data: unknown = JSON.parse(text)
+      return data
     }
     default:
-      return undefined as T
+      return undefined
   }
 }
 
@@ -304,7 +309,24 @@ export function buildLoginRedirectPath(currentPath: string = getCurrentPath()): 
   return `/login?redirect=${encodeURIComponent(redirectPath)}`
 }
 
-export async function http<T = unknown>(endpoint: string, options: HttpOptions = {}): Promise<T> {
+type HttpJsonOptions = Omit<HttpOptions, 'responseType'> & { responseType?: 'json' }
+type HttpTextOptions = Omit<HttpOptions, 'responseType'> & { responseType: 'text' }
+type HttpBlobOptions = Omit<HttpOptions, 'responseType'> & { responseType: 'blob' }
+type HttpArrayBufferOptions = Omit<HttpOptions, 'responseType'> & { responseType: 'arrayBuffer' }
+type HttpResponseOptions = Omit<HttpOptions, 'responseType'> & { responseType: 'response' }
+
+export async function http<T = unknown>(endpoint: string, options?: HttpJsonOptions): Promise<T>
+export async function http(
+  endpoint: string,
+  options: HttpTextOptions,
+): Promise<string | undefined>
+export async function http(endpoint: string, options: HttpBlobOptions): Promise<Blob | undefined>
+export async function http(
+  endpoint: string,
+  options: HttpArrayBufferOptions,
+): Promise<ArrayBuffer | undefined>
+export async function http(endpoint: string, options: HttpResponseOptions): Promise<Response>
+export async function http(endpoint: string, options: HttpOptions = {}): Promise<unknown> {
   const responseType = options.responseType ?? 'json'
   const requestUrl = buildRequestUrl(endpoint, options.query)
   const requestInit = createRequestInit(options)
@@ -321,5 +343,5 @@ export async function http<T = unknown>(endpoint: string, options: HttpOptions =
     throw new HttpError(response, data)
   }
 
-  return parseSuccessData<T>(response, responseType)
+  return parseSuccessData(response, responseType)
 }
