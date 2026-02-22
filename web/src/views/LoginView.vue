@@ -3,9 +3,10 @@ import { computed, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { BaseButton, ThemeToggle } from '@/components/common'
 import { useTheme, useToast } from '@/composables'
-import type { ThemeMode } from '@/composables'
 import { useAuthStore } from '@/stores/auth'
-import { HttpError, http, resolveRedirectPath } from '@/utils'
+import { loginResponseSchema } from '@/types/api'
+import { HttpError, HttpResponseValidationError, http, resolveRedirectPath } from '@/utils'
+import type { ThemeMode } from '@/composables'
 
 const route = useRoute()
 const router = useRouter()
@@ -14,12 +15,6 @@ const authKey = ref('')
 const isLoading = ref(false)
 const { success, error: toastError } = useToast()
 const { mode, setTheme } = useTheme()
-
-interface LoginResponse {
-  success: boolean
-  message: string
-  session_id?: string
-}
 
 function hasMessageField(payload: unknown): payload is { message: unknown } {
   return typeof payload === 'object' && payload !== null && 'message' in payload
@@ -57,10 +52,11 @@ const handleLogin = async () => {
   isLoading.value = true
 
   try {
-    const data = await http<LoginResponse>('/login', {
+    const data = await http('/login', {
       method: 'POST',
       body: { auth_key: authKey.value },
       skipUnauthorizedHandler: true,
+      schema: loginResponseSchema,
     })
 
     if (!data.success || !data.session_id) {
@@ -75,6 +71,12 @@ const handleLogin = async () => {
     // 登录后回跳
     await router.replace(loginRedirectPath.value)
   } catch (error) {
+    if (error instanceof HttpResponseValidationError) {
+      console.error('Invalid login response payload:', error)
+      toastError('服务端响应格式异常，请稍后重试')
+      return
+    }
+
     if (error instanceof HttpError) {
       toastError(extractErrorMessage(error.data) || '认证失败，请重试')
       return

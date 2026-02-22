@@ -2,7 +2,8 @@ import { computed } from 'vue'
 import { useLocalStorage } from '@vueuse/core'
 import { defineStore } from 'pinia'
 import { useDashboardStore } from './dashboard'
-import { HttpError, http, setUnauthorizedHandler } from '@/utils'
+import { logoutResponseSchema, validateSessionResponseSchema } from '@/types/api'
+import { HttpError, HttpResponseValidationError, http, setUnauthorizedHandler } from '@/utils'
 import { isMockAuthEnabled } from '@/utils/env'
 
 const STORAGE_KEY = 'vue-go-session-auth'
@@ -10,10 +11,6 @@ const STORAGE_KEY = 'vue-go-session-auth'
 interface StoredAuthState {
   sessionId: string
   isAuthenticated: boolean
-}
-
-interface ValidateSessionResponse {
-  valid: boolean
 }
 
 const DEFAULT_AUTH_STATE: StoredAuthState = { sessionId: '', isAuthenticated: false }
@@ -82,10 +79,11 @@ export const useAuthStore = defineStore('auth', () => {
     }
 
     try {
-      const data = await http<ValidateSessionResponse>('/validate-session', {
+      const data = await http('/validate-session', {
         method: 'POST',
         body: { session_id: sessionId.value },
         skipUnauthorizedHandler: true,
+        schema: validateSessionResponseSchema,
       })
 
       if (!data.valid) {
@@ -106,12 +104,19 @@ export const useAuthStore = defineStore('auth', () => {
 
   async function logout(): Promise<void> {
     try {
-      await http('/logout', {
+      const data = await http('/logout', {
         method: 'POST',
-        responseType: 'response',
         skipUnauthorizedHandler: true,
+        schema: logoutResponseSchema,
       })
+      if (!data.success) {
+        console.warn('Logout response indicates failure:', data)
+      }
     } catch (error) {
+      if (error instanceof HttpResponseValidationError) {
+        console.error('Invalid logout response payload:', error)
+        return
+      }
       if (!(error instanceof HttpError && error.status === 401)) {
         console.error('Failed to logout:', error)
       }

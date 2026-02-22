@@ -1,4 +1,10 @@
 import { delay, http, HttpResponse, sse } from 'msw'
+import type {
+  DashboardStatsResponse,
+  LoginResponse,
+  LogsHistoryResponse,
+  ValidateSessionResponse,
+} from '@/types/api'
 import type { LogEntry } from '@/utils/logs'
 
 interface LoginRequestBody {
@@ -7,23 +13,6 @@ interface LoginRequestBody {
 
 interface ValidateSessionRequestBody {
   session_id: string
-}
-
-interface LoginResponse {
-  success: boolean
-  message: string
-  session_id?: string
-}
-
-interface ValidateSessionResponse {
-  valid: boolean
-}
-
-interface DashboardStatsResponse {
-  memory_used: number
-  memory_total: number
-  memory_percent: number
-  start_time: number
 }
 
 const MOCK_MEMORY_TOTAL = 16 * 1024 * 1024 * 1024
@@ -165,7 +154,8 @@ export const handlers = [
       return createMockLogEntry(undefined, undefined, new Date(Date.now() - offsetMs))
     })
 
-    return HttpResponse.json({ logs })
+    const response: LogsHistoryResponse = { logs, count: logs.length }
+    return HttpResponse.json(response)
   }),
 
   sse('/api/logs/stream', ({ client, request }) => {

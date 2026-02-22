@@ -1,7 +1,8 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { logEntrySchema, logsHistoryResponseSchema } from '@/types/api'
 import { useAuthStore } from '@/stores/auth'
-import { buildLoginRedirectPath } from '@/utils'
+import { HttpError, HttpResponseValidationError, buildLoginRedirectPath, http } from '@/utils'
 import { isMockApiEnabled } from '@/utils/env'
 import type { LogEntry } from '@/utils/logs'
 
@@ -9,8 +10,14 @@ export type LogStreamStatus = 'connecting' | 'connected' | 'disconnected'
 
 interface UseLogStreamOptions {
   streamUrl?: string
+  historyEndpoint?: string
   maxLogs?: number
   onLog?: (log: LogEntry) => void
+}
+
+function createLogEntryKey(entry: LogEntry): string {
+  const attrs = entry.attrs ? JSON.stringify(entry.attrs) : ''
+  return `${entry.time}|${entry.level}|${entry.msg}|${attrs}`
 }
 
 export function useLogStream(options: UseLogStreamOptions = {}) {
@@ -18,14 +25,68 @@ export function useLogStream(options: UseLogStreamOptions = {}) {
   const authStore = useAuthStore()
   const logs = ref<LogEntry[]>([])
   const status = ref<LogStreamStatus>('connecting')
-  const streamUrl = options.streamUrl ?? '/api/logs/stream'
+  const streamUrl = options.streamUrl ?? '/api/logs/stream?history=0'
+  const historyEndpoint = options.historyEndpoint ?? '/logs/history'
   const maxLogs = options.maxLogs ?? 500
   let eventSource: EventSource | null = null
   let reconnectTimer: ReturnType<typeof setTimeout> | null = null
+  let historyLoaded = false
 
-  function connect() {
+  function normalizeLogs(entries: LogEntry[]): LogEntry[] {
+    const seen = new Set<string>()
+    const deduped: LogEntry[] = []
+
+    for (const entry of entries) {
+      const key = createLogEntryKey(entry)
+      if (seen.has(key)) {
+        continue
+      }
+      seen.add(key)
+      deduped.push(entry)
+    }
+
+    if (deduped.length <= maxLogs) {
+      return deduped
+    }
+    return deduped.slice(-maxLogs)
+  }
+
+  function appendLog(logEntry: LogEntry): void {
+    logs.value = normalizeLogs([...logs.value, logEntry])
+    options.onLog?.(logEntry)
+  }
+
+  function mergeHistory(historyLogs: LogEntry[]): void {
+    logs.value = normalizeLogs([...historyLogs, ...logs.value])
+  }
+
+  async function loadHistory(): Promise<void> {
+    if (historyLoaded) {
+      return
+    }
+
+    try {
+      const data = await http(historyEndpoint, {
+        schema: logsHistoryResponseSchema,
+      })
+      mergeHistory(data.logs)
+      historyLoaded = true
+    } catch (error) {
+      if (error instanceof HttpResponseValidationError) {
+        console.error('历史日志响应格式异常:', error)
+        return
+      }
+      if (error instanceof HttpError && error.status === 401) {
+        return
+      }
+      console.error('加载历史日志失败:', error)
+    }
+  }
+
+  function connect(): void {
     if (eventSource) return
     status.value = 'connecting'
+    void loadHistory()
     eventSource = new EventSource(streamUrl)
 
     eventSource.onopen = () => {
@@ -34,14 +95,9 @@ export function useLogStream(options: UseLogStreamOptions = {}) {
 
     eventSource.onmessage = (event) => {
       try {
-        const logEntry: LogEntry = JSON.parse(event.data)
-        logs.value.push(logEntry)
-
-        if (logs.value.length > maxLogs) {
-          logs.value.shift()
-        }
-
-        options.onLog?.(logEntry)
+        const rawData: unknown = JSON.parse(event.data)
+        const logEntry = logEntrySchema.parse(rawData)
+        appendLog(logEntry)
       } catch (error) {
         console.error('解析日志数据失败:', error)
       }
