@@ -19,7 +19,7 @@ func NewRouter(
 	startTime int64,
 	distFS embed.FS,
 ) *gin.Engine {
-	authHandler := handlers.NewAuthHandler(cfg.AuthKey, sessionManager)
+	authHandler := handlers.NewAuthHandler(cfg.AuthKey, sessionManager, cfg.CookieSecure)
 	logsHandler := handlers.NewLogsHandler(logBroadcaster)
 	systemHandler := handlers.NewSystemHandler(startTime)
 

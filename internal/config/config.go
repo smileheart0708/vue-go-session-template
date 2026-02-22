@@ -13,16 +13,18 @@ type Config struct {
 	DataDir       string // 数据持久化目录
 	LogLevel      string // 日志等级
 	AuthKey       string // 管理员身份验证密钥
+	CookieSecure  bool   // Session Cookie 是否启用 Secure
 	IsAutoAuthKey bool   // AuthKey 是否自动生成
 }
 
 // Load 从环境变量加载配置
 func Load() *Config {
 	cfg := &Config{
-		Port:     getEnvAsInt("PORT", 8080),
-		DataDir:  getEnv("DATA_DIR", ".data"),
-		LogLevel: getEnv("LOG_LEVEL", "info"),
-		AuthKey:  getEnv("AUTH_KEY", ""),
+		Port:         getEnvAsInt("PORT", 8080),
+		DataDir:      getEnv("DATA_DIR", ".data"),
+		LogLevel:     getEnv("LOG_LEVEL", "info"),
+		AuthKey:      getEnv("AUTH_KEY", ""),
+		CookieSecure: getEnvAsBool("COOKIE_SECURE", false),
 	}
 
 	// 如果 AUTH_KEY 未设置，生成随机 12 位字符串
@@ -50,6 +52,21 @@ func getEnvAsInt(key string, defaultValue int) int {
 	}
 
 	value, err := strconv.Atoi(valueStr)
+	if err != nil {
+		return defaultValue
+	}
+
+	return value
+}
+
+// getEnvAsBool 获取布尔类型环境变量，支持 true/false（不区分大小写）
+func getEnvAsBool(key string, defaultValue bool) bool {
+	valueStr := os.Getenv(key)
+	if valueStr == "" {
+		return defaultValue
+	}
+
+	value, err := strconv.ParseBool(valueStr)
 	if err != nil {
 		return defaultValue
 	}

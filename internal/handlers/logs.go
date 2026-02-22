@@ -39,16 +39,19 @@ func (h *LogsHandler) StreamLogs(c *gin.Context) {
 	sessionID, _ := c.Get("session_id")
 	slog.Info("客户端连接日志流", "session_id", sessionID, "remote_addr", c.ClientIP())
 
-	// 发送历史日志
-	history := h.broadcaster.GetHistory()
-	for _, entry := range history {
-		data, err := json.Marshal(entry)
-		if err != nil {
-			continue
+	sendHistory := c.DefaultQuery("history", "1") != "0"
+	if sendHistory {
+		// 发送历史日志
+		history := h.broadcaster.GetHistory()
+		for _, entry := range history {
+			data, err := json.Marshal(entry)
+			if err != nil {
+				continue
+			}
+			fmt.Fprintf(c.Writer, "data: %s\n\n", data)
 		}
-		fmt.Fprintf(c.Writer, "data: %s\n\n", data)
+		c.Writer.Flush()
 	}
-	c.Writer.Flush()
 
 	// 持续推送新日志
 	ticker := time.NewTicker(30 * time.Second)

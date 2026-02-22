@@ -12,13 +12,15 @@ import (
 // AuthHandler 认证处理器
 type AuthHandler struct {
 	authKey        string
+	cookieSecure   bool
 	sessionManager *session.Manager
 }
 
 // NewAuthHandler 创建认证处理器
-func NewAuthHandler(authKey string, sessionManager *session.Manager) *AuthHandler {
+func NewAuthHandler(authKey string, sessionManager *session.Manager, cookieSecure bool) *AuthHandler {
 	return &AuthHandler{
 		authKey:        authKey,
+		cookieSecure:   cookieSecure,
 		sessionManager: sessionManager,
 	}
 }
@@ -69,14 +71,15 @@ func (h *AuthHandler) Login(c *gin.Context) {
 	}
 
 	// 设置 cookie
+	c.SetSameSite(http.SameSiteLaxMode)
 	c.SetCookie(
 		"session_id",
 		sess.ID,
 		int(session.SessionDuration.Seconds()),
 		"/",
 		"",
-		false, // secure (生产环境应设为 true)
-		true,  // httpOnly
+		h.cookieSecure, // secure (生产环境应设为 true)
+		true,           // httpOnly
 	)
 
 	slog.Info("user logged in", "session_id", sess.ID, "remote_addr", c.ClientIP())
@@ -130,13 +133,14 @@ func (h *AuthHandler) Logout(c *gin.Context) {
 	}
 
 	// 清除 cookie
+	c.SetSameSite(http.SameSiteLaxMode)
 	c.SetCookie(
 		"session_id",
 		"",
 		-1,
 		"/",
 		"",
-		false,
+		h.cookieSecure,
 		true,
 	)
 
