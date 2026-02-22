@@ -4,6 +4,10 @@ type QueryValue = string | number | boolean | null | undefined
 
 export type HttpQuery = Record<string, QueryValue | QueryValue[]>
 export type HttpResponseType = 'json' | 'text' | 'blob' | 'arrayBuffer' | 'response'
+export interface HttpResponseSchema<T> {
+  readonly name: string
+  parse: (value: unknown) => T
+}
 
 export interface HttpOptions extends Omit<
   RequestInit,
@@ -16,6 +20,7 @@ export interface HttpOptions extends Omit<
   responseType?: HttpResponseType
   credentials?: RequestCredentials
   skipUnauthorizedHandler?: boolean
+  schema?: HttpResponseSchema<unknown>
 }
 
 interface HttpContext {
@@ -137,6 +142,7 @@ function createRequestInit(options: HttpOptions): RequestInit {
     query: _query,
     responseType: _responseType,
     skipUnauthorizedHandler: _skipUnauthorizedHandler,
+    schema: _schema,
     ...rest
   } = options
 
@@ -214,6 +220,23 @@ async function parseSuccessData(
   }
 }
 
+function validateJsonResponse(
+  value: unknown,
+  schema: HttpResponseSchema<unknown> | undefined,
+  requestUrl: string,
+): unknown {
+  if (!schema) {
+    return value
+  }
+
+  try {
+    return schema.parse(value)
+  } catch (error) {
+    const detail = error instanceof Error ? error.message : 'Unknown schema parse error'
+    throw new HttpResponseValidationError(requestUrl, schema.name, detail, value)
+  }
+}
+
 function ensureRedirectToLogin(currentPath: string = getCurrentPath()): void {
   if (typeof window === 'undefined' || redirectingToLogin) {
     return
@@ -266,6 +289,20 @@ export class HttpError<T = unknown> extends Error {
   }
 }
 
+export class HttpResponseValidationError extends Error {
+  readonly requestUrl: string
+  readonly schemaName: string
+  readonly data: unknown
+
+  constructor(requestUrl: string, schemaName: string, detail: string, data: unknown) {
+    super(`Invalid response payload for schema "${schemaName}" at "${requestUrl}": ${detail}`)
+    this.name = 'HttpResponseValidationError'
+    this.requestUrl = requestUrl
+    this.schemaName = schemaName
+    this.data = data
+  }
+}
+
 export function addResponseInterceptor(interceptor: ResponseInterceptor): () => void {
   responseInterceptors.push(interceptor)
   return () => {
@@ -309,13 +346,20 @@ export function buildLoginRedirectPath(currentPath: string = getCurrentPath()): 
   return `/login?redirect=${encodeURIComponent(redirectPath)}`
 }
 
-type HttpJsonOptions = Omit<HttpOptions, 'responseType'> & { responseType?: 'json' }
-type HttpTextOptions = Omit<HttpOptions, 'responseType'> & { responseType: 'text' }
-type HttpBlobOptions = Omit<HttpOptions, 'responseType'> & { responseType: 'blob' }
-type HttpArrayBufferOptions = Omit<HttpOptions, 'responseType'> & { responseType: 'arrayBuffer' }
-type HttpResponseOptions = Omit<HttpOptions, 'responseType'> & { responseType: 'response' }
+type HttpBaseOptions = Omit<HttpOptions, 'responseType' | 'schema'>
+type HttpJsonOptions<T = unknown> = HttpBaseOptions & {
+  responseType?: 'json'
+  schema?: HttpResponseSchema<T>
+}
+type HttpTextOptions = HttpBaseOptions & { responseType: 'text' }
+type HttpBlobOptions = HttpBaseOptions & { responseType: 'blob' }
+type HttpArrayBufferOptions = HttpBaseOptions & { responseType: 'arrayBuffer' }
+type HttpResponseOptions = HttpBaseOptions & { responseType: 'response' }
 
-export async function http<T = unknown>(endpoint: string, options?: HttpJsonOptions): Promise<T>
+export async function http<T = unknown>(
+  endpoint: string,
+  options?: HttpJsonOptions<T>,
+): Promise<T>
 export async function http(
   endpoint: string,
   options: HttpTextOptions,
@@ -343,5 +387,9 @@ export async function http(endpoint: string, options: HttpOptions = {}): Promise
     throw new HttpError(response, data)
   }
 
-  return parseSuccessData(response, responseType)
+  const data = await parseSuccessData(response, responseType)
+  if (responseType !== 'json') {
+    return data
+  }
+  return validateJsonResponse(data, options.schema, requestUrl)
 }

@@ -2,7 +2,7 @@ export interface LogEntry {
   time: string
   level: string
   msg: string
-  attrs?: Record<string, string | number | boolean>
+  attrs?: Record<string, unknown>
 }
 
 export function getLevelClass(level: string): string {
@@ -20,6 +20,9 @@ export function formatLogMessage(log: LogEntry): string {
     const attrStrings = Object.entries(log.attrs).map(([key, value]) => {
       if (typeof value === 'string') {
         return `${key}=${value}`
+      }
+      if (typeof value === 'number' || typeof value === 'boolean' || value === null) {
+        return `${key}=${String(value)}`
       }
       return `${key}=${JSON.stringify(value)}`
     })
