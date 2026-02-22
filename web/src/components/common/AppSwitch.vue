@@ -30,8 +30,8 @@ const isChecked = computed<boolean>({
 })
 
 function handleChange(event: Event): void {
-  const target = event.target as HTMLInputElement
-  isChecked.value = target.checked
+  if (!(event.target instanceof HTMLInputElement)) return
+  isChecked.value = event.target.checked
 }
 </script>
 

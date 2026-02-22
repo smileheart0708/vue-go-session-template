@@ -33,10 +33,10 @@ const emit = defineEmits<{ 'toggle-sidebar': [] }>()
 const route = useRoute()
 const { mode, setTheme } = useTheme()
 
-const currentTitle = computed(() => {
+const currentTitle = computed<string>(() => {
   // 从路由 meta 中获取标题
-  const title = route.meta.title as string | undefined
-  return title
+  const title = route.meta.title
+  return typeof title === 'string' ? title : ''
 })
 
 async function handleThemeChange(nextMode: ThemeMode, event?: MouseEvent): Promise<void> {

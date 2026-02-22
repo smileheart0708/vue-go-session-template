@@ -71,7 +71,8 @@ function handleWindowChange(): void {
 
 function handleClickOutside(event: MouseEvent): void {
   if (!open.value || !closeOnOutside) return
-  const target = event.target as Node
+  const target = event.target
+  if (!(target instanceof Node)) return
   if (drawerRef.value?.contains(target)) return
   if (anchorEl?.contains(target)) return
   open.value = false
@@ -107,7 +108,7 @@ function removeGlobalListeners(shouldCloseOnOutside: boolean, shouldCloseOnEscap
 }
 
 watch(
-  () => [open.value, closeOnOutside, closeOnEscape] as const,
+  (): [boolean, boolean, boolean] => [open.value, closeOnOutside, closeOnEscape],
   async ([isOpen, shouldCloseOnOutside, shouldCloseOnEscape]) => {
     if (!isOpen) return
 
