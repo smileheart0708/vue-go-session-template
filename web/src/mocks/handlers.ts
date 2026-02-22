@@ -101,7 +101,8 @@ function createDashboardStats(): DashboardStatsResponse {
 
 async function parseJsonBody<T>(request: Request): Promise<T | null> {
   try {
-    return (await request.json()) as T
+    const payload = await request.json()
+    return payload
   } catch {
     return null
   }

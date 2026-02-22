@@ -23,8 +23,11 @@ function isValidStoredAuthState(value: unknown): value is StoredAuthState {
     return false
   }
 
-  const state = value as Partial<StoredAuthState>
-  return typeof state.sessionId === 'string' && typeof state.isAuthenticated === 'boolean'
+  if (!('sessionId' in value) || !('isAuthenticated' in value)) {
+    return false
+  }
+
+  return typeof value.sessionId === 'string' && typeof value.isAuthenticated === 'boolean'
 }
 
 export const useAuthStore = defineStore('auth', () => {
