@@ -21,16 +21,20 @@ interface LoginResponse {
   session_id?: string
 }
 
+function hasMessageField(payload: unknown): payload is { message: unknown } {
+  return typeof payload === 'object' && payload !== null && 'message' in payload
+}
+
 function extractErrorMessage(payload: unknown): string | null {
   if (typeof payload === 'string') {
     return payload.trim() || null
   }
 
-  if (!payload || typeof payload !== 'object') {
+  if (!hasMessageField(payload)) {
     return null
   }
 
-  const message = (payload as Record<string, unknown>).message
+  const { message } = payload
   if (typeof message !== 'string') {
     return null
   }
