@@ -22,5 +22,21 @@ export default defineConfigWithVueTs(
 
   ...pluginOxlint.configs['flat/recommended'],
 
+  {
+    name: 'app/typescript-safety-rules',
+    files: ['**/*.{vue,ts,mts,tsx}'],
+    rules: {
+      '@typescript-eslint/no-explicit-any': 'error',
+      '@typescript-eslint/consistent-type-assertions': [
+        'error',
+        {
+          // Ban both `value as Type` and `<Type>value` assertions.
+          // Keep `as const` allowed for literal narrowing.
+          assertionStyle: 'never',
+        },
+      ],
+    },
+  },
+
   skipFormatting,
 )
