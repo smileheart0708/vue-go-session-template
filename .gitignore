@@ -42,3 +42,4 @@ __screenshots__/
 *.exe~
 nul
 .data/
+local/
