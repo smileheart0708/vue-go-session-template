@@ -1,11 +1,11 @@
 <template>
   <section
-    class="w-full overflow-hidden rounded-[14px] border border-border bg-bg-glass backdrop-blur-[12px] backdrop-saturate-[140%]"
+    class="w-full overflow-hidden rounded-[14px] border border-border bg-bg-glass backdrop-blur-md backdrop-saturate-140"
     v-bind="attrs"
   >
     <header
       v-if="hasHeader"
-      class="flex items-center justify-between gap-4 border-b border-border bg-bg-surface px-5 py-4 backdrop-blur-[12px] backdrop-saturate-[140%] max-md:gap-3 max-md:px-4 max-md:py-3"
+      class="flex items-center justify-between gap-4 border-b border-border bg-bg-surface px-5 py-4 backdrop-blur-md backdrop-saturate-140 max-md:gap-3 max-md:px-4 max-md:py-3"
     >
       <div class="min-w-0">
         <slot name="title">
@@ -287,11 +287,11 @@ function getPinnedCellClass(column: AppTableColumn<TRow, TExtraKey>, header: boo
   if (!shouldPinColumn(column) || !column.fixed) return ''
 
   const sideClass = column.fixed === 'right' ? 'right-0 border-l border-border' : 'left-0 border-r border-border'
-  const sharedClass = 'sticky backdrop-blur-[12px] backdrop-saturate-[140%]'
+  const sharedClass = 'sticky backdrop-blur-md backdrop-saturate-140'
   if (header) {
-    return `${sharedClass} ${sideClass} z-[4] bg-bg-surface`
+    return `${sharedClass} ${sideClass} z-4 bg-bg-surface`
   }
-  return `${sharedClass} ${sideClass} z-[3] bg-bg-glass group-hover:bg-bg-subtle`
+  return `${sharedClass} ${sideClass} z-3 bg-bg-glass group-hover:bg-bg-subtle`
 }
 
 function getHeaderCellClass(column: AppTableColumn<TRow, TExtraKey>): string {
@@ -301,7 +301,7 @@ function getHeaderCellClass(column: AppTableColumn<TRow, TExtraKey>): string {
   ]
 
   if (stickyHeader) {
-    classes.push('sticky top-0 z-[2] bg-bg-surface backdrop-blur-[12px] backdrop-saturate-[140%]')
+    classes.push('sticky top-0 z-2 bg-bg-surface backdrop-blur-md backdrop-saturate-140')
   }
 
   const pinnedClass = getPinnedCellClass(column, true)

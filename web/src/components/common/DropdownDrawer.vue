@@ -11,7 +11,7 @@
       <div
         v-if="open"
         ref="drawerRef"
-        class="fixed z-[var(--dropdown-z-index,1000)] min-w-[var(--dropdown-min-width,140px)] rounded-lg border border-border bg-bg-glass p-1 shadow-floating backdrop-blur-[12px] backdrop-saturate-[140%] [&_.dropdown-icon]:size-4 [&_.dropdown-icon]:shrink-0 [&_.dropdown-item]:flex [&_.dropdown-item]:w-full [&_.dropdown-item]:items-center [&_.dropdown-item]:gap-2 [&_.dropdown-item]:rounded-md [&_.dropdown-item]:border-0 [&_.dropdown-item]:bg-transparent [&_.dropdown-item]:px-3 [&_.dropdown-item]:py-2 [&_.dropdown-item]:text-left [&_.dropdown-item]:text-sm [&_.dropdown-item]:text-text-primary [&_.dropdown-item]:transition-colors [&_.dropdown-item]:duration-200 [&_.dropdown-item]:cursor-pointer [&_.dropdown-item:hover]:bg-bg-component-muted [&_.dropdown-item.active]:bg-accent [&_.dropdown-item.active]:text-on-accent"
+        class="fixed z-(--dropdown-z-index,1000) min-w-(--dropdown-min-width,140px) rounded-lg border border-border bg-bg-glass p-1 shadow-floating backdrop-blur-md backdrop-saturate-140 [&_.dropdown-icon]:size-4 [&_.dropdown-icon]:shrink-0 [&_.dropdown-item]:flex [&_.dropdown-item]:w-full [&_.dropdown-item]:items-center [&_.dropdown-item]:gap-2 [&_.dropdown-item]:rounded-md [&_.dropdown-item]:border-0 [&_.dropdown-item]:bg-transparent [&_.dropdown-item]:px-3 [&_.dropdown-item]:py-2 [&_.dropdown-item]:text-left [&_.dropdown-item]:text-sm [&_.dropdown-item]:text-text-primary [&_.dropdown-item]:transition-colors [&_.dropdown-item]:duration-200 [&_.dropdown-item]:cursor-pointer [&_.dropdown-item:hover]:bg-bg-component-muted [&_.dropdown-item.active]:bg-accent [&_.dropdown-item.active]:text-on-accent"
         :style="drawerStyle"
         role="menu"
         v-bind="attrs"

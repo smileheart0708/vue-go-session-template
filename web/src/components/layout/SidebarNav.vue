@@ -10,7 +10,7 @@
       v-for="item in menuItems"
       :key="item.path"
       :to="item.path"
-      class="relative z-[1] mx-3 flex h-11 items-center justify-start gap-3 rounded-xl px-4 pl-10 text-left text-text-secondary no-underline transition-all duration-200 ease-out hover:translate-x-0.5 hover:bg-bg-component-muted hover:text-text-primary focus-visible:outline-none focus-visible:shadow-[0_0_0_2px_var(--sys-color-focus-ring),inset_0_0_0_1px_var(--sys-color-border)] [&.active]:bg-bg-component [&.active]:font-semibold [&.active]:text-accent [&.active]:shadow-[inset_0_0_0_1px_var(--sys-color-border)]"
+      class="relative z-1 mx-3 flex h-11 items-center justify-start gap-3 rounded-xl px-4 pl-10 text-left text-text-secondary no-underline transition-all duration-200 ease-out hover:translate-x-0.5 hover:bg-bg-component-muted hover:text-text-primary focus-visible:outline-none focus-visible:shadow-[0_0_0_2px_var(--sys-color-focus-ring),inset_0_0_0_1px_var(--sys-color-border)] [&.active]:bg-bg-component [&.active]:font-semibold [&.active]:text-accent [&.active]:shadow-[inset_0_0_0_1px_var(--sys-color-border)]"
       :exact-active-class="item.path === '/dashboard' ? 'active' : ''"
       :active-class="item.path !== '/dashboard' ? 'active' : ''"
     >

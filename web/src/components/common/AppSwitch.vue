@@ -52,7 +52,7 @@ function handleChange(event: Event): void {
     />
 
     <label
-      class="relative inline-flex h-5 w-10 items-center rounded-full border border-border transition-colors duration-200 ease-out peer-checked:border-accent peer-checked:bg-accent peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-[var(--sys-color-focus-ring)]"
+      class="relative inline-flex h-5 w-10 items-center rounded-full border border-border transition-colors duration-200 ease-out peer-checked:border-accent peer-checked:bg-accent peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-(--sys-color-focus-ring)"
       :for="inputId"
       aria-hidden="true"
     >
@@ -61,7 +61,12 @@ function handleChange(event: Event): void {
       />
     </label>
 
-    <label v-if="label" :id="labelId" class="cursor-inherit text-sm text-text-primary" :for="inputId">
+    <label
+      v-if="label"
+      :id="labelId"
+      class="cursor-inherit text-sm text-text-primary"
+      :for="inputId"
+    >
       {{ label }}
     </label>
   </div>

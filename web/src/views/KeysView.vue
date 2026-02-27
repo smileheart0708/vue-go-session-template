@@ -19,7 +19,7 @@
       <template #cell-__actions="{ row }">
         <button
           type="button"
-          class="inline-flex h-8 items-center justify-center rounded-md border border-accent px-3 text-xs font-semibold text-accent transition-colors duration-200 hover:bg-accent hover:text-on-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--sys-color-focus-ring)]"
+          class="inline-flex h-8 items-center justify-center rounded-md border border-accent px-3 text-xs font-semibold text-accent transition-colors duration-200 hover:bg-accent hover:text-on-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--sys-color-focus-ring)"
           @click="handleViewDetail(row)"
         >
           查看详情

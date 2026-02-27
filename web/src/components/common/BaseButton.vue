@@ -1,12 +1,15 @@
 <template>
   <button
-    class="inline-flex select-none items-center justify-center gap-2 rounded-md border px-4 text-sm font-medium transition-all duration-200 ease-out focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--sys-color-focus-ring)] disabled:cursor-not-allowed disabled:opacity-50"
+    class="inline-flex select-none items-center justify-center gap-2 rounded-md border px-4 text-sm font-medium transition-all duration-200 ease-out focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--sys-color-focus-ring) disabled:cursor-not-allowed disabled:opacity-50"
     :class="buttonClass"
     :style="buttonStyle"
     :disabled="disabled"
     @click="handleClick"
   >
-    <span v-if="$slots['icon'] || icon" class="inline-flex items-center justify-center text-base leading-none">
+    <span
+      v-if="$slots['icon'] || icon"
+      class="inline-flex items-center justify-center text-base leading-none"
+    >
       <slot name="icon">
         <component :is="icon" v-if="icon" :size="16" />
       </slot>

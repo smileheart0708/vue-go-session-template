@@ -1,5 +1,5 @@
 <template>
-  <div class="flex h-screen h-dvh w-full overflow-hidden">
+  <div class="flex h-dvh w-full overflow-hidden">
     <AppSidebar :is-open="sidebarOpen" />
 
     <div class="ml-0 flex min-h-0 min-w-0 flex-1 flex-col md:ml-sidebar">
@@ -34,7 +34,7 @@
     >
       <div
         v-if="sidebarOpen"
-        class="fixed inset-0 z-[99] bg-[var(--sys-color-overlay)] backdrop-blur-[6px] md:hidden"
+        class="fixed inset-0 z-99 bg-(--sys-color-overlay) backdrop-blur-[6px] md:hidden"
         @click="toggleSidebar"
       />
     </Transition>
