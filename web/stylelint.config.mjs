@@ -1,5 +1,9 @@
 export default {
-  extends: ['stylelint-config-standard', 'stylelint-config-recommended-vue'],
+  extends: [
+    'stylelint-config-standard',
+    'stylelint-config-tailwindcss',
+    'stylelint-config-recommended-vue',
+  ],
   ignoreFiles: ['dist/**', 'node_modules/**'],
   rules: {
     'color-no-hex': true,
@@ -15,7 +19,6 @@ export default {
     'color-function-notation': null,
     'color-function-alias-notation': null,
     'alpha-value-notation': null,
-    'at-rule-no-unknown': [true, { ignoreAtRules: ['theme'] }],
   },
   overrides: [
     {
