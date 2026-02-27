@@ -6,7 +6,7 @@
           <h2 v-if="title" class="app-table__title-text">{{ title }}</h2>
         </slot>
       </div>
-      <div v-if="$slots.actions" class="app-table__actions">
+      <div v-if="$slots['actions']" class="app-table__actions">
         <slot name="actions" />
       </div>
     </header>
@@ -148,7 +148,7 @@ const slots = useSlots()
 const isCompact = useMediaQuery(computed(() => compactMediaQuery))
 
 const hasHeader = computed<boolean>(() => {
-  return Boolean(title) || Boolean(slots.title) || Boolean(slots.actions)
+  return Boolean(title) || Boolean(slots['title']) || Boolean(slots['actions'])
 })
 
 function toCssSize(value: CssSize | undefined): string | undefined {
@@ -168,34 +168,34 @@ function getColumnStyle(column: AppTableColumn<TRow>, index: number): Record<str
       let rightOffset = 0
       for (let i = index + 1; i < columnsArray.length; i++) {
         if (columnsArray[i]?.fixed === 'right') {
-          const colWidth = columnsArray[i]?.width ?? 80
+          const colWidth = columnsArray[i]?.['width'] ?? 80
           rightOffset += Number.parseInt(String(colWidth), 10) || 80
         }
       }
       if (rightOffset > 0) {
-        style.right = `${rightOffset}px`
+        style['right'] = `${rightOffset}px`
       }
     } else if (column.fixed === 'left') {
       // Calculate left offset based on previous left-fixed columns
       let leftOffset = 0
       for (let i = 0; i < index; i++) {
         if (columnsArray[i]?.fixed === 'left') {
-          const colWidth = columnsArray[i]?.width ?? 80
+          const colWidth = columnsArray[i]?.['width'] ?? 80
           leftOffset += Number.parseInt(String(colWidth), 10) || 80
         }
       }
       if (leftOffset > 0) {
-        style.left = `${leftOffset}px`
+        style['left'] = `${leftOffset}px`
       }
     }
   }
 
   // Skip width/minWidth styles in compact/fit mode or auto-layout mode
   if (!isCompact.value && !fitContent && !autoLayout) {
-    const width = toCssSize(column.width)
-    const minWidth = toCssSize(column.minWidth)
-    if (width) style.width = width
-    if (minWidth) style.minWidth = minWidth
+    const width = toCssSize(column['width'])
+    const minWidth = toCssSize(column['minWidth'])
+    if (width) style['width'] = width
+    if (minWidth) style['minWidth'] = minWidth
   }
 
   return style

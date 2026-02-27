@@ -35,7 +35,7 @@ const { mode, setTheme } = useTheme()
 
 const currentTitle = computed<string>(() => {
   // 从路由 meta 中获取标题
-  const title = route.meta.title
+  const title = route.meta['title']
   return typeof title === 'string' ? title : ''
 })
 

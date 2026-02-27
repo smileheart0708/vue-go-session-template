@@ -6,7 +6,7 @@
     :disabled="disabled"
     @click="handleClick"
   >
-    <span v-if="$slots.icon || icon" class="button-icon">
+    <span v-if="$slots['icon'] || icon" class="button-icon">
       <slot name="icon">
         <component :is="icon" v-if="icon" :size="16" />
       </slot>

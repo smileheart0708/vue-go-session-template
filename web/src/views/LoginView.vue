@@ -37,7 +37,7 @@ function extractErrorMessage(payload: unknown): string | null {
   return message.trim() || null
 }
 
-const loginRedirectPath = computed(() => resolveRedirectPath(route.query.redirect) ?? '/dashboard')
+const loginRedirectPath = computed(() => resolveRedirectPath(route.query['redirect']) ?? '/dashboard')
 
 async function handleThemeChange(nextMode: ThemeMode, event?: MouseEvent): Promise<void> {
   await setTheme(nextMode, event)

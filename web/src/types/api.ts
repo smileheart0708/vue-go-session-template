@@ -121,9 +121,9 @@ function parseDashboardStatsResponse(value: unknown): DashboardStatsResponse {
 export function parseLogEntry(value: unknown): LogEntry {
   const payload = expectObjectRecord(value, 'LogEntry')
   const time = expectStringField(payload, 'time', 'LogEntry').trim()
-  const level = expectStringField(payload, 'level', 'LogEntry').trim()
+  const level = expectStringField(payload, 'level', 'LogEntry')
   const msg = expectStringField(payload, 'msg', 'LogEntry')
-  const attrs = parseLogAttrs(payload.attrs)
+  const attrs = parseLogAttrs(payload['attrs'])
 
   if (!time) {
     throw new Error('LogEntry.time must not be empty')
@@ -141,7 +141,7 @@ export function parseLogEntry(value: unknown): LogEntry {
 
 function parseLogsHistoryResponse(value: unknown): LogsHistoryResponse {
   const payload = expectObjectRecord(value, 'LogsHistoryResponse')
-  const rawLogs = payload.logs
+  const rawLogs = payload['logs']
   if (!Array.isArray(rawLogs)) {
     throw new Error('LogsHistoryResponse.logs must be an array')
   }

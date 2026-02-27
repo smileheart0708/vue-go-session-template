@@ -2,7 +2,7 @@ export interface LogEntry {
   time: string
   level: string
   msg: string
-  attrs?: Record<string, unknown>
+  attrs?: Record<string, unknown> | undefined
 }
 
 export function getLevelClass(level: string): string {

@@ -16,7 +16,7 @@ function createLoginRedirect(redirectPath: string) {
 const APP_NAME = 'web'
 
 function resolveRouteTitle(to: RouteLocationNormalizedLoaded): string {
-  const title = to.meta.title
+  const title = to.meta['title']
   if (typeof title !== 'string') return ''
   return title.trim()
 }
@@ -96,8 +96,8 @@ router.beforeEach(async (to) => {
   const authStore = useAuthStore()
 
   // 检查路由是否需要认证
-  const requiresAuth = to.matched.some((record) => record.meta.requiresAuth)
-  const requiresGuest = to.matched.some((record) => record.meta.requiresGuest)
+  const requiresAuth = to.matched.some((record) => record.meta['requiresAuth'])
+  const requiresGuest = to.matched.some((record) => record.meta['requiresGuest'])
 
   // 如果需要认证
   if (requiresAuth) {
@@ -119,7 +119,7 @@ router.beforeEach(async (to) => {
 
   // 如果是登录页，但已经登录
   if (requiresGuest && authStore.isAuthenticated) {
-    const redirectPath = resolveRedirectPath(to.query.redirect)
+    const redirectPath = resolveRedirectPath(to.query['redirect'])
     if (redirectPath) {
       return redirectPath
     }

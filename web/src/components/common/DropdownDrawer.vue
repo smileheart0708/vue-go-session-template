@@ -56,9 +56,9 @@ function updatePosition(): void {
   }
 
   if (align === 'start') {
-    style.left = `${Math.max(8, rect.left)}px`
+    style['left'] = `${Math.max(8, rect.left)}px`
   } else {
-    style.right = `${Math.max(8, window.innerWidth - rect.right)}px`
+    style['right'] = `${Math.max(8, window.innerWidth - rect.right)}px`
   }
 
   drawerStyle.value = style

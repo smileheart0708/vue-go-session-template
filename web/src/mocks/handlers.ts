@@ -68,12 +68,15 @@ function createMockLogEntry(
   const level = forcedLevel ?? pickRandom(LOG_LEVELS)
   const message = forcedMessage ?? pickRandom(LOG_MESSAGES[level])
 
-  return {
+  const entry: LogEntry = {
     time: formatLogTime(date),
     level,
     msg: message,
-    attrs: Math.random() > 0.5 ? { trace_id: Math.random().toString(16).slice(2, 10) } : undefined,
   }
+  if (Math.random() > 0.5) {
+    entry.attrs = { trace_id: Math.random().toString(16).slice(2, 10) }
+  }
+  return entry
 }
 
 function createDashboardStats(): DashboardStatsResponse {

@@ -13,7 +13,7 @@
             <slot />
           </div>
           <div
-            v-if="$slots.footer"
+            v-if="$slots['footer']"
             class="dialog-footer"
             :class="{ 'no-border': !showFooterBorder }"
           >
