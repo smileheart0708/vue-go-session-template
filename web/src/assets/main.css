@@ -1,6 +1,16 @@
-@import url('tailwindcss');
-@import url('./styles/tailwind-theme.css');
-@import url('./base.css');
+@layer theme, base, components, utilities;
+
+@import 'tailwindcss/theme.css' layer(theme);
+@import './styles/tokens.ref.css' layer(theme);
+@import './styles/tokens.sys.css' layer(theme);
+@import './styles/tokens.cmp.css' layer(theme);
+@import './styles/tailwind-theme.css' layer(theme);
+@import 'tailwindcss/preflight.css' layer(base);
+@import './styles/reset.css' layer(base);
+@import './styles/elements.css' layer(base);
+@import './styles/scrollbar.css' layer(base);
+@import './styles/motion.css' layer(base);
+@import 'tailwindcss/utilities.css' layer(utilities);
 
 #app {
   width: 100%;

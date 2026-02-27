@@ -19,6 +19,12 @@ export default {
   },
   overrides: [
     {
+      files: ['src/assets/main.css'],
+      rules: {
+        'import-notation': 'string',
+      },
+    },
+    {
       files: ['src/assets/styles/tailwind-theme.css'],
       rules: {
         'custom-property-pattern': null,
