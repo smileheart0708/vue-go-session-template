@@ -1,9 +1,11 @@
 <template>
-  <section class="content-card chart-card">
-    <div class="card-header">
-      <h2 class="card-title">{{ title }}</h2>
+  <section
+    class="box-border flex w-full min-h-[400px] flex-col overflow-hidden rounded-xl border border-border bg-bg-surface p-6 max-md:min-h-[350px] max-md:p-4"
+  >
+    <div class="mb-6 flex items-center justify-between max-md:mb-4">
+      <h2 class="m-0 text-xl font-semibold text-text-primary max-md:text-[1.1rem]">{{ title }}</h2>
     </div>
-    <div ref="chartRef" class="chart-container"></div>
+    <div ref="chartRef" class="w-full min-h-[300px] flex-1 max-md:min-h-[250px]"></div>
   </section>
 </template>
 
@@ -231,63 +233,3 @@ onUnmounted(() => {
   }
 })
 </script>
-
-<style scoped>
-.content-card {
-  padding: 1.5rem;
-  background: var(--sys-color-bg-surface);
-  border: 1px solid var(--sys-color-border);
-  border-radius: 12px;
-  display: flex;
-  flex-direction: column;
-  box-sizing: border-box;
-  width: 100%;
-  overflow: hidden;
-}
-
-.chart-card {
-  min-height: 400px;
-}
-
-.card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1.5rem;
-}
-
-.card-title {
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: var(--sys-color-text-primary);
-  margin: 0;
-}
-
-.chart-container {
-  flex: 1;
-  min-height: 300px;
-  width: 100%;
-}
-
-@media (width <= 768px) {
-  .content-card {
-    padding: 1rem;
-  }
-
-  .chart-card {
-    min-height: 350px;
-  }
-
-  .card-header {
-    margin-bottom: 1rem;
-  }
-
-  .card-title {
-    font-size: 1.1rem;
-  }
-
-  .chart-container {
-    min-height: 250px;
-  }
-}
-</style>

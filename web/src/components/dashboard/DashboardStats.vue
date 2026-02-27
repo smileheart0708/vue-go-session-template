@@ -1,5 +1,5 @@
 <template>
-  <div class="stats-grid">
+  <div class="grid grid-cols-4 gap-6 max-xl:grid-cols-2 max-sm:grid-cols-1">
     <StatsCard
       label="24小时总请求"
       :value="operationCount"
@@ -95,23 +95,3 @@ const memoryDetail = computed(() => {
   return `${used} / ${total}`
 })
 </script>
-
-<style scoped>
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 1.5rem;
-}
-
-@media (width <= 1280px) {
-  .stats-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (width <= 640px) {
-  .stats-grid {
-    grid-template-columns: 1fr;
-  }
-}
-</style>

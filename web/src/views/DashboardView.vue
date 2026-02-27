@@ -1,7 +1,7 @@
 <template>
-  <div class="dashboard">
+  <div class="flex w-full flex-col gap-6">
     <DashboardStats />
-    <div class="chart-grid">
+    <div class="grid grid-cols-2 items-stretch gap-6 max-lg:grid-cols-1">
       <RequestChart />
       <ModelDistribution />
     </div>
@@ -43,25 +43,3 @@ onUnmounted(() => {
   pauseUptime()
 })
 </script>
-
-<style scoped>
-.dashboard {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-}
-
-.chart-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 1.5rem;
-  align-items: stretch;
-}
-
-@media (width <= 1024px) {
-  .chart-grid {
-    grid-template-columns: 1fr;
-  }
-}
-</style>

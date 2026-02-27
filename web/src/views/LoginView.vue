@@ -91,9 +91,9 @@ const handleLogin = async () => {
 </script>
 
 <template>
-  <div class="login-container">
-    <div class="login-card">
-      <div class="theme-toggle-wrapper">
+  <div class="relative flex min-h-screen items-center justify-center p-5">
+    <div class="relative w-full max-w-[400px] rounded-lg border border-border bg-bg-surface p-10 shadow-card">
+      <div class="absolute right-3 top-3">
         <ThemeToggle
           v-model="mode"
           light-label="浅色"
@@ -104,16 +104,16 @@ const handleLogin = async () => {
           @change="handleThemeChange"
         />
       </div>
-      <h1 class="login-title">身份认证</h1>
+      <h1 class="mb-8 text-center text-2xl font-semibold text-text-primary">身份认证</h1>
 
-      <form @submit.prevent="handleLogin" class="login-form">
-        <div class="form-group">
-          <label for="authKey" class="form-label">认证令牌</label>
+      <form @submit.prevent="handleLogin" class="flex flex-col gap-5">
+        <div class="flex flex-col gap-2">
+          <label for="authKey" class="text-sm font-medium text-text-primary">认证令牌</label>
           <input
             id="authKey"
             v-model="authKey"
             type="password"
-            class="form-input"
+            class="rounded-[4px] px-3 py-2.5 text-sm transition-all disabled:cursor-not-allowed disabled:opacity-60"
             placeholder="请输入 AUTH_KEY"
             :disabled="isLoading"
           />
@@ -131,69 +131,3 @@ const handleLogin = async () => {
     </div>
   </div>
 </template>
-
-<style scoped>
-.login-container {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 100vh;
-  padding: 20px;
-  position: relative;
-}
-
-.theme-toggle-wrapper {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-}
-
-.login-card {
-  position: relative;
-  width: 100%;
-  max-width: 400px;
-  padding: 40px;
-  background: var(--sys-color-bg-surface);
-  border: 1px solid var(--sys-color-border);
-  border-radius: 8px;
-  box-shadow: var(--sys-shadow-card);
-}
-
-.login-title {
-  margin-bottom: 32px;
-  font-size: 24px;
-  font-weight: 600;
-  text-align: center;
-  color: var(--sys-color-text-primary);
-}
-
-.login-form {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.form-group {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.form-label {
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--sys-color-text-primary);
-}
-
-.form-input {
-  padding: 10px 12px;
-  border-radius: 4px;
-  font-size: 14px;
-  transition: all 0.2s;
-}
-
-.form-input:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-</style>

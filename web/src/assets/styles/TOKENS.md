@@ -12,7 +12,7 @@ This template uses a 4-level token model:
 - `tokens.ref.css`: hex/rgb/rgba source values only
 - `tokens.sys.css`: application-level semantic tokens for light/dark theme
 - `tokens.cmp.css`: component-level aliases built on system tokens
-- `tokens.css`: import entry
+- `../main.css`: imports `tokens.ref.css`, `tokens.sys.css`, and `tokens.cmp.css` in `@layer theme`
 
 ## Naming Rules
 

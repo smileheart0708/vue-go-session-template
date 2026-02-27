@@ -1,5 +1,5 @@
 <template>
-  <div class="theme-toggle-container">
+  <div class="relative inline-block">
     <IconButton
       ref="buttonRef"
       :title="tooltipText"
@@ -163,10 +163,3 @@ onUnmounted(() => {
   }
 })
 </script>
-
-<style scoped>
-.theme-toggle-container {
-  position: relative;
-  display: inline-block;
-}
-</style>

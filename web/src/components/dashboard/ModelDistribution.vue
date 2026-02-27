@@ -1,17 +1,24 @@
 <template>
-  <section class="content-card">
-    <div class="card-header">
-      <h2 class="card-title">模型分布</h2>
+  <section class="flex flex-col rounded-xl border border-border bg-bg-surface p-6 max-md:p-4">
+    <div class="mb-6 flex items-center justify-between gap-4 max-md:mb-4">
+      <h2 class="m-0 whitespace-nowrap text-xl font-semibold text-text-primary max-md:text-[1.1rem]">
+        模型分布
+      </h2>
     </div>
-    <div class="chart-wrapper">
-      <div ref="chartRef" class="chart-container"></div>
+    <div class="relative w-full min-h-[240px] flex-1">
+      <div ref="chartRef" class="absolute left-0 top-0 h-full w-full"></div>
     </div>
 
     <!-- 自定义两栏图例 -->
-    <div class="custom-legend">
-      <div v-for="(item, index) in chartData" :key="item.name" class="legend-item">
-        <span class="legend-dot" :style="{ backgroundColor: PIE_CHART_COLORS[index] }"></span>
-        <span class="legend-text" :title="item.name">{{ item.name }}</span>
+    <div class="mt-4 grid grid-cols-2 gap-3">
+      <div v-for="(item, index) in chartData" :key="item.name" class="flex min-w-0 items-center gap-2">
+        <span
+          class="h-2.5 w-2.5 shrink-0 rounded-full"
+          :style="{ backgroundColor: PIE_CHART_COLORS[index] }"
+        ></span>
+        <span class="overflow-hidden text-ellipsis whitespace-nowrap text-xs text-text-secondary" :title="item.name">
+          {{ item.name }}
+        </span>
       </div>
     </div>
   </section>
@@ -172,74 +179,3 @@ onUnmounted(() => {
   }
 })
 </script>
-
-<style scoped>
-.content-card {
-  padding: 1.5rem;
-  background: var(--sys-color-bg-surface);
-  border: 1px solid var(--sys-color-border);
-  border-radius: 12px;
-  display: flex;
-  flex-direction: column;
-}
-
-.card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1.5rem;
-  gap: 1rem;
-}
-
-.card-title {
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: var(--sys-color-text-primary);
-  margin: 0;
-  white-space: nowrap;
-}
-
-.chart-wrapper {
-  position: relative;
-  flex: 1;
-  min-height: 240px;
-  width: 100%;
-}
-
-.chart-container {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-}
-
-.custom-legend {
-  margin-top: 1rem;
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 0.75rem;
-}
-
-.legend-item {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  min-width: 0;
-}
-
-.legend-dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  flex-shrink: 0;
-}
-
-.legend-text {
-  font-size: 0.75rem;
-  color: var(--sys-color-text-secondary);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-</style>

@@ -1,21 +1,42 @@
 <template>
   <Teleport to="body">
-    <Transition name="dialog-fade">
-      <div v-if="modelValue" class="dialog-overlay" @click="handleOverlayClick">
-        <div class="dialog-container" @click.stop>
-          <div class="dialog-header" :class="{ 'no-border': !showHeaderBorder }">
-            <h3 class="dialog-title">{{ title }}</h3>
-            <button class="dialog-close" @click="handleClose" :aria-label="closeAriaLabel">
+    <Transition
+      enter-active-class="transition-opacity duration-200 ease-[ease] [&_.dialog-panel]:transition-transform [&_.dialog-panel]:duration-200 [&_.dialog-panel]:ease-[ease]"
+      enter-from-class="opacity-0 [&_.dialog-panel]:scale-95"
+      enter-to-class="opacity-100 [&_.dialog-panel]:scale-100"
+      leave-active-class="transition-opacity duration-200 ease-[ease] [&_.dialog-panel]:transition-transform [&_.dialog-panel]:duration-200 [&_.dialog-panel]:ease-[ease]"
+      leave-from-class="opacity-100 [&_.dialog-panel]:scale-100"
+      leave-to-class="opacity-0 [&_.dialog-panel]:scale-95"
+    >
+      <div
+        v-if="modelValue"
+        class="fixed inset-0 z-1000 flex items-center justify-center bg-black/50 p-4 backdrop-blur-[4px]"
+        @click="handleOverlayClick"
+      >
+        <div
+          class="dialog-panel flex max-h-[90vh] w-full max-w-[480px] flex-col overflow-hidden rounded-xl bg-bg-surface shadow-[0_25px_50px_-12px_rgba(0,0,0,0.25)]"
+          @click.stop
+        >
+          <div
+            class="flex items-center justify-between px-6 py-5"
+            :class="showHeaderBorder ? 'border-b border-border' : 'border-b-0'"
+          >
+            <h3 class="m-0 text-lg font-semibold text-text-primary">{{ title }}</h3>
+            <button
+              class="flex size-8 items-center justify-center rounded-md border-0 bg-transparent text-text-secondary transition-all duration-200 ease-[ease] hover:bg-bg-subtle hover:text-text-primary"
+              @click="handleClose"
+              :aria-label="closeAriaLabel"
+            >
               <X :size="20" />
             </button>
           </div>
-          <div class="dialog-body">
+          <div class="flex-1 overflow-y-auto p-6">
             <slot />
           </div>
           <div
             v-if="$slots['footer']"
-            class="dialog-footer"
-            :class="{ 'no-border': !showFooterBorder }"
+            class="flex justify-end gap-3 px-6 py-4"
+            :class="showFooterBorder ? 'border-t border-border' : 'border-t-0'"
           >
             <slot name="footer" />
           </div>
@@ -61,106 +82,3 @@ function handleOverlayClick(): void {
   }
 }
 </script>
-
-<style scoped>
-.dialog-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 1000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(4px);
-  padding: 1rem;
-}
-
-.dialog-container {
-  background-color: var(--sys-color-bg-surface);
-  border-radius: 12px;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-  width: 100%;
-  max-width: 480px;
-  max-height: 90vh;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-}
-
-.dialog-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 1.25rem 1.5rem;
-  border-bottom: 1px solid var(--sys-color-border);
-}
-
-.dialog-title {
-  margin: 0;
-  font-size: 1.125rem;
-  font-weight: 600;
-  color: var(--sys-color-text-primary);
-}
-
-.dialog-close {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
-  border: none;
-  background: transparent;
-  color: var(--sys-color-text-secondary);
-  cursor: pointer;
-  border-radius: 6px;
-  transition: all 0.2s ease;
-}
-
-.dialog-close:hover {
-  background-color: var(--sys-color-bg-subtle);
-  color: var(--sys-color-text-primary);
-}
-
-.dialog-body {
-  padding: 1.5rem;
-  overflow-y: auto;
-  flex: 1;
-}
-
-.dialog-footer {
-  display: flex;
-  justify-content: flex-end;
-  gap: 0.75rem;
-  padding: 1rem 1.5rem;
-  border-top: 1px solid var(--sys-color-border);
-}
-
-.dialog-header.no-border {
-  border-bottom: none;
-}
-
-.dialog-footer.no-border {
-  border-top: none;
-}
-
-/* 动画 */
-.dialog-fade-enter-active,
-.dialog-fade-leave-active {
-  transition: opacity 0.2s ease;
-}
-
-.dialog-fade-enter-from,
-.dialog-fade-leave-to {
-  opacity: 0;
-}
-
-.dialog-fade-enter-active .dialog-container,
-.dialog-fade-leave-active .dialog-container {
-  transition: transform 0.2s ease;
-}
-
-.dialog-fade-enter-from .dialog-container,
-.dialog-fade-leave-to .dialog-container {
-  transform: scale(0.95);
-}
-</style>
