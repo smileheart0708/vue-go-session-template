@@ -121,7 +121,7 @@ function parseDashboardStatsResponse(value: unknown): DashboardStatsResponse {
 export function parseLogEntry(value: unknown): LogEntry {
   const payload = expectObjectRecord(value, 'LogEntry')
   const time = expectStringField(payload, 'time', 'LogEntry').trim()
-  const level = expectStringField(payload, 'level', 'LogEntry')
+  const level = expectStringField(payload, 'level', 'LogEntry').trim()
   const msg = expectStringField(payload, 'msg', 'LogEntry')
   const attrs = parseLogAttrs(payload['attrs'])
 
