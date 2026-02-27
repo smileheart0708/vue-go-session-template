@@ -1,12 +1,16 @@
 <template>
-  <header class="mobile-header">
-    <IconButton class="menu-toggle" title="切换侧边栏" @click="emit('toggle-sidebar')">
+  <header
+    class="fixed inset-x-0 top-0 z-[90] flex h-header items-center gap-4 border-b border-[var(--cmp-header-border)] bg-[var(--cmp-header-bg)] px-6 backdrop-blur-[12px] backdrop-saturate-[140%] md:left-sidebar max-md:px-4"
+  >
+    <IconButton class="md:hidden" title="切换侧边栏" @click="emit('toggle-sidebar')">
       <Menu />
     </IconButton>
 
-    <h1 class="header-title">{{ currentTitle }}</h1>
+    <h1 class="m-0 flex-1 min-w-0 overflow-hidden text-ellipsis whitespace-nowrap text-lg font-semibold text-text-primary">
+      {{ currentTitle }}
+    </h1>
 
-    <div class="header-actions">
+    <div class="flex items-center gap-2">
       <ThemeToggle
         v-model="mode"
         light-label="浅色"
@@ -34,7 +38,6 @@ const route = useRoute()
 const { mode, setTheme } = useTheme()
 
 const currentTitle = computed<string>(() => {
-  // 从路由 meta 中获取标题
   const title = route.meta['title']
   return typeof title === 'string' ? title : ''
 })
@@ -43,52 +46,3 @@ async function handleThemeChange(nextMode: ThemeMode, event?: MouseEvent): Promi
   await setTheme(nextMode, event)
 }
 </script>
-
-<style scoped>
-.mobile-header {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  height: var(--sys-layout-header-height);
-  padding: 0 1.5rem;
-  background: var(--cmp-header-bg);
-  backdrop-filter: blur(12px) saturate(140%);
-  backdrop-filter: blur(12px) saturate(140%);
-  border-bottom: 1px solid var(--cmp-header-border);
-  position: fixed;
-  top: 0;
-  right: 0;
-  left: var(--sys-layout-sidebar-width);
-  z-index: 90;
-}
-
-.header-title {
-  flex: 1;
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  font-size: 1.125rem;
-  font-weight: 600;
-  color: var(--sys-color-text-primary);
-  margin: 0;
-}
-
-.header-actions {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-@media (width >= 768px) {
-  .menu-toggle {
-    display: none;
-  }
-}
-
-@media (width <= 767px) {
-  .mobile-header {
-    left: 0;
-  }
-}
-</style>

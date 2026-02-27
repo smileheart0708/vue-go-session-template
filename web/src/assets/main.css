@@ -1,5 +1,6 @@
+@import url('tailwindcss');
+@import url('./styles/tailwind-theme.css');
 @import url('./base.css');
-@import url('./styles/settings-content.css');
 
 #app {
   width: 100%;

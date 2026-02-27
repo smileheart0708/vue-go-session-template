@@ -1,17 +1,17 @@
 <template>
   <button
-    class="base-button"
-    :class="{ 'is-primary': primary }"
+    class="inline-flex select-none items-center justify-center gap-2 rounded-md border px-4 text-sm font-medium transition-all duration-200 ease-out focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--sys-color-focus-ring)] disabled:cursor-not-allowed disabled:opacity-50"
+    :class="buttonClass"
     :style="buttonStyle"
     :disabled="disabled"
     @click="handleClick"
   >
-    <span v-if="$slots['icon'] || icon" class="button-icon">
+    <span v-if="$slots['icon'] || icon" class="inline-flex items-center justify-center text-base leading-none">
       <slot name="icon">
         <component :is="icon" v-if="icon" :size="16" />
       </slot>
     </span>
-    <span class="button-text">{{ text }}</span>
+    <span class="whitespace-nowrap leading-none">{{ text }}</span>
   </button>
 </template>
 
@@ -42,11 +42,17 @@ const {
 
 const emit = defineEmits<{ click: [event: MouseEvent] }>()
 
-// 处理尺寸单位
 const buttonStyle = computed<Record<string, string>>(() => {
   const formatSize = (size: CssSize): string => (typeof size === 'number' ? `${size}px` : size)
-
   return { width: formatSize(width), height: formatSize(height) }
+})
+
+const buttonClass = computed<string>(() => {
+  if (primary) {
+    return 'border-accent bg-accent text-on-accent enabled:hover:border-accent-hover enabled:hover:bg-accent-hover enabled:active:border-accent-active enabled:active:bg-accent-active'
+  }
+
+  return 'border-accent bg-bg-surface text-accent enabled:hover:bg-accent enabled:hover:text-on-accent enabled:active:border-accent-active enabled:active:bg-accent-active'
 })
 
 function handleClick(event: MouseEvent): void {
@@ -55,97 +61,3 @@ function handleClick(event: MouseEvent): void {
   }
 }
 </script>
-
-<style scoped>
-.base-button {
-  /* Win11 风格固定圆角 */
-  border-radius: 6px;
-
-  /* 布局 - 默认居中 */
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-
-  /* 基础样式 */
-  padding: 0 16px;
-  font-size: 14px;
-  font-weight: 500;
-  font-family: inherit;
-  cursor: pointer;
-  outline: none;
-  user-select: none;
-
-  /* 过渡动画 */
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-
-  /* 默认模式：背景使用 elevated 背景色，边框和文字使用主题色 */
-  background-color: var(--sys-color-bg-surface);
-  border: 1px solid var(--sys-color-accent);
-  color: var(--sys-color-accent);
-}
-
-/* 图标容器 */
-.button-icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 16px;
-  line-height: 1;
-}
-
-/* 文字容器 */
-.button-text {
-  line-height: 1;
-  white-space: nowrap;
-}
-
-/* 默认模式 Hover：背景变为主题色，文字变白 */
-.base-button:not(.is-primary, :disabled):hover {
-  background-color: var(--sys-color-accent);
-  color: var(--sys-color-on-accent);
-  border-color: var(--sys-color-accent);
-}
-
-/* 默认模式 Active：使用更深主题色 */
-.base-button:not(.is-primary, :disabled):active {
-  background-color: var(--sys-color-accent-active);
-  border-color: var(--sys-color-accent-active);
-}
-
-/* 主题色模式：背景使用主题色，文字白色，无边框或边框同色 */
-.base-button.is-primary {
-  background-color: var(--sys-color-accent);
-  border: 1px solid var(--sys-color-accent);
-  color: var(--sys-color-on-accent);
-}
-
-/* 主题色模式 Hover */
-.base-button.is-primary:not(:disabled):hover {
-  background-color: var(--sys-color-accent-hover);
-  border-color: var(--sys-color-accent-hover);
-}
-
-/* 主题色模式 Active */
-.base-button.is-primary:not(:disabled):active {
-  background-color: var(--sys-color-accent-active);
-  border-color: var(--sys-color-accent-active);
-}
-
-/* 禁用状态 */
-.base-button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-/* 深色主题适配 - 确保对比度 */
-:root[data-theme='dark'] .base-button:not(.is-primary) {
-  background-color: var(--sys-color-bg-surface);
-}
-
-/* 焦点状态 - 添加轮廓 */
-.base-button:focus-visible {
-  outline: 2px solid var(--sys-color-focus-ring);
-  outline-offset: 2px;
-}
-</style>

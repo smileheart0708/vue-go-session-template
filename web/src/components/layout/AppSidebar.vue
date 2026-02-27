@@ -1,6 +1,12 @@
 <template>
-  <aside class="sidebar" :class="{ 'sidebar-open': isOpen }">
-    <div class="sidebar-drawer">
+  <aside
+    class="fixed left-0 top-0 z-[100] flex h-screen h-dvh w-sidebar flex-col bg-transparent transition-transform duration-300 ease-[cubic-bezier(0.2,0.8,0.2,1)] will-change-transform"
+    :class="isOpen ? 'max-md:translate-x-0 max-md:pointer-events-auto' : 'max-md:-translate-x-full max-md:pointer-events-none'"
+  >
+    <div
+      class="flex h-full w-full flex-col overflow-hidden border-r border-border bg-bg-glass backdrop-blur-[28px] backdrop-saturate-[1.1] transition-all duration-300 ease-[cubic-bezier(0.2,0.8,0.2,1)] will-change-transform max-md:rounded-r-2xl"
+      :class="isOpen ? 'max-md:translate-x-0 max-md:scale-100 max-md:opacity-100' : 'max-md:-translate-x-3 max-md:scale-[0.98] max-md:opacity-0'"
+    >
       <SidebarHeader />
       <SidebarNav />
       <SidebarFooter />
@@ -19,68 +25,3 @@ interface Props {
 
 const { isOpen = true } = defineProps<Props>()
 </script>
-
-<style scoped>
-.sidebar {
-  display: flex;
-  flex-direction: column;
-  width: var(--sys-layout-sidebar-width);
-  height: 100vh;
-  background: transparent;
-  transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
-  position: fixed;
-  left: 0;
-  top: 0;
-  z-index: 100;
-  will-change: transform;
-}
-
-.sidebar-drawer {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  height: 100%;
-  background: var(--sys-color-bg-glass);
-  border-right: 1px solid var(--sys-color-border);
-  border-radius: 0;
-  box-shadow: none;
-  backdrop-filter: blur(28px) saturate(1.1);
-  backdrop-filter: blur(28px) saturate(1.1);
-  overflow: hidden;
-  transition:
-    transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1),
-    opacity 0.25s ease,
-    box-shadow 0.3s ease;
-  will-change: transform, opacity;
-}
-
-@media (width <= 767px) {
-  .sidebar {
-    transform: translate3d(-100%, 0, 0);
-    pointer-events: none;
-  }
-
-  .sidebar .sidebar-drawer {
-    opacity: 0;
-    transform: translate3d(-12px, 0, 0) scale(0.98);
-    border-radius: 0 16px 16px 0;
-  }
-
-  .sidebar-open {
-    transform: translate3d(0, 0, 0);
-    pointer-events: auto;
-  }
-
-  .sidebar-open .sidebar-drawer {
-    opacity: 1;
-    transform: translate3d(0, 0, 0) scale(1);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .sidebar,
-  .sidebar-drawer {
-    transition: none !important;
-  }
-}
-</style>

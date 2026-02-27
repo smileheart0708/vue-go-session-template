@@ -1,8 +1,8 @@
 <template>
   <button
     ref="buttonRef"
-    class="icon-button"
-    :class="[size, { active }]"
+    class="inline-flex items-center justify-center rounded-lg border border-transparent bg-transparent text-text-primary transition-all duration-200 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50"
+    :class="[sizeClass, activeClass]"
     :title="title"
     :aria-pressed="toggle ? active : undefined"
     :disabled="disabled"
@@ -13,7 +13,7 @@
 </template>
 
 <script setup lang="ts">
-import { useTemplateRef } from 'vue'
+import { computed, useTemplateRef } from 'vue'
 
 defineOptions({ name: 'IconButton' })
 
@@ -32,7 +32,20 @@ const emit = defineEmits<{ click: [event: MouseEvent] }>()
 
 const buttonRef = useTemplateRef<HTMLButtonElement>('buttonRef')
 
-function handleClick(event: MouseEvent) {
+const sizeClass = computed<string>(() => {
+  if (size === 'small') return 'size-8 [&>svg]:size-4'
+  if (size === 'large') return 'size-12 [&>svg]:size-6'
+  return 'size-10 [&>svg]:size-5'
+})
+
+const activeClass = computed<string>(() => {
+  if (active.value) {
+    return 'border-accent bg-accent text-on-accent'
+  }
+  return 'enabled:hover:border-border enabled:hover:bg-bg-component-muted'
+})
+
+function handleClick(event: MouseEvent): void {
   if (disabled) return
   if (toggle) {
     active.value = !active.value
@@ -42,75 +55,3 @@ function handleClick(event: MouseEvent) {
 
 defineExpose({ $el: buttonRef })
 </script>
-
-<style scoped>
-.icon-button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0;
-  background: transparent;
-  border: 1px solid transparent;
-  border-radius: 8px;
-  cursor: pointer;
-  color: var(--sys-color-text-primary);
-  transition:
-    all 0.2s,
-    transform 0.1s;
-}
-
-.icon-button:hover:not(:disabled) {
-  background: var(--sys-color-bg-component-muted);
-  border-color: var(--sys-color-border);
-}
-
-.icon-button:active:not(:disabled) {
-  transform: scale(0.95);
-}
-
-.icon-button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.icon-button.active {
-  background: var(--sys-color-accent);
-  color: var(--sys-color-on-accent);
-}
-
-/* 尺寸变体 */
-.icon-button.small {
-  width: 32px;
-  height: 32px;
-}
-
-.icon-button.medium {
-  width: 40px;
-  height: 40px;
-}
-
-.icon-button.large {
-  width: 48px;
-  height: 48px;
-}
-
-/* 图标样式 */
-.icon-button :deep(svg) {
-  flex-shrink: 0;
-}
-
-.icon-button.small :deep(svg) {
-  width: 16px;
-  height: 16px;
-}
-
-.icon-button.medium :deep(svg) {
-  width: 20px;
-  height: 20px;
-}
-
-.icon-button.large :deep(svg) {
-  width: 24px;
-  height: 24px;
-}
-</style>

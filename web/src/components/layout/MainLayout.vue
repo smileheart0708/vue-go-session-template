@@ -1,18 +1,42 @@
 <template>
-  <div class="main-layout">
+  <div class="flex h-screen h-dvh w-full overflow-hidden">
     <AppSidebar :is-open="sidebarOpen" />
-    <div class="main-content">
+
+    <div class="ml-0 flex min-h-0 min-w-0 flex-1 flex-col md:ml-sidebar">
       <AppHeader @toggle-sidebar="toggleSidebar" />
-      <main class="content">
+
+      <main
+        class="flex min-h-0 min-w-0 flex-1 flex-col overflow-y-auto overflow-x-hidden px-6 pb-6 pt-[calc(var(--sys-layout-header-height)+1.5rem)] overscroll-y-contain [scrollbar-gutter:stable_both-edges] max-md:px-4 max-md:pb-4 max-md:pt-[calc(var(--sys-layout-header-height)+1rem)]"
+      >
         <RouterView v-slot="{ Component }">
-          <Transition name="fade" mode="out-in">
+          <Transition
+            mode="out-in"
+            enter-active-class="transition-opacity duration-300"
+            enter-from-class="opacity-0"
+            enter-to-class="opacity-100"
+            leave-active-class="transition-opacity duration-300"
+            leave-from-class="opacity-100"
+            leave-to-class="opacity-0"
+          >
             <component :is="Component" />
           </Transition>
         </RouterView>
       </main>
     </div>
-    <Transition name="fade">
-      <div v-if="sidebarOpen" class="sidebar-overlay" @click="toggleSidebar" />
+
+    <Transition
+      enter-active-class="transition-opacity duration-300"
+      enter-from-class="opacity-0"
+      enter-to-class="opacity-100"
+      leave-active-class="transition-opacity duration-300"
+      leave-from-class="opacity-100"
+      leave-to-class="opacity-0"
+    >
+      <div
+        v-if="sidebarOpen"
+        class="fixed inset-0 z-[99] bg-[var(--sys-color-overlay)] backdrop-blur-[6px] md:hidden"
+        @click="toggleSidebar"
+      />
     </Transition>
   </div>
 </template>
@@ -22,82 +46,17 @@ import { onMounted, onUnmounted, ref } from 'vue'
 import AppSidebar from './AppSidebar.vue'
 import AppHeader from './AppHeader.vue'
 
-const BODY_SCROLL_LOCK_CLASS = 'main-layout-scroll-lock'
-
 const sidebarOpen = ref(false)
 
-function toggleSidebar() {
+function toggleSidebar(): void {
   sidebarOpen.value = !sidebarOpen.value
 }
 
 onMounted(() => {
-  document.body.classList.add(BODY_SCROLL_LOCK_CLASS)
+  document.body.style.overflow = 'hidden'
 })
 
 onUnmounted(() => {
-  document.body.classList.remove(BODY_SCROLL_LOCK_CLASS)
   document.body.style.overflow = ''
 })
 </script>
-
-<style scoped>
-.main-layout {
-  display: flex;
-  width: 100%;
-  height: 100vh;
-  height: 100dvh;
-  overflow: hidden;
-}
-
-.main-content {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  margin-left: var(--sys-layout-sidebar-width);
-  min-width: 0;
-  min-height: 0;
-  height: 100%;
-  overflow: hidden;
-}
-
-.content {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  padding: calc(var(--sys-layout-header-height) + 1.5rem) 1.5rem 1.5rem;
-  min-width: 0;
-  min-height: 0;
-  overflow: hidden auto;
-  overscroll-behavior-y: contain;
-  scrollbar-gutter: stable both-edges;
-}
-
-.sidebar-overlay {
-  position: fixed;
-  inset: 0;
-  background: var(--sys-color-overlay);
-  backdrop-filter: blur(6px);
-  backdrop-filter: blur(6px);
-  z-index: 99;
-}
-
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.3s ease;
-}
-
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
-}
-
-:global(body.main-layout-scroll-lock) {
-  overflow: hidden;
-}
-
-@media (width <= 767px) {
-  .main-content {
-    margin-left: 0;
-  }
-}
-</style>

@@ -1,100 +1,103 @@
 <template>
-  <div class="settings-section">
-    <section class="settings-card">
-      <header class="settings-card__header">
-        <h2 class="settings-card__title">下游代理</h2>
-        <p class="settings-card__subtitle">控制转发端口、协议模式与来源限制</p>
+  <div class="flex flex-col gap-6">
+    <section class="flex flex-col gap-5 rounded-xl border border-border bg-bg-surface p-6">
+      <header class="flex flex-col gap-2">
+        <h2 class="m-0 text-[1.1rem] font-semibold text-text-primary">下游代理</h2>
+        <p class="m-0 text-[0.9rem] text-text-secondary">控制转发端口、协议模式与来源限制</p>
       </header>
 
-      <div class="settings-row">
-        <div class="settings-info">
-          <span class="settings-label">启用代理</span>
-          <span class="settings-desc">开启后将对外提供统一入口</span>
+      <div class="flex items-center justify-between gap-4 border-t-0 border-border pb-3 pt-0 max-sm:flex-col max-sm:items-start">
+        <div class="flex min-w-0 flex-col gap-1.5">
+          <span class="font-medium text-text-primary">启用代理</span>
+          <span class="text-[0.85rem] text-text-secondary">开启后将对外提供统一入口</span>
         </div>
         <AppSwitch v-model="proxyEnabled" />
       </div>
 
-      <div class="settings-row">
-        <div class="settings-info">
-          <span class="settings-label">监听端口</span>
-          <span class="settings-desc">建议使用 1024-65535 范围</span>
+      <div class="flex items-center justify-between gap-4 border-t border-dashed border-border py-3 max-sm:flex-col max-sm:items-start">
+        <div class="flex min-w-0 flex-col gap-1.5">
+          <span class="font-medium text-text-primary">监听端口</span>
+          <span class="text-[0.85rem] text-text-secondary">建议使用 1024-65535 范围</span>
         </div>
-        <div class="settings-control">
+        <div class="flex items-center gap-2 max-sm:w-full">
           <input
             v-model.number="listenPort"
             type="number"
             min="1024"
             max="65535"
             step="1"
-            class="settings-input settings-input--short"
+            class="w-24 rounded-md px-2.5 py-1.5 text-center max-sm:w-full max-sm:text-left"
           />
-          <span class="settings-unit">端口</span>
+          <span class="text-[0.9rem] text-text-secondary">端口</span>
         </div>
       </div>
 
-      <div class="settings-row">
-        <div class="settings-info">
-          <span class="settings-label">代理模式</span>
-          <span class="settings-desc">决定请求是否改写或镜像</span>
+      <div class="flex items-center justify-between gap-4 border-t border-dashed border-border py-3 max-sm:flex-col max-sm:items-start">
+        <div class="flex min-w-0 flex-col gap-1.5">
+          <span class="font-medium text-text-primary">代理模式</span>
+          <span class="text-[0.85rem] text-text-secondary">决定请求是否改写或镜像</span>
         </div>
-        <select v-model="proxyMode" class="settings-select">
+        <select v-model="proxyMode" class="w-[220px] rounded-md bg-bg-surface px-2.5 py-1.5 max-sm:w-full">
           <option value="transparent">透明转发</option>
           <option value="rewrite">路径改写</option>
           <option value="mirror">流量镜像</option>
         </select>
       </div>
 
-      <div class="settings-row">
-        <div class="settings-info">
-          <span class="settings-label">允许来源</span>
-          <span class="settings-desc">用英文逗号分隔多个域名</span>
+      <div class="flex items-center justify-between gap-4 border-t border-dashed border-border py-3 max-sm:flex-col max-sm:items-start">
+        <div class="flex min-w-0 flex-col gap-1.5">
+          <span class="font-medium text-text-primary">允许来源</span>
+          <span class="text-[0.85rem] text-text-secondary">用英文逗号分隔多个域名</span>
         </div>
         <textarea
           v-model="allowedOrigins"
-          class="settings-textarea"
+          class="min-h-16 w-[260px] resize-y rounded-md px-2.5 py-1.5 max-sm:w-full"
           placeholder="https://console.example.com, https://ops.example.com"
         />
       </div>
     </section>
 
-    <section class="settings-card">
-      <header class="settings-card__header">
-        <h2 class="settings-card__title">缓存与限速</h2>
-        <p class="settings-card__subtitle">提升稳定性并避免突发流量</p>
+    <section class="flex flex-col gap-5 rounded-xl border border-border bg-bg-surface p-6">
+      <header class="flex flex-col gap-2">
+        <h2 class="m-0 text-[1.1rem] font-semibold text-text-primary">缓存与限速</h2>
+        <p class="m-0 text-[0.9rem] text-text-secondary">提升稳定性并避免突发流量</p>
       </header>
 
-      <div class="settings-row">
-        <div class="settings-info">
-          <span class="settings-label">启用缓存</span>
-          <span class="settings-desc">短时间内复用上游响应结果</span>
+      <div class="flex items-center justify-between gap-4 border-t-0 border-border pb-3 pt-0 max-sm:flex-col max-sm:items-start">
+        <div class="flex min-w-0 flex-col gap-1.5">
+          <span class="font-medium text-text-primary">启用缓存</span>
+          <span class="text-[0.85rem] text-text-secondary">短时间内复用上游响应结果</span>
         </div>
         <AppSwitch v-model="cacheEnabled" />
       </div>
 
-      <div class="settings-row">
-        <div class="settings-info">
-          <span class="settings-label">缓存时长</span>
-          <span class="settings-desc">缓存命中后重复请求将直接返回</span>
+      <div class="flex items-center justify-between gap-4 border-t border-dashed border-border py-3 max-sm:flex-col max-sm:items-start">
+        <div class="flex min-w-0 flex-col gap-1.5">
+          <span class="font-medium text-text-primary">缓存时长</span>
+          <span class="text-[0.85rem] text-text-secondary">缓存命中后重复请求将直接返回</span>
         </div>
-        <div class="settings-control">
+        <div class="flex items-center gap-2 max-sm:w-full">
           <input
             v-model.number="cacheTtlSeconds"
             type="number"
             min="5"
             max="600"
             step="5"
-            class="settings-input settings-input--short"
+            class="w-24 rounded-md px-2.5 py-1.5 text-center max-sm:w-full max-sm:text-left"
           />
-          <span class="settings-unit">秒</span>
+          <span class="text-[0.9rem] text-text-secondary">秒</span>
         </div>
       </div>
 
-      <div class="settings-row">
-        <div class="settings-info">
-          <span class="settings-label">限速等级</span>
-          <span class="settings-desc">限制单账号的最大并发</span>
+      <div class="flex items-center justify-between gap-4 border-t border-dashed border-border py-3 max-sm:flex-col max-sm:items-start">
+        <div class="flex min-w-0 flex-col gap-1.5">
+          <span class="font-medium text-text-primary">限速等级</span>
+          <span class="text-[0.85rem] text-text-secondary">限制单账号的最大并发</span>
         </div>
-        <select v-model="rateLimitLevel" class="settings-select">
+        <select
+          v-model="rateLimitLevel"
+          class="w-[220px] rounded-md bg-bg-surface px-2.5 py-1.5 max-sm:w-full"
+        >
           <option value="off">关闭</option>
           <option value="soft">温和</option>
           <option value="strict">严格</option>

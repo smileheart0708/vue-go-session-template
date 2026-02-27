@@ -1,10 +1,17 @@
 <template>
   <Teleport defer :to="teleportTo">
-    <Transition name="dropdown-drawer">
+    <Transition
+      enter-active-class="transition duration-200 motion-reduce:transition-none"
+      enter-from-class="-translate-y-2 opacity-0"
+      enter-to-class="translate-y-0 opacity-100"
+      leave-active-class="transition duration-200 motion-reduce:transition-none"
+      leave-from-class="translate-y-0 opacity-100"
+      leave-to-class="-translate-y-2 opacity-0"
+    >
       <div
         v-if="open"
         ref="drawerRef"
-        class="dropdown-drawer"
+        class="fixed z-[var(--dropdown-z-index,1000)] min-w-[var(--dropdown-min-width,140px)] rounded-lg border border-border bg-bg-glass p-1 shadow-floating backdrop-blur-[12px] backdrop-saturate-[140%] [&_.dropdown-icon]:size-4 [&_.dropdown-icon]:shrink-0 [&_.dropdown-item]:flex [&_.dropdown-item]:w-full [&_.dropdown-item]:items-center [&_.dropdown-item]:gap-2 [&_.dropdown-item]:rounded-md [&_.dropdown-item]:border-0 [&_.dropdown-item]:bg-transparent [&_.dropdown-item]:px-3 [&_.dropdown-item]:py-2 [&_.dropdown-item]:text-left [&_.dropdown-item]:text-sm [&_.dropdown-item]:text-text-primary [&_.dropdown-item]:transition-colors [&_.dropdown-item]:duration-200 [&_.dropdown-item]:cursor-pointer [&_.dropdown-item:hover]:bg-bg-component-muted [&_.dropdown-item.active]:bg-accent [&_.dropdown-item.active]:text-on-accent"
         :style="drawerStyle"
         role="menu"
         v-bind="attrs"
@@ -137,69 +144,3 @@ watch(
   },
 )
 </script>
-
-<style scoped>
-.dropdown-drawer {
-  position: fixed;
-  min-width: var(--dropdown-min-width, 140px);
-  padding: 4px;
-  background-color: var(--sys-color-bg-glass);
-  backdrop-filter: blur(12px) saturate(140%);
-  backdrop-filter: blur(12px) saturate(140%);
-  border: 1px solid var(--sys-color-border);
-  border-radius: 8px;
-  box-shadow: var(--sys-shadow-floating);
-  z-index: var(--dropdown-z-index, 1000);
-}
-
-:deep(.dropdown-item) {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  width: 100%;
-  padding: 8px 12px;
-  background: transparent;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  color: var(--sys-color-text-primary);
-  font-size: 14px;
-  text-align: left;
-  transition: background-color 0.2s;
-}
-
-:deep(.dropdown-item:hover) {
-  background: var(--sys-color-bg-component-muted);
-}
-
-:deep(.dropdown-item.active) {
-  background: var(--cmp-dropdown-active-bg, var(--sys-color-accent));
-  color: var(--cmp-dropdown-active-color, var(--sys-color-on-accent));
-}
-
-:deep(.dropdown-icon) {
-  width: 16px;
-  height: 16px;
-  flex-shrink: 0;
-}
-
-.dropdown-drawer-enter-active,
-.dropdown-drawer-leave-active {
-  transition:
-    opacity 0.2s,
-    transform 0.2s;
-}
-
-.dropdown-drawer-enter-from,
-.dropdown-drawer-leave-to {
-  opacity: 0;
-  transform: translateY(-8px);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .dropdown-drawer-enter-active,
-  .dropdown-drawer-leave-active {
-    transition: none;
-  }
-}
-</style>

@@ -1,0 +1,27 @@
+@theme inline {
+  --color-bg-page: var(--sys-color-bg-page);
+  --color-bg-surface: var(--sys-color-bg-surface);
+  --color-bg-subtle: var(--sys-color-bg-subtle);
+  --color-bg-glass: var(--sys-color-bg-glass);
+  --color-bg-component: var(--sys-color-bg-component);
+  --color-bg-component-muted: var(--sys-color-bg-component-muted);
+  --color-text-primary: var(--sys-color-text-primary);
+  --color-text-secondary: var(--sys-color-text-secondary);
+  --color-text-tertiary: var(--sys-color-text-tertiary);
+  --color-border: var(--sys-color-border);
+  --color-border-hover: var(--sys-color-border-hover);
+  --color-accent: var(--sys-color-accent);
+  --color-accent-hover: var(--sys-color-accent-hover);
+  --color-accent-active: var(--sys-color-accent-active);
+  --color-on-accent: var(--sys-color-on-accent);
+  --color-success: var(--state-color-success);
+  --color-danger: var(--state-color-danger);
+  --color-warning: var(--state-color-warning);
+  --color-info: var(--state-color-info);
+  --shadow-card: var(--sys-shadow-card);
+  --shadow-floating: var(--sys-shadow-floating);
+  --shadow-accent-glow: var(--sys-shadow-accent-glow);
+  --shadow-toast: var(--sys-shadow-toast);
+  --spacing-sidebar: var(--sys-layout-sidebar-width);
+  --spacing-header: var(--sys-layout-header-height);
+}

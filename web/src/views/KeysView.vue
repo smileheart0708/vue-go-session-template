@@ -1,8 +1,10 @@
 <template>
-  <div class="keys-view">
-    <header class="keys-view__header">
-      <h1 class="keys-view__title">密钥管理</h1>
-      <p class="keys-view__description">模板演示页：前端硬编码数据，使用公共表格与分页组件。</p>
+  <div class="flex w-full flex-col gap-5 max-md:gap-4">
+    <header class="flex flex-col gap-1.5">
+      <h1 class="m-0 text-2xl font-bold text-text-primary max-md:text-xl">密钥管理</h1>
+      <p class="m-0 text-[0.95rem] text-text-secondary">
+        模板演示页：前端硬编码数据，使用公共表格与分页组件。
+      </p>
     </header>
 
     <AppTable
@@ -13,7 +15,17 @@
       :format-cell-value="formatCellValue"
       row-key="id"
       empty-text="暂无密钥数据"
-    />
+    >
+      <template #cell-__actions="{ row }">
+        <button
+          type="button"
+          class="inline-flex h-8 items-center justify-center rounded-md border border-accent px-3 text-xs font-semibold text-accent transition-colors duration-200 hover:bg-accent hover:text-on-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--sys-color-focus-ring)]"
+          @click="handleViewDetail(row)"
+        >
+          查看详情
+        </button>
+      </template>
+    </AppTable>
 
     <AppPagination v-model="currentPage" :total="demoKeys.length" :page-size="pageSize" />
   </div>
@@ -22,6 +34,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { AppPagination, AppTable, type AppTableColumn } from '@/components/common'
+import { useToast } from '@/composables'
 
 defineOptions({ name: 'KeysView' })
 
@@ -39,6 +52,7 @@ interface ApiKeyItem {
   last_used_at: string
 }
 
+const { info } = useToast()
 const pageSize = 8
 const currentPage = ref<number>(1)
 
@@ -48,7 +62,7 @@ const statusText: Record<ApiKeyStatus, string> = {
   revoked: '已吊销',
 }
 
-const columns: ReadonlyArray<AppTableColumn<ApiKeyItem>> = [
+const columns: ReadonlyArray<AppTableColumn<ApiKeyItem, '__actions'>> = [
   { key: 'name', label: '名称', minWidth: 180 },
   { key: 'project', label: '项目', minWidth: 140 },
   { key: 'key_masked', label: '密钥', minWidth: 220 },
@@ -56,6 +70,15 @@ const columns: ReadonlyArray<AppTableColumn<ApiKeyItem>> = [
   { key: 'status_label', label: '状态', align: 'center', width: 100 },
   { key: 'created_at', label: '创建时间', minWidth: 150 },
   { key: 'last_used_at', label: '最近使用', minWidth: 150 },
+  {
+    key: '__actions',
+    kind: 'display',
+    label: '操作',
+    align: 'center',
+    width: 96,
+    fixed: 'right',
+    fixedVisibility: 'always',
+  },
 ]
 
 const projectNames = ['支付服务', '日志采集', '报表中心', '多租户代理'] as const
@@ -101,51 +124,26 @@ const pagedRows = computed<ReadonlyArray<ApiKeyItem>>(() => {
   return demoKeys.slice(start, end)
 })
 
-function formatCellValue(value: unknown, context: { column: AppTableColumn<ApiKeyItem> }): string {
+function handleViewDetail(row: ApiKeyItem): void {
+  info(`查看详情：${row.name}`)
+}
+
+function formatCellValue(
+  value: unknown,
+  context: { column: AppTableColumn<ApiKeyItem, '__actions'> },
+): string {
+  if (context.column.key === '__actions') {
+    return ''
+  }
+
   if (context.column.key === 'status_label') {
     return String(value)
   }
+
   if (value === null || value === undefined || value === '') {
     return '-'
   }
+
   return String(value)
 }
 </script>
-
-<style scoped>
-.keys-view {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
-}
-
-.keys-view__header {
-  display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
-}
-
-.keys-view__title {
-  margin: 0;
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: var(--sys-color-text-primary);
-}
-
-.keys-view__description {
-  margin: 0;
-  color: var(--sys-color-text-secondary);
-  font-size: 0.95rem;
-}
-
-@media (width <= 768px) {
-  .keys-view {
-    gap: 1rem;
-  }
-
-  .keys-view__title {
-    font-size: 1.25rem;
-  }
-}
-</style>

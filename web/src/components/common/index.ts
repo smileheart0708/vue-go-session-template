@@ -46,8 +46,13 @@ export {
 
 export type {
   AppTableColumn,
+  AppTableDataColumn,
+  AppTableDisplayColumn,
+  AppTableDisplayValueResolver,
   ColumnAlign,
   ColumnKey,
+  ColumnFixed,
+  ColumnFixedVisibility,
   CssSize,
   GlassTableColumn,
 } from './AppTable.vue'

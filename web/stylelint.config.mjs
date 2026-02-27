@@ -15,8 +15,15 @@ export default {
     'color-function-notation': null,
     'color-function-alias-notation': null,
     'alpha-value-notation': null,
+    'at-rule-no-unknown': [true, { ignoreAtRules: ['theme'] }],
   },
   overrides: [
+    {
+      files: ['src/assets/styles/tailwind-theme.css'],
+      rules: {
+        'custom-property-pattern': null,
+      },
+    },
     {
       files: ['src/assets/styles/tokens.ref.css'],
       rules: {

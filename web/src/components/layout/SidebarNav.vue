@@ -1,19 +1,20 @@
 <template>
-  <nav ref="navRef" class="sidebar-nav">
+  <nav ref="navRef" class="relative flex flex-1 flex-col gap-1 overflow-y-auto bg-transparent px-0 py-2">
     <div
       v-show="showIndicator"
-      class="nav-indicator"
+      class="absolute left-3 top-0 z-10 h-[22px] w-1 rounded-full bg-accent shadow-accent-glow transition-transform duration-300 ease-[cubic-bezier(0.2,0.8,0.2,1)] will-change-transform"
       :style="{ transform: `translate3d(0, ${indicatorOffset}px, 0)` }"
-    ></div>
+    />
+
     <RouterLink
       v-for="item in menuItems"
       :key="item.path"
       :to="item.path"
-      class="nav-item"
+      class="relative z-[1] mx-3 flex h-11 items-center justify-start gap-3 rounded-xl px-4 pl-10 text-left text-text-secondary no-underline transition-all duration-200 ease-out hover:translate-x-0.5 hover:bg-bg-component-muted hover:text-text-primary focus-visible:outline-none focus-visible:shadow-[0_0_0_2px_var(--sys-color-focus-ring),inset_0_0_0_1px_var(--sys-color-border)] [&.active]:bg-bg-component [&.active]:font-semibold [&.active]:text-accent [&.active]:shadow-[inset_0_0_0_1px_var(--sys-color-border)]"
       :exact-active-class="item.path === '/dashboard' ? 'active' : ''"
       :active-class="item.path !== '/dashboard' ? 'active' : ''"
     >
-      <component :is="item.icon" class="nav-icon" />
+      <component :is="item.icon" class="size-5 shrink-0" />
       <span>{{ item.label }}</span>
     </RouterLink>
   </nav>
@@ -65,7 +66,7 @@ function updateIndicatorPosition(): void {
     return
   }
 
-  const activeElements = navElement.querySelectorAll<HTMLElement>('.nav-item')
+  const activeElements = navElement.querySelectorAll<HTMLElement>('a')
   const activeElement = activeElements[index]
   if (!activeElement) {
     showIndicator.value = false
@@ -90,84 +91,6 @@ watch(
 )
 
 onMounted(() => {
-  // 初始化时更新指示器位置
   updateIndicatorPosition()
 })
 </script>
-
-<style scoped>
-.sidebar-nav {
-  --nav-item-x: 0.75rem;
-  --nav-item-height: 44px;
-
-  flex: 1;
-  padding: 0.5rem 0;
-  overflow-y: auto;
-  position: relative;
-  background: transparent;
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-}
-
-.nav-indicator {
-  position: absolute;
-  top: 0;
-  left: var(--nav-item-x);
-  width: 4px;
-  height: calc(var(--nav-item-height) / 2);
-  background: var(--sys-color-accent);
-  border-radius: 999px;
-  box-shadow: var(--sys-shadow-accent-glow);
-  transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
-  will-change: transform;
-  z-index: 10;
-}
-
-.nav-item {
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  gap: 0.75rem;
-  padding: 0 1rem 0 2.5rem;
-  height: var(--nav-item-height);
-  color: var(--sys-color-text-secondary);
-  text-decoration: none;
-  border-radius: 12px;
-  margin: 0 var(--nav-item-x);
-  text-align: left;
-  transition:
-    background-color 0.2s ease,
-    color 0.2s ease,
-    transform 0.2s ease,
-    box-shadow 0.2s ease;
-  position: relative;
-  z-index: 1;
-}
-
-.nav-item:hover {
-  background: var(--sys-color-bg-component-muted);
-  color: var(--sys-color-text-primary);
-  transform: translate3d(2px, 0, 0);
-}
-
-.nav-item.active {
-  background: var(--sys-color-bg-component);
-  color: var(--sys-color-accent);
-  font-weight: 600;
-  box-shadow: inset 0 0 0 1px var(--sys-color-border);
-}
-
-.nav-item:focus-visible {
-  outline: none;
-  box-shadow:
-    0 0 0 2px var(--sys-color-focus-ring),
-    inset 0 0 0 1px var(--sys-color-border);
-}
-
-.nav-icon {
-  width: 20px;
-  height: 20px;
-  flex-shrink: 0;
-}
-</style>

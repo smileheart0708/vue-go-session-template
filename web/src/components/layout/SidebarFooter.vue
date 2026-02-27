@@ -1,5 +1,5 @@
 <template>
-  <div class="sidebar-footer">
+  <div class="min-h-20 bg-transparent px-5 pb-6 pt-5">
     <BaseButton width="100%" :height="40" text="退出登录" :icon="LogOut" @click="handleLogout" />
   </div>
 </template>
@@ -13,16 +13,8 @@ import { useAuthStore } from '@/stores/auth'
 const router = useRouter()
 const authStore = useAuthStore()
 
-async function handleLogout() {
+async function handleLogout(): Promise<void> {
   await authStore.logout()
   router.replace('/login')
 }
 </script>
-
-<style scoped>
-.sidebar-footer {
-  padding: 1.25rem 1.25rem 1.5rem;
-  min-height: 80px;
-  background: transparent;
-}
-</style>

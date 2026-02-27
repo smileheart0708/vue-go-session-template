@@ -1,14 +1,17 @@
 <template>
-  <div class="app-pagination" :class="{ 'is-disabled': disabled }">
-    <p v-if="showSummary" class="app-pagination__summary">
+  <div class="flex w-full flex-col items-center gap-2" :class="{ 'opacity-70': disabled }">
+    <p
+      v-if="showSummary"
+      class="m-0 w-full text-center text-[clamp(0.875rem,1vw,1.125rem)] leading-5 tracking-[0.02em] text-text-secondary"
+    >
       <slot name="summary" :start="rangeStart" :end="rangeEnd" :total="total">
         {{ summaryText }}
       </slot>
     </p>
 
-    <nav class="app-pagination__nav" :aria-label="ariaLabel">
+    <nav class="flex w-full flex-wrap items-center justify-center gap-1" :aria-label="ariaLabel">
       <button
-        class="app-pagination__button app-pagination__button--icon"
+        class="inline-flex size-8 items-center justify-center rounded-md border border-border bg-bg-surface text-text-primary transition-all duration-200 enabled:hover:border-accent enabled:hover:text-accent enabled:active:translate-y-px disabled:cursor-not-allowed disabled:text-text-tertiary disabled:opacity-70"
         type="button"
         :disabled="!canGoPrevious"
         :aria-label="previousAriaLabel"
@@ -20,8 +23,8 @@
       <template v-for="(item, index) in pageItems" :key="`${item.type}-${index}`">
         <button
           v-if="item.type === 'page'"
-          class="app-pagination__button app-pagination__button--page"
-          :class="{ 'is-active': item.page === page }"
+          class="inline-flex size-8 items-center justify-center rounded-md border border-border bg-bg-surface text-xs leading-none font-semibold text-text-primary transition-all duration-200 enabled:hover:border-accent enabled:hover:text-accent enabled:active:translate-y-px disabled:cursor-not-allowed disabled:text-text-tertiary disabled:opacity-70"
+          :class="item.page === page ? 'border-accent bg-accent text-on-accent hover:text-on-accent' : ''"
           type="button"
           :disabled="disabled"
           :aria-current="item.page === page ? 'page' : undefined"
@@ -29,11 +32,11 @@
         >
           {{ item.page }}
         </button>
-        <span v-else class="app-pagination__ellipsis" aria-hidden="true">...</span>
+        <span v-else class="inline-flex w-3 justify-center text-[0.5625rem] leading-none text-text-tertiary" aria-hidden="true">...</span>
       </template>
 
       <button
-        class="app-pagination__button app-pagination__button--icon"
+        class="inline-flex size-8 items-center justify-center rounded-md border border-border bg-bg-surface text-text-primary transition-all duration-200 enabled:hover:border-accent enabled:hover:text-accent enabled:active:translate-y-px disabled:cursor-not-allowed disabled:text-text-tertiary disabled:opacity-70"
         type="button"
         :disabled="!canGoNext"
         :aria-label="nextAriaLabel"
@@ -185,92 +188,3 @@ function goNext(): void {
   goToPage(page.value + 1)
 }
 </script>
-
-<style scoped>
-.app-pagination {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.625rem;
-}
-
-.app-pagination__summary {
-  width: 100%;
-  margin: 0;
-  text-align: center;
-  color: var(--sys-color-text-secondary);
-  font-size: clamp(0.875rem, 1vw, 1.125rem);
-  line-height: 1.25;
-  letter-spacing: 0.02em;
-}
-
-.app-pagination__nav {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 0.25rem;
-}
-
-.app-pagination__button {
-  width: 2rem;
-  height: 2rem;
-  border-radius: 6px;
-  border: 1px solid var(--sys-color-border);
-  background: var(--sys-color-bg-surface);
-  color: var(--sys-color-text-primary);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.75rem;
-  font-weight: 600;
-  line-height: 1;
-  cursor: pointer;
-  transition:
-    border-color 0.2s ease,
-    color 0.2s ease,
-    background-color 0.2s ease,
-    transform 0.2s ease;
-}
-
-.app-pagination__button:not(:disabled):hover {
-  border-color: var(--sys-color-accent);
-  color: var(--sys-color-accent);
-}
-
-.app-pagination__button:not(:disabled):active {
-  transform: translateY(1px);
-}
-
-.app-pagination__button.is-active,
-.app-pagination__button.is-active:hover {
-  border-color: var(--sys-color-accent);
-  background: var(--sys-color-accent);
-  color: var(--sys-color-on-accent);
-}
-
-.app-pagination__button:disabled {
-  cursor: not-allowed;
-  color: var(--sys-color-text-tertiary);
-  border-color: var(--sys-color-border);
-  opacity: 0.7;
-}
-
-.app-pagination__button--icon {
-  font-size: 0.4375rem;
-}
-
-.app-pagination__ellipsis {
-  width: 0.75rem;
-  text-align: center;
-  color: var(--sys-color-text-tertiary);
-  font-size: 0.5625rem;
-  line-height: 1;
-}
-
-.app-pagination.is-disabled .app-pagination__summary {
-  opacity: 0.7;
-}
-</style>
