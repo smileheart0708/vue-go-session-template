@@ -23,7 +23,7 @@
 </template>
 
 <script setup lang="ts">
-import { nextTick, onWatcherCleanup, ref, useAttrs, useTemplateRef, watch } from 'vue'
+import { nextTick, ref, useAttrs, useTemplateRef, watch } from 'vue'
 
 defineOptions({ name: 'DropdownDrawer', inheritAttrs: false })
 
@@ -128,9 +128,9 @@ watch(
     updatePosition()
     addGlobalListeners(shouldCloseOnOutside, shouldCloseOnEscape)
 
-    onWatcherCleanup(() => {
+    return () => {
       removeGlobalListeners(shouldCloseOnOutside, shouldCloseOnEscape)
-    })
+    }
   },
   { immediate: true },
 )

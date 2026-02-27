@@ -10,15 +10,7 @@
 </template>
 
 <script setup lang="ts">
-import {
-  computed,
-  nextTick,
-  onMounted,
-  onUnmounted,
-  onWatcherCleanup,
-  useTemplateRef,
-  watch,
-} from 'vue'
+import { computed, nextTick, onMounted, onUnmounted, useTemplateRef, watch } from 'vue'
 import * as echarts from 'echarts/core'
 import { LineChart } from 'echarts/charts'
 import { TooltipComponent, GridComponent, LegendComponent } from 'echarts/components'
@@ -210,7 +202,7 @@ onMounted(async () => {
 // 监听主题变化
 watch(isDark, () => {
   const timer = setTimeout(updateChart, 50)
-  onWatcherCleanup(() => clearTimeout(timer))
+  return () => clearTimeout(timer)
 })
 
 // 监听数据变化

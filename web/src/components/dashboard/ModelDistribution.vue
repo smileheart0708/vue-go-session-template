@@ -25,7 +25,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, onUnmounted, onWatcherCleanup, useTemplateRef, watch } from 'vue'
+import { computed, onMounted, onUnmounted, useTemplateRef, watch } from 'vue'
 import * as echarts from 'echarts/core'
 import { PieChart } from 'echarts/charts'
 import { TitleComponent, TooltipComponent, LegendComponent } from 'echarts/components'
@@ -165,7 +165,7 @@ onMounted(() => {
 
 watch(isDark, () => {
   const timer = setTimeout(updateChart, 50)
-  onWatcherCleanup(() => clearTimeout(timer))
+  return () => clearTimeout(timer)
 })
 
 onUnmounted(() => {
