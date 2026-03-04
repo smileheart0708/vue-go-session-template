@@ -88,11 +88,13 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import { useLocalStorage } from '@vueuse/core'
+import { z } from 'zod'
 import { AppSwitch } from '@/components/common'
+import { useValidatedLocalStorage } from '@/composables/useValidatedLocalStorage'
 import { useRefreshStore } from '@/stores/refresh'
 
-type LandingPage = 'dashboard' | 'logs' | 'settings'
+const landingPageSchema = z.enum(['dashboard', 'logs', 'settings'])
+type LandingPage = z.infer<typeof landingPageSchema>
 
 const refreshStore = useRefreshStore()
 
@@ -110,7 +112,11 @@ const intervalSeconds = computed({
   },
 })
 
-const compactLayout = useLocalStorage('settings.ui_compact', false)
-const showTips = useLocalStorage('settings.ui_show_tips', true)
-const defaultLanding = useLocalStorage<LandingPage>('settings.default_landing', 'dashboard')
+const compactLayout = useValidatedLocalStorage('settings.ui_compact', z.boolean(), false)
+const showTips = useValidatedLocalStorage('settings.ui_show_tips', z.boolean(), true)
+const defaultLanding = useValidatedLocalStorage<LandingPage>(
+  'settings.default_landing',
+  landingPageSchema,
+  'dashboard',
+)
 </script>

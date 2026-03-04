@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { z } from 'zod'
 import { BaseButton, ThemeToggle } from '@/components/common'
 import { useTheme, useToast } from '@/composables'
 import { useAuthStore } from '@/stores/auth'
@@ -25,23 +26,16 @@ const isLoading = ref(false)
 const { success, error: toastError } = useToast()
 const { mode, setTheme } = useTheme()
 
-function hasMessageField(payload: unknown): payload is { message: unknown } {
-  return typeof payload === 'object' && payload !== null && 'message' in payload
-}
+const errorMessageSchema = z.union([z.string(), z.object({ message: z.string() })])
 
 function extractErrorMessage(payload: unknown): string | null {
-  if (typeof payload === 'string') {
-    return payload.trim() || null
-  }
-
-  if (!hasMessageField(payload)) {
+  const parsedPayload = errorMessageSchema.safeParse(payload)
+  if (!parsedPayload.success) {
     return null
   }
 
-  const { message } = payload
-  if (typeof message !== 'string') {
-    return null
-  }
+  const message =
+    typeof parsedPayload.data === 'string' ? parsedPayload.data : parsedPayload.data.message
 
   return message.trim() || null
 }

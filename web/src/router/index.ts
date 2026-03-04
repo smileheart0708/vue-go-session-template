@@ -2,7 +2,7 @@ import { createRouter, createWebHistory, type RouteLocationNormalizedLoaded } fr
 import { MainLayout } from '@/components'
 import LoginView from '@/views/LoginView.vue'
 import { useAuthStore } from '@/stores/auth'
-import { resolveRedirectPath } from '@/utils'
+import { isMockAuthEnabled, resolveRedirectPath } from '@/utils'
 
 function createLoginRedirect(redirectPath: string) {
   const safeRedirectPath = resolveRedirectPath(redirectPath)
@@ -94,7 +94,7 @@ const router = createRouter({
 // 全局前置守卫
 router.beforeEach(async (to) => {
   const authStore = useAuthStore()
-  const isMockAuth = import.meta.env.VITE_MOCK_AUTH === 'true'
+  const isMockAuth = isMockAuthEnabled
 
   // 检查路由是否需要认证
   const requiresAuth = to.matched.some((record) => record.meta['requiresAuth'])

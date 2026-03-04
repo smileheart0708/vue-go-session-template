@@ -121,17 +121,54 @@
 </template>
 
 <script setup lang="ts">
-import { useLocalStorage } from '@vueuse/core'
+import { z } from 'zod'
 import { AppSwitch } from '@/components/common'
+import { useValidatedLocalStorage } from '@/composables/useValidatedLocalStorage'
 
-type TrafficMode = 'balanced' | 'low-latency' | 'high-throughput'
-type RetryPolicy = 'none' | 'conservative' | 'aggressive'
+const trafficModeSchema = z.enum(['balanced', 'low-latency', 'high-throughput'])
+const retryPolicySchema = z.enum(['none', 'conservative', 'aggressive'])
 
-const baseUrl = useLocalStorage('settings.upstream_base_url', 'https://api.example.com')
-const timeoutSeconds = useLocalStorage('settings.upstream_timeout_seconds', 20)
-const healthCheckEnabled = useLocalStorage('settings.upstream_health_check', true)
-const trafficMode = useLocalStorage<TrafficMode>('settings.upstream_traffic_mode', 'balanced')
-const apiToken = useLocalStorage('settings.upstream_api_token', '')
-const signatureCheckEnabled = useLocalStorage('settings.upstream_signature_check', false)
-const retryPolicy = useLocalStorage<RetryPolicy>('settings.upstream_retry_policy', 'conservative')
+const upstreamBaseUrlSchema = z.string().trim().min(1).max(2048)
+
+const timeoutSecondsSchema = z.number().finite().transform((value) => {
+  const rounded = Math.round(value)
+  if (rounded < 5) return 5
+  if (rounded > 120) return 120
+  return rounded
+})
+
+type TrafficMode = z.infer<typeof trafficModeSchema>
+type RetryPolicy = z.infer<typeof retryPolicySchema>
+
+const baseUrl = useValidatedLocalStorage(
+  'settings.upstream_base_url',
+  upstreamBaseUrlSchema,
+  'https://api.example.com',
+)
+const timeoutSeconds = useValidatedLocalStorage(
+  'settings.upstream_timeout_seconds',
+  timeoutSecondsSchema,
+  20,
+)
+const healthCheckEnabled = useValidatedLocalStorage(
+  'settings.upstream_health_check',
+  z.boolean(),
+  true,
+)
+const trafficMode = useValidatedLocalStorage<TrafficMode>(
+  'settings.upstream_traffic_mode',
+  trafficModeSchema,
+  'balanced',
+)
+const apiToken = useValidatedLocalStorage('settings.upstream_api_token', z.string(), '')
+const signatureCheckEnabled = useValidatedLocalStorage(
+  'settings.upstream_signature_check',
+  z.boolean(),
+  false,
+)
+const retryPolicy = useValidatedLocalStorage<RetryPolicy>(
+  'settings.upstream_retry_policy',
+  retryPolicySchema,
+  'conservative',
+)
 </script>

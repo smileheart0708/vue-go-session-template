@@ -125,17 +125,51 @@
 </template>
 
 <script setup lang="ts">
-import { useLocalStorage } from '@vueuse/core'
+import { z } from 'zod'
 import { AppSwitch } from '@/components/common'
+import { useValidatedLocalStorage } from '@/composables/useValidatedLocalStorage'
 
-type ProxyMode = 'transparent' | 'rewrite' | 'mirror'
-type RateLimitLevel = 'off' | 'soft' | 'strict'
+const proxyModeSchema = z.enum(['transparent', 'rewrite', 'mirror'])
+const rateLimitLevelSchema = z.enum(['off', 'soft', 'strict'])
 
-const proxyEnabled = useLocalStorage('settings.proxy_enabled', true)
-const listenPort = useLocalStorage('settings.proxy_listen_port', 8080)
-const proxyMode = useLocalStorage<ProxyMode>('settings.proxy_mode', 'transparent')
-const allowedOrigins = useLocalStorage('settings.proxy_allowed_origins', '')
-const cacheEnabled = useLocalStorage('settings.proxy_cache_enabled', true)
-const cacheTtlSeconds = useLocalStorage('settings.proxy_cache_ttl_seconds', 60)
-const rateLimitLevel = useLocalStorage<RateLimitLevel>('settings.proxy_rate_limit', 'soft')
+const listenPortSchema = z.number().finite().transform((value) => {
+  const rounded = Math.round(value)
+  if (rounded < 1024) return 1024
+  if (rounded > 65535) return 65535
+  return rounded
+})
+
+const cacheTtlSecondsSchema = z.number().finite().transform((value) => {
+  const roundedToStep = Math.round(value / 5) * 5
+  if (roundedToStep < 5) return 5
+  if (roundedToStep > 600) return 600
+  return roundedToStep
+})
+
+type ProxyMode = z.infer<typeof proxyModeSchema>
+type RateLimitLevel = z.infer<typeof rateLimitLevelSchema>
+
+const proxyEnabled = useValidatedLocalStorage('settings.proxy_enabled', z.boolean(), true)
+const listenPort = useValidatedLocalStorage('settings.proxy_listen_port', listenPortSchema, 8080)
+const proxyMode = useValidatedLocalStorage<ProxyMode>(
+  'settings.proxy_mode',
+  proxyModeSchema,
+  'transparent',
+)
+const allowedOrigins = useValidatedLocalStorage(
+  'settings.proxy_allowed_origins',
+  z.string(),
+  '',
+)
+const cacheEnabled = useValidatedLocalStorage('settings.proxy_cache_enabled', z.boolean(), true)
+const cacheTtlSeconds = useValidatedLocalStorage(
+  'settings.proxy_cache_ttl_seconds',
+  cacheTtlSecondsSchema,
+  60,
+)
+const rateLimitLevel = useValidatedLocalStorage<RateLimitLevel>(
+  'settings.proxy_rate_limit',
+  rateLimitLevelSchema,
+  'soft',
+)
 </script>
