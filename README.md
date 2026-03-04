@@ -9,7 +9,7 @@ Go + Vue 的单体全栈模板。后端使用 Gin，前端使用 Vue 3 + TypeScr
 - 认证：`AUTH_KEY` + `gin-contrib/sessions`（filesystem store）
 - 日志：SSE 实时推送 + 历史日志接口
 - 构建：前端 `web/dist` 嵌入 Go 可执行文件，支持 `.br/.gz`
-- 安全增强：前端 API 响应统一 Schema 运行时校验（含 SSE 日志数据）
+- 安全增强：前端 API 响应统一 Zod Schema 运行时校验（含 SSE 日志数据）
 
 ## 2. 目录结构
 
@@ -21,7 +21,7 @@ Go + Vue 的单体全栈模板。后端使用 Gin，前端使用 Vue 3 + TypeScr
 │   ├── server/             # 路由与 SPA fallback
 │   └── stream/             # SSE 日志广播
 ├── web/                    # Vue 前端工程
-│   ├── src/types/api.ts    # API 类型 + Schema 校验中心
+│   ├── src/types/api.ts    # API 类型(z.infer) + Zod Schema 校验中心
 │   ├── src/utils/api-client.ts # ky 客户端与校验入口
 │   └── src/composables/    # 组合式逻辑（含日志流）
 ├── main.go                 # 应用入口
@@ -107,7 +107,7 @@ Windows 全量构建：
 
 ## 5. API Schema 规范（强制）
 
-所有 JSON 响应都必须在 `web/src/types/api.ts` 定义类型与 `schema.parse()` 逻辑，并在 `ky` 调用后执行 schema 解析。
+所有 JSON 响应都必须在 `web/src/types/api.ts` 定义 Zod schema，并通过 `z.infer` 导出类型；在 `ky` 调用后执行 schema 解析。
 
 ### 5.1 统一入口
 
@@ -117,7 +117,7 @@ Windows 全量构建：
 
 ### 5.2 代码约束
 
-1. 新增接口时，先在 `web/src/types/api.ts` 增加 `interface + schema`。
+1. 新增接口时，先在 `web/src/types/api.ts` 增加 `zod schema + z.infer type`。
 2. 调用时必须执行 `parseWithSchema()`，禁止仅依赖泛型断言。
 3. SSE 数据必须使用同一套 schema 做 `parse`（当前日志流已接入）。
 4. 发生 `ApiResponseValidationError` 时，按“服务端响应格式异常”处理并记录错误日志。
