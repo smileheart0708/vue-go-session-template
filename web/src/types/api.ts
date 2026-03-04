@@ -23,10 +23,14 @@ export type LogoutResponse = z.infer<typeof logoutResponseSchema>
 
 export const dashboardStatsResponseSchema = z
   .object({
-    memory_used: z.number().finite().gte(0),
-    memory_total: z.number().finite().gt(0),
-    memory_percent: z.number().finite().gte(0).lte(100),
-    start_time: z.number().int().gt(0),
+    memory_used: z.number().nonnegative(),
+    memory_total: z.number().positive(),
+    memory_percent: z.number().nonnegative().lte(100),
+    start_time: z.int().positive(),
+  })
+  .refine((value) => value.memory_used <= value.memory_total, {
+    path: ['memory_used'],
+    message: 'memory_used must be <= memory_total',
   })
   .describe('DashboardStatsResponse')
 
@@ -51,7 +55,11 @@ export const logEntrySchema = logEntryBaseSchema
 export type LogEntry = z.infer<typeof logEntrySchema>
 
 export const logsHistoryResponseSchema = z
-  .object({ logs: z.array(logEntrySchema), count: z.number().int().gte(0) })
+  .object({ logs: z.array(logEntrySchema), count: z.int().nonnegative() })
+  .refine((value) => value.count === value.logs.length, {
+    path: ['count'],
+    message: 'count must equal logs length',
+  })
   .describe('LogsHistoryResponse')
 
 export type LogsHistoryResponse = z.infer<typeof logsHistoryResponseSchema>
