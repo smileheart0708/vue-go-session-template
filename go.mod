@@ -4,9 +4,12 @@ go 1.25.6
 
 require (
 	github.com/gin-contrib/sessions v1.0.4
+	github.com/gin-contrib/sse v1.1.0
 	github.com/gin-gonic/gin v1.11.0
 	github.com/gorilla/sessions v1.4.0
 	github.com/lmittmann/tint v1.1.3
+	github.com/samber/slog-gin v1.21.0
+	github.com/samber/slog-multi v1.7.1
 	github.com/shirou/gopsutil/v4 v4.26.1
 	modernc.org/sqlite v1.46.1
 )
@@ -19,7 +22,6 @@ require (
 	github.com/dustin/go-humanize v1.0.1 // indirect
 	github.com/ebitengine/purego v0.9.1 // indirect
 	github.com/gabriel-vasile/mimetype v1.4.13 // indirect
-	github.com/gin-contrib/sse v1.1.0 // indirect
 	github.com/go-ole/go-ole v1.3.0 // indirect
 	github.com/go-playground/locales v0.14.1 // indirect
 	github.com/go-playground/universal-translator v0.18.1 // indirect
@@ -45,8 +47,6 @@ require (
 	github.com/remyoudompheng/bigfft v0.0.0-20230129092748-24d4a6f8daec // indirect
 	github.com/samber/lo v1.52.0 // indirect
 	github.com/samber/slog-common v0.20.0 // indirect
-	github.com/samber/slog-gin v1.21.0 // indirect
-	github.com/samber/slog-multi v1.7.1 // indirect
 	github.com/tklauser/go-sysconf v0.3.16 // indirect
 	github.com/tklauser/numcpus v0.11.0 // indirect
 	github.com/twitchyliquid64/golang-asm v0.15.1 // indirect

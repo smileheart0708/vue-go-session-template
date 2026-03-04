@@ -1,12 +1,11 @@
 package handlers
 
 import (
-	"encoding/json"
-	"fmt"
 	"log/slog"
 	"net/http"
 	"time"
 
+	"github.com/gin-contrib/sse"
 	"github.com/gin-gonic/gin"
 
 	"main/internal/stream"
@@ -27,7 +26,7 @@ func NewLogsHandler(broadcaster *stream.LogBroadcaster) *LogsHandler {
 // StreamLogs 处理 SSE 日志流请求
 func (h *LogsHandler) StreamLogs(c *gin.Context) {
 	// 设置 SSE 响应头
-	c.Writer.Header().Set("Content-Type", "text/event-stream; charset=utf-8")
+	c.Writer.Header().Set("Content-Type", sse.ContentType)
 	c.Writer.Header().Set("Cache-Control", "no-cache")
 	c.Writer.Header().Set("Connection", "keep-alive")
 	c.Writer.Header().Set("X-Accel-Buffering", "no") // 禁用 Nginx 缓冲
@@ -44,11 +43,9 @@ func (h *LogsHandler) StreamLogs(c *gin.Context) {
 		// 发送历史日志
 		history := h.broadcaster.GetHistory()
 		for _, entry := range history {
-			data, err := json.Marshal(entry)
-			if err != nil {
-				continue
+			if err := sse.Encode(c.Writer, sse.Event{Data: entry}); err != nil {
+				return
 			}
-			fmt.Fprintf(c.Writer, "data: %s\n\n", data)
 		}
 		c.Writer.Flush()
 	}
@@ -62,19 +59,22 @@ func (h *LogsHandler) StreamLogs(c *gin.Context) {
 		case <-c.Request.Context().Done():
 			return
 
-		case logData, ok := <-ch:
+		case logEntry, ok := <-ch:
 			if !ok {
 				// 通道已关闭
 				return
 			}
 
-			// 发送日志数据
-			fmt.Fprintf(c.Writer, "data: %s\n\n", logData)
+			if err := sse.Encode(c.Writer, sse.Event{Data: logEntry}); err != nil {
+				return
+			}
 			c.Writer.Flush()
 
 		case <-ticker.C:
 			// 发送心跳，保持连接
-			fmt.Fprintf(c.Writer, ": heartbeat\n\n")
+			if err := sse.Encode(c.Writer, sse.Event{Event: "heartbeat", Data: "ping"}); err != nil {
+				return
+			}
 			c.Writer.Flush()
 		}
 	}

@@ -1,10 +1,12 @@
 package stream
 
 import (
-	"context"
+	"bytes"
 	"encoding/json"
 	"fmt"
+	"io"
 	"log/slog"
+	"strings"
 	"sync"
 	"time"
 )
@@ -21,29 +23,29 @@ const maxHistoryLogs = 100
 
 // LogBroadcaster 管理 SSE 连接和日志分发
 type LogBroadcaster struct {
-	clients map[chan []byte]struct{}
+	clients map[chan LogEntry]struct{}
 	history []LogEntry
 	mu      sync.RWMutex
 }
 
 func NewLogBroadcaster() *LogBroadcaster {
 	return &LogBroadcaster{
-		clients: make(map[chan []byte]struct{}),
+		clients: make(map[chan LogEntry]struct{}),
 		history: make([]LogEntry, 0, maxHistoryLogs),
 	}
 }
 
 // Subscribe 添加一个新的客户端连接
-func (b *LogBroadcaster) Subscribe() chan []byte {
+func (b *LogBroadcaster) Subscribe() chan LogEntry {
 	b.mu.Lock()
 	defer b.mu.Unlock()
-	ch := make(chan []byte, 100) // 带缓冲，防止阻塞
+	ch := make(chan LogEntry, 100) // 带缓冲，防止阻塞
 	b.clients[ch] = struct{}{}
 	return ch
 }
 
 // Unsubscribe 移除客户端连接
-func (b *LogBroadcaster) Unsubscribe(ch chan []byte) {
+func (b *LogBroadcaster) Unsubscribe(ch chan LogEntry) {
 	b.mu.Lock()
 	defer b.mu.Unlock()
 	if _, ok := b.clients[ch]; ok {
@@ -54,11 +56,6 @@ func (b *LogBroadcaster) Unsubscribe(ch chan []byte) {
 
 // Broadcast 发送日志给所有连接的客户端
 func (b *LogBroadcaster) Broadcast(entry LogEntry) {
-	data, err := json.Marshal(entry)
-	if err != nil {
-		return
-	}
-
 	b.mu.Lock()
 	// 保存到历史记录
 	b.history = append(b.history, entry)
@@ -72,98 +69,119 @@ func (b *LogBroadcaster) Broadcast(entry LogEntry) {
 
 	for ch := range b.clients {
 		select {
-		case ch <- data:
+		case ch <- entry:
 		default:
 			// 如果客户端阻塞，跳过该消息，避免影响其他客户端
 		}
 	}
 }
 
-// BroadcastHandler 实现 slog.Handler 接口
-type BroadcastHandler struct {
+// JSONLogWriter 接收 slog.JSONHandler 输出并广播给前端
+type JSONLogWriter struct {
 	broadcaster *LogBroadcaster
-	attrs       []scopedAttr
-	groups      []string
+	buffer      bytes.Buffer
+	mu          sync.Mutex
 }
 
-type scopedAttr struct {
-	attr   slog.Attr
-	groups []string
+func NewJSONLogWriter(broadcaster *LogBroadcaster) io.Writer {
+	return &JSONLogWriter{
+		broadcaster: broadcaster,
+	}
 }
 
-func NewBroadcastHandler(b *LogBroadcaster) *BroadcastHandler {
-	return &BroadcastHandler{broadcaster: b}
+func (w *JSONLogWriter) Write(p []byte) (int, error) {
+	w.mu.Lock()
+	defer w.mu.Unlock()
+
+	if _, err := w.buffer.Write(p); err != nil {
+		return 0, err
+	}
+
+	for {
+		line, ok := w.nextLine()
+		if !ok {
+			break
+		}
+		entry, parsed := parseJSONLogLine(line)
+		if !parsed {
+			continue
+		}
+		w.broadcaster.Broadcast(entry)
+	}
+
+	return len(p), nil
 }
 
-func (h *BroadcastHandler) Enabled(_ context.Context, _ slog.Level) bool {
-	return true
+func (w *JSONLogWriter) nextLine() ([]byte, bool) {
+	bufferBytes := w.buffer.Bytes()
+	newlineIndex := bytes.IndexByte(bufferBytes, '\n')
+	if newlineIndex < 0 {
+		return nil, false
+	}
+
+	line := strings.TrimSpace(string(bufferBytes[:newlineIndex]))
+	w.buffer.Next(newlineIndex + 1)
+	return []byte(line), true
 }
 
-func (h *BroadcastHandler) Handle(_ context.Context, r slog.Record) error {
+func parseJSONLogLine(line []byte) (LogEntry, bool) {
+	if len(line) == 0 {
+		return LogEntry{}, false
+	}
+
+	var payload map[string]any
+	if err := json.Unmarshal(line, &payload); err != nil {
+		return LogEntry{}, false
+	}
+
 	entry := LogEntry{
-		Time:    r.Time.Format(time.DateTime),
-		Level:   r.Level.String(),
-		Message: r.Message,
+		Time:    normalizeEntryTime(payload["time"]),
+		Level:   normalizeStringField(payload["level"], "INFO"),
+		Message: normalizeStringField(payload["msg"], ""),
 	}
 
-	attrs := make(map[string]any)
-
-	for _, scoped := range h.attrs {
-		appendAttr(attrs, scoped.groups, scoped.attr)
+	delete(payload, "time")
+	delete(payload, "level")
+	delete(payload, "msg")
+	if len(payload) > 0 {
+		entry.Attrs = payload
 	}
 
-	r.Attrs(func(attr slog.Attr) bool {
-		appendAttr(attrs, h.groups, attr)
-		return true
-	})
-
-	if len(attrs) > 0 {
-		entry.Attrs = attrs
-	}
-
-	h.broadcaster.Broadcast(entry)
-	return nil
+	return entry, true
 }
 
-func (h *BroadcastHandler) WithAttrs(attrs []slog.Attr) slog.Handler {
-	mergedAttrs := make([]scopedAttr, len(h.attrs), len(h.attrs)+len(attrs))
-	copy(mergedAttrs, h.attrs)
-	for _, attr := range attrs {
-		attrGroups := make([]string, len(h.groups))
-		copy(attrGroups, h.groups)
-		mergedAttrs = append(mergedAttrs, scopedAttr{
-			attr:   attr,
-			groups: attrGroups,
-		})
-	}
-
-	groups := make([]string, len(h.groups))
-	copy(groups, h.groups)
-
-	return &BroadcastHandler{
-		broadcaster: h.broadcaster,
-		attrs:       mergedAttrs,
-		groups:      groups,
+func normalizeStringField(raw any, fallback string) string {
+	switch value := raw.(type) {
+	case string:
+		trimmed := strings.TrimSpace(value)
+		if trimmed == "" {
+			return fallback
+		}
+		return trimmed
+	case nil:
+		return fallback
+	default:
+		return fmt.Sprint(value)
 	}
 }
 
-func (h *BroadcastHandler) WithGroup(name string) slog.Handler {
-	if name == "" {
-		return h
+func normalizeEntryTime(raw any) string {
+	timeString := normalizeStringField(raw, "")
+	if timeString == "" {
+		return time.Now().Format(time.DateTime)
 	}
 
-	attrs := make([]scopedAttr, len(h.attrs))
-	copy(attrs, h.attrs)
-
-	groups := make([]string, len(h.groups), len(h.groups)+1)
-	copy(groups, h.groups)
-	groups = append(groups, name)
-
-	return &BroadcastHandler{
-		broadcaster: h.broadcaster,
-		attrs:       attrs,
-		groups:      groups,
+	parsed, err := time.Parse(time.RFC3339Nano, timeString)
+	if err == nil {
+		return parsed.Local().Format(time.DateTime)
 	}
+
+	parsed, err = time.Parse(time.DateTime, timeString)
+	if err == nil {
+		return parsed.Format(time.DateTime)
+	}
+
+	return timeString
 }
 
 // GetHistory 获取历史日志记录
@@ -176,96 +194,26 @@ func (b *LogBroadcaster) GetHistory() []LogEntry {
 	return history
 }
 
-func appendAttr(target map[string]any, groups []string, attr slog.Attr) {
-	value := attr.Value.Resolve()
-
-	if value.Kind() == slog.KindGroup {
-		nextGroups := groups
-		if attr.Key != "" {
-			nextGroups = appendPath(groups, attr.Key)
-		}
-		for _, nestedAttr := range value.Group() {
-			appendAttr(target, nextGroups, nestedAttr)
-		}
-		return
-	}
-
-	if attr.Key == "" {
-		return
-	}
-
-	setNestedValue(target, groups, attr.Key, normalizeSlogValue(value))
+func buildJSONStreamHandler(level slog.Level, writer io.Writer) slog.Handler {
+	return slog.NewJSONHandler(writer, &slog.HandlerOptions{
+		Level: level,
+		ReplaceAttr: func(_ []string, attr slog.Attr) slog.Attr {
+			if attr.Key == slog.TimeKey {
+				if timestamp, ok := attr.Value.Any().(time.Time); ok {
+					return slog.String(slog.TimeKey, timestamp.Local().Format(time.DateTime))
+				}
+			}
+			if attr.Value.Kind() == slog.KindAny {
+				if err, ok := attr.Value.Any().(error); ok {
+					return slog.String(attr.Key, err.Error())
+				}
+			}
+			return attr
+		},
+	})
 }
 
-func appendPath(path []string, value string) []string {
-	next := make([]string, len(path)+1)
-	copy(next, path)
-	next[len(path)] = value
-	return next
-}
-
-func setNestedValue(target map[string]any, groups []string, key string, value any) {
-	current := target
-	for _, group := range groups {
-		nested, ok := current[group].(map[string]any)
-		if !ok {
-			nested = make(map[string]any)
-			current[group] = nested
-		}
-		current = nested
-	}
-	current[key] = value
-}
-
-func normalizeSlogValue(value slog.Value) any {
-	switch value.Kind() {
-	case slog.KindString:
-		return value.String()
-	case slog.KindInt64:
-		return value.Int64()
-	case slog.KindUint64:
-		return value.Uint64()
-	case slog.KindFloat64:
-		return value.Float64()
-	case slog.KindBool:
-		return value.Bool()
-	case slog.KindDuration:
-		return value.Duration().String()
-	case slog.KindTime:
-		return value.Time().Format(time.RFC3339Nano)
-	case slog.KindAny:
-		return normalizeAny(value.Any())
-	case slog.KindLogValuer:
-		return normalizeSlogValue(value.Resolve())
-	case slog.KindGroup:
-		grouped := make(map[string]any)
-		for _, nestedAttr := range value.Group() {
-			appendAttr(grouped, nil, nestedAttr)
-		}
-		return grouped
-	default:
-		return value.String()
-	}
-}
-
-func normalizeAny(raw any) any {
-	if raw == nil {
-		return nil
-	}
-
-	if err, ok := raw.(error); ok {
-		return err.Error()
-	}
-
-	bytes, err := json.Marshal(raw)
-	if err != nil {
-		return fmt.Sprint(raw)
-	}
-
-	var normalized any
-	if err := json.Unmarshal(bytes, &normalized); err != nil {
-		return string(bytes)
-	}
-
-	return normalized
+// NewSSELogHandler 创建用于 SSE 日志流的 slog.Handler
+func NewSSELogHandler(level slog.Level, broadcaster *LogBroadcaster) slog.Handler {
+	return buildJSONStreamHandler(level, NewJSONLogWriter(broadcaster))
 }

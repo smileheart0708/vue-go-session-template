@@ -2,6 +2,7 @@ package server
 
 import (
 	"embed"
+	"log/slog"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -10,6 +11,7 @@ import (
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 	gorillasessions "github.com/gorilla/sessions"
+	sloggin "github.com/samber/slog-gin"
 
 	"main/internal/config"
 	"main/internal/handlers"
@@ -31,6 +33,9 @@ func NewRouter(
 
 	gin.SetMode(gin.ReleaseMode)
 	r := gin.New()
+	httpLogConfig := sloggin.DefaultConfig()
+	httpLogConfig.WithRequestID = false
+	r.Use(sloggin.NewWithConfig(slog.Default().WithGroup("http"), httpLogConfig))
 	r.Use(gin.Recovery())
 	r.Use(sessions.Sessions(cfg.SessionName, newSessionStore(cfg)))
 

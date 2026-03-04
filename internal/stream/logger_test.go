@@ -1,16 +1,15 @@
 package stream
 
 import (
-	"context"
 	"errors"
 	"log/slog"
 	"testing"
 	"time"
 )
 
-func TestBroadcastHandlerSerializesErrorAttr(t *testing.T) {
+func TestSSELogHandlerSerializesErrorAttr(t *testing.T) {
 	broadcaster := NewLogBroadcaster()
-	logger := slog.New(NewBroadcastHandler(broadcaster))
+	logger := slog.New(NewSSELogHandler(slog.LevelInfo, broadcaster))
 
 	wantErr := "securecookie: the value is not valid"
 	logger.Error("[sessions] ERROR!", "err", errors.New(wantErr))
@@ -30,15 +29,13 @@ func TestBroadcastHandlerSerializesErrorAttr(t *testing.T) {
 	}
 }
 
-func TestBroadcastHandlerWithAttrsAndGroups(t *testing.T) {
+func TestSSELogHandlerWithAttrsAndGroups(t *testing.T) {
 	broadcaster := NewLogBroadcaster()
-	handler := NewBroadcastHandler(broadcaster)
-
-	logger := slog.New(handler).
+	logger := slog.New(NewSSELogHandler(slog.LevelInfo, broadcaster)).
 		With("service", "api").
 		WithGroup("http")
 
-	logger.LogAttrs(context.Background(), slog.LevelInfo, "request completed",
+	logger.LogAttrs(t.Context(), slog.LevelInfo, "request completed",
 		slog.Int("status", 200),
 		slog.Duration("latency", 150*time.Millisecond),
 		slog.Group("request", slog.String("method", "GET")),
@@ -60,14 +57,18 @@ func TestBroadcastHandlerWithAttrsAndGroups(t *testing.T) {
 		t.Fatalf("expected http group to be map[string]any, got %T", attrs["http"])
 	}
 
-	status, ok := httpGroup["status"].(int64)
+	status, ok := httpGroup["status"].(float64)
 	if !ok || status != 200 {
 		t.Fatalf("expected http.status=200, got %#v (%T)", httpGroup["status"], httpGroup["status"])
 	}
 
-	latency, ok := httpGroup["latency"].(string)
-	if !ok || latency != "150ms" {
-		t.Fatalf("expected http.latency=%q, got %#v", "150ms", httpGroup["latency"])
+	latency, ok := httpGroup["latency"].(float64)
+	if !ok || latency != float64((150*time.Millisecond).Nanoseconds()) {
+		t.Fatalf(
+			"expected http.latency=%v, got %#v",
+			float64((150 * time.Millisecond).Nanoseconds()),
+			httpGroup["latency"],
+		)
 	}
 
 	requestGroup, ok := httpGroup["request"].(map[string]any)
