@@ -55,13 +55,15 @@
           <tr
             v-for="(row, rowIndex) in rows"
             :key="resolveRowKey(row, rowIndex)"
-            class="group transition-colors duration-200 hover:bg-bg-subtle last:[&>td]:border-b-0"
+            class="transition-colors duration-200 last:[&>td]:border-b-0"
+            @mouseleave="handleBodyRowLeave(rowIndex)"
           >
             <td
               v-for="(column, colIndex) in columns"
               :key="column.key"
-              :class="[getBodyCellClass(column), column.cellClass]"
+              :class="[getBodyCellClass(column, rowIndex), column.cellClass]"
               :style="getColumnStyle(column, colIndex)"
+              @mouseenter="handleBodyCellEnter(rowIndex, column)"
             >
               <slot
                 :name="`cell-${column.key}`"
@@ -141,12 +143,13 @@ export type GlassTableColumn<
 </script>
 
 <script setup lang="ts" generic="TRow extends object, TExtraKey extends string = never">
-import { computed, useAttrs, useSlots } from 'vue'
+import { computed, ref, useAttrs, useSlots } from 'vue'
 import { useMediaQuery } from '@vueuse/core'
 
 defineOptions({ name: 'AppTable', inheritAttrs: false })
 
 type RowIdentity = string | number
+type BodyHoverSegment = 'main' | 'pinned'
 
 interface CellContext {
   row: TRow
@@ -186,6 +189,8 @@ const {
 
 const attrs = useAttrs()
 const slots = useSlots()
+const hoveredRowIndex = ref<number | null>(null)
+const hoveredBodySegment = ref<BodyHoverSegment | null>(null)
 
 const isCompact = useMediaQuery(computed(() => compactMediaQuery))
 
@@ -304,7 +309,7 @@ function getPinnedCellClass(column: AppTableColumn<TRow, TExtraKey>, header: boo
   if (header) {
     return `${sharedClass} ${sideClass} z-4 bg-bg-surface`
   }
-  return `${sharedClass} ${sideClass} z-3 bg-bg-glass group-hover:bg-bg-subtle`
+  return `${sharedClass} ${sideClass} z-3 bg-bg-glass`
 }
 
 function getHeaderCellClass(column: AppTableColumn<TRow, TExtraKey>): string {
@@ -325,9 +330,9 @@ function getHeaderCellClass(column: AppTableColumn<TRow, TExtraKey>): string {
   return classes.join(' ')
 }
 
-function getBodyCellClass(column: AppTableColumn<TRow, TExtraKey>): string {
+function getBodyCellClass(column: AppTableColumn<TRow, TExtraKey>, rowIndex: number): string {
   const classes = [
-    'px-5 py-3.5 text-sm whitespace-nowrap border-b border-border text-text-primary max-md:px-4 max-md:py-3 max-md:text-[13px]',
+    'px-5 py-3.5 text-sm whitespace-nowrap border-b border-border text-text-primary transition-colors duration-200 max-md:px-4 max-md:py-3 max-md:text-[13px]',
     resolveAlignClass(column.align),
   ]
 
@@ -335,8 +340,35 @@ function getBodyCellClass(column: AppTableColumn<TRow, TExtraKey>): string {
   if (pinnedClass) {
     classes.push(pinnedClass)
   }
+  if (isBodySegmentRowHighlighted(rowIndex, column)) {
+    classes.push('bg-bg-subtle')
+  }
 
   return classes.join(' ')
+}
+
+function resolveBodyHoverSegment(column: AppTableColumn<TRow, TExtraKey>): BodyHoverSegment {
+  return shouldPinColumn(column) ? 'pinned' : 'main'
+}
+
+function handleBodyCellEnter(rowIndex: number, column: AppTableColumn<TRow, TExtraKey>): void {
+  hoveredRowIndex.value = rowIndex
+  hoveredBodySegment.value = resolveBodyHoverSegment(column)
+}
+
+function handleBodyRowLeave(rowIndex: number): void {
+  if (hoveredRowIndex.value !== rowIndex) return
+  hoveredRowIndex.value = null
+  hoveredBodySegment.value = null
+}
+
+function isBodySegmentRowHighlighted(
+  rowIndex: number,
+  column: AppTableColumn<TRow, TExtraKey>,
+): boolean {
+  if (hoveredRowIndex.value !== rowIndex) return false
+  if (!hoveredBodySegment.value) return false
+  return resolveBodyHoverSegment(column) === hoveredBodySegment.value
 }
 
 function getDataCellValue<TKey extends ColumnKey<TRow>>(row: TRow, key: TKey): TRow[TKey] {

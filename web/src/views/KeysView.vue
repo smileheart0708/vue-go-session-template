@@ -17,13 +17,17 @@
       empty-text="暂无密钥数据"
     >
       <template #cell-__actions="{ row }">
-        <button
-          type="button"
-          class="inline-flex h-8 items-center justify-center rounded-md border border-accent px-3 text-xs font-semibold text-accent transition-colors duration-200 hover:bg-accent hover:text-on-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--sys-color-focus-ring)"
-          @click="handleViewDetail(row)"
+        <IconButton
+          size="medium"
+          title="打开操作菜单"
+          class="text-text-secondary hover:text-accent"
+          aria-label="打开操作菜单"
+          aria-haspopup="menu"
+          :aria-expanded="isActionMenuOpenForRow(row.id)"
+          @click="handleToggleActionMenu(row, $event)"
         >
-          查看详情
-        </button>
+          <MoreHorizontal />
+        </IconButton>
       </template>
     </AppTable>
 
@@ -32,12 +36,84 @@
       :total="demoKeys.length"
       :page-size="pageSize"
     />
+
+    <DropdownDrawer
+      v-model="showActionMenu"
+      :anchor-el="actionMenuAnchorEl"
+      :min-width="132"
+    >
+      <button
+        class="dropdown-item"
+        type="button"
+        @click="handleSelectDetail"
+      >
+        <Eye class="dropdown-icon" />
+        <span>详情</span>
+      </button>
+      <button
+        class="dropdown-item"
+        type="button"
+        @click="handleSelectDelete"
+      >
+        <Trash2 class="dropdown-icon" />
+        <span>删除</span>
+      </button>
+    </DropdownDrawer>
+
+    <AppDialog
+      v-model="showDetailDialog"
+      title="密钥详情"
+      close-aria-label="关闭详情对话框"
+    >
+      <div
+        v-if="selectedDetailRow"
+        class="grid gap-3 text-sm text-text-primary"
+      >
+        <p class="m-0">
+          <span class="text-text-secondary">名称：</span>{{ selectedDetailRow.name }}
+        </p>
+        <p class="m-0">
+          <span class="text-text-secondary">项目：</span>{{ selectedDetailRow.project }}
+        </p>
+        <p class="m-0">
+          <span class="text-text-secondary">密钥：</span>{{ selectedDetailRow.key_masked }}
+        </p>
+        <p class="m-0">
+          <span class="text-text-secondary">权限范围：</span>{{ selectedDetailRow.scopes }}
+        </p>
+        <p class="m-0">
+          <span class="text-text-secondary">状态：</span>{{ selectedDetailRow.status_label }}
+        </p>
+        <p class="m-0">
+          <span class="text-text-secondary">创建时间：</span>{{ selectedDetailRow.created_at }}
+        </p>
+        <p class="m-0">
+          <span class="text-text-secondary">最近使用：</span>{{ selectedDetailRow.last_used_at }}
+        </p>
+      </div>
+      <template #footer>
+        <BaseButton
+          text="关闭"
+          :height="36"
+          @click="showDetailDialog = false"
+        />
+      </template>
+    </AppDialog>
   </div>
 </template>
 
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-import { AppPagination, AppTable, type AppTableColumn } from '@/components/common'
+import { Eye, MoreHorizontal, Trash2 } from 'lucide-vue-next'
+import {
+  AppDialog,
+  AppPagination,
+  AppTable,
+  BaseButton,
+  DropdownDrawer,
+  IconButton,
+  type AppTableColumn,
+} from '@/components/common'
 import { useToast } from '@/composables'
 
 defineOptions({ name: 'KeysView' })
@@ -56,9 +132,14 @@ interface ApiKeyItem {
   last_used_at: string
 }
 
-const { info } = useToast()
+const { warning } = useToast()
 const pageSize = 8
 const currentPage = ref<number>(1)
+const showActionMenu = ref<boolean>(false)
+const actionMenuAnchorEl = ref<HTMLElement | null>(null)
+const actionMenuRow = ref<ApiKeyItem | null>(null)
+const showDetailDialog = ref<boolean>(false)
+const selectedDetailRow = ref<ApiKeyItem | null>(null)
 
 const statusText: Record<ApiKeyStatus, string> = {
   active: '启用',
@@ -79,7 +160,7 @@ const columns: ReadonlyArray<AppTableColumn<ApiKeyItem, '__actions'>> = [
     kind: 'display',
     label: '操作',
     align: 'center',
-    width: 96,
+    width: 10,
     fixed: 'right',
     fixedVisibility: 'always',
   },
@@ -128,8 +209,36 @@ const pagedRows = computed<ReadonlyArray<ApiKeyItem>>(() => {
   return demoKeys.slice(start, end)
 })
 
-function handleViewDetail(row: ApiKeyItem): void {
-  info(`查看详情：${row.name}`)
+function isActionMenuOpenForRow(rowId: string): boolean {
+  return showActionMenu.value && actionMenuRow.value?.id === rowId
+}
+
+function handleToggleActionMenu(row: ApiKeyItem, event: MouseEvent): void {
+  const target = event.currentTarget
+  if (!(target instanceof HTMLElement)) return
+
+  const isSameRow = actionMenuRow.value?.id === row.id
+  if (showActionMenu.value && isSameRow) {
+    showActionMenu.value = false
+    return
+  }
+
+  actionMenuAnchorEl.value = target
+  actionMenuRow.value = row
+  showActionMenu.value = true
+}
+
+function handleSelectDetail(): void {
+  if (!actionMenuRow.value) return
+  selectedDetailRow.value = actionMenuRow.value
+  showDetailDialog.value = true
+  showActionMenu.value = false
+}
+
+function handleSelectDelete(): void {
+  if (!actionMenuRow.value) return
+  warning(`演示操作：删除 ${actionMenuRow.value.name}`)
+  showActionMenu.value = false
 }
 
 function formatCellValue(

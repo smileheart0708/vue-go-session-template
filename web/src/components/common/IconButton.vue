@@ -1,7 +1,7 @@
 <template>
   <button
     ref="buttonRef"
-    class="inline-flex items-center justify-center rounded-lg border border-transparent bg-transparent text-text-primary transition-all duration-200 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50"
+    class="inline-flex items-center justify-center rounded-md border-0 bg-transparent text-text-primary transition-all duration-200 active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--sys-color-focus-ring) disabled:cursor-not-allowed disabled:opacity-50"
     :class="[sizeClass, activeClass]"
     :title="title"
     :aria-pressed="toggle ? active : undefined"
@@ -40,9 +40,9 @@ const sizeClass = computed<string>(() => {
 
 const activeClass = computed<string>(() => {
   if (active.value) {
-    return 'border-accent bg-accent text-on-accent'
+    return 'bg-bg-component text-accent'
   }
-  return 'enabled:hover:border-border enabled:hover:bg-bg-component-muted'
+  return 'enabled:hover:bg-bg-component-muted'
 })
 
 function handleClick(event: MouseEvent): void {
