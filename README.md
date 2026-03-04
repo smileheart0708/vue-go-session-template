@@ -6,7 +6,7 @@ Go + Vue 的单体全栈模板。后端使用 Gin，前端使用 Vue 3 + TypeScr
 
 - 前端：Vue 3.5+、TypeScript、Pinia、Vite
 - 后端：Go 1.25+、Gin、`log/slog`
-- 认证：`AUTH_KEY` + Session Cookie（`HttpOnly`，`SameSite=Lax`）
+- 认证：`AUTH_KEY` + `gin-contrib/sessions`（filesystem store）
 - 日志：SSE 实时推送 + 历史日志接口
 - 构建：前端 `web/dist` 嵌入 Go 可执行文件，支持 `.br/.gz`
 - 安全增强：前端 API 响应统一 Schema 运行时校验（含 SSE 日志数据）
@@ -19,11 +19,10 @@ Go + Vue 的单体全栈模板。后端使用 Gin，前端使用 Vue 3 + TypeScr
 │   ├── handlers/           # API 处理器
 │   ├── middleware/         # 认证/日志中间件
 │   ├── server/             # 路由与 SPA fallback
-│   ├── session/            # Session 管理
 │   └── stream/             # SSE 日志广播
 ├── web/                    # Vue 前端工程
 │   ├── src/types/api.ts    # API 类型 + Schema 校验中心
-│   ├── src/utils/http.ts   # 统一 HTTP 客户端与校验入口
+│   ├── src/utils/api-client.ts # ky 客户端与校验入口
 │   └── src/composables/    # 组合式逻辑（含日志流）
 ├── main.go                 # 应用入口
 └── build.ps1               # Windows 一键构建脚本
@@ -94,38 +93,41 @@ Windows 全量构建：
 | `LOG_LEVEL` | `info` | 日志等级：`debug/info/warn/error` |
 | `AUTH_KEY` | 空 | 管理认证密钥；为空时启动自动生成 |
 | `COOKIE_SECURE` | `false` | Session Cookie 的 `Secure` 属性，生产环境必须 `true` |
+| `SESSION_NAME` | `session_id` | Session Cookie 名称 |
+| `SESSION_AUTH_KEY` | 空 | Session 签名密钥；为空时仅开发环境自动生成并告警 |
+| `SESSION_ENC_KEY` | 空 | Session 加密密钥（可选，长度必须是 16/24/32 字节） |
 
 ### 4.2 前端（`web/`）
 
 | 变量名 | 默认值 | 说明 |
 | --- | --- | --- |
-| `VITE_API_BASE_URL` | 空 | Vite 开发代理目标 |
+| `VITE_API_BASE_URL` | 空 | API 基地址，未设置时默认 `/api` |
 | `VITE_API_MODE` | `real` | `real` 或 `mock` |
 | `VITE_MOCK_AUTH` | `false` | 是否启用前端模拟认证 |
 
 ## 5. API Schema 规范（强制）
 
-所有 JSON 响应都必须在 `web/src/types/api.ts` 定义类型与 `schema.parse()` 逻辑，并在调用 `http` 时传入 `schema`。
+所有 JSON 响应都必须在 `web/src/types/api.ts` 定义类型与 `schema.parse()` 逻辑，并在 `ky` 调用后执行 schema 解析。
 
 ### 5.1 统一入口
 
-- HTTP 校验入口：`web/src/utils/http.ts`
-- 响应异常类型：`HttpResponseValidationError`
+- HTTP 校验入口：`web/src/utils/api-client.ts`
+- 响应异常类型：`ApiResponseValidationError`
 - 类型定义与解析：`web/src/types/api.ts`
 
 ### 5.2 代码约束
 
 1. 新增接口时，先在 `web/src/types/api.ts` 增加 `interface + schema`。
-2. 调用时必须传 `schema`，禁止仅依赖泛型断言。
+2. 调用时必须执行 `parseWithSchema()`，禁止仅依赖泛型断言。
 3. SSE 数据必须使用同一套 schema 做 `parse`（当前日志流已接入）。
-4. 发生 `HttpResponseValidationError` 时，按“服务端响应格式异常”处理并记录错误日志。
+4. 发生 `ApiResponseValidationError` 时，按“服务端响应格式异常”处理并记录错误日志。
 
 示例：
 
 ```ts
-const data = await http('/dashboard/stats', {
-  schema: dashboardStatsResponseSchema,
-})
+const response = await api.get('dashboard/stats')
+const payload = await response.json<unknown>()
+const data = parseWithSchema(payload, dashboardStatsResponseSchema, response.url)
 ```
 
 ## 6. 前后端开发规范
@@ -151,15 +153,16 @@ const data = await http('/dashboard/stats', {
 
 1. 必须通过 HTTPS 暴露服务（建议反向代理终止 TLS）。
 2. 设置强随机 `AUTH_KEY`（建议至少 32 字符）。
-3. 设置 `COOKIE_SECURE=true`。
+3. 设置强随机 `SESSION_AUTH_KEY`（建议 32 字节以上）。
+4. 设置 `COOKIE_SECURE=true`。
 4. 限制公网暴露面：仅暴露网关端口，不直接暴露内部调试端口。
 5. 为 `DATA_DIR` 配置最小权限（仅服务账户可读写）。
 
 ### 7.2 认证与会话
 
 - Session Cookie：`HttpOnly` + `SameSite=Lax`（已在后端设置）
-- Session 默认有效期：7 天（`internal/session/manager.go`）
-- 轮换 `AUTH_KEY` 会使旧认证流程失效，需规划维护窗口
+- Session 默认有效期：7 天（`internal/server/router.go`）
+- 轮换 `SESSION_AUTH_KEY` 会使旧会话失效，需规划维护窗口
 
 ### 7.3 前端安全
 
@@ -192,7 +195,7 @@ pnpm run build
 
 ## 8. 开放给他人使用时的 Checklist
 
-1. 复制 `.env.example` 并填写 `AUTH_KEY`、`COOKIE_SECURE`。
+1. 复制 `.env.example` 并填写 `AUTH_KEY`、`SESSION_AUTH_KEY`、`COOKIE_SECURE`。
 2. 执行前后端静态检查和构建。
 3. 确认 `VITE_API_MODE=real`，关闭 mock。
 4. 使用 HTTPS 网关对外开放，配置代理和限流。

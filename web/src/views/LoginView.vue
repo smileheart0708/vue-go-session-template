@@ -5,7 +5,16 @@ import { BaseButton, ThemeToggle } from '@/components/common'
 import { useTheme, useToast } from '@/composables'
 import { useAuthStore } from '@/stores/auth'
 import { loginResponseSchema } from '@/types/api'
-import { HttpError, HttpResponseValidationError, http, resolveRedirectPath } from '@/utils'
+import {
+  api,
+  ApiResponseValidationError,
+  HTTPError,
+  normalizeApiEndpoint,
+  parseWithSchema,
+  readHttpErrorData,
+  resolveRedirectPath,
+  withUnauthorizedHandlerSkipped,
+} from '@/utils'
 import type { ThemeMode } from '@/composables'
 
 const route = useRoute()
@@ -54,33 +63,34 @@ const handleLogin = async () => {
   isLoading.value = true
 
   try {
-    const data = await http('/login', {
-      method: 'POST',
-      body: { auth_key: authKey.value },
-      skipUnauthorizedHandler: true,
-      schema: loginResponseSchema,
-    })
+    const response = await api.post(
+      normalizeApiEndpoint('/login'),
+      withUnauthorizedHandlerSkipped({ json: { auth_key: authKey.value } }),
+    )
+    const payload = await response.json<unknown>()
+    const data = parseWithSchema(payload, loginResponseSchema, response.url)
 
-    if (!data.success || !data.session_id) {
+    if (!data.success) {
       toastError(data.message || '认证失败，请重试')
       return
     }
 
     // 登录成功
-    authStore.setAuthenticated(data.session_id)
+    authStore.setAuthenticated()
     success('登录成功！')
 
     // 登录后回跳
     await router.replace(loginRedirectPath.value)
   } catch (error) {
-    if (error instanceof HttpResponseValidationError) {
+    if (error instanceof ApiResponseValidationError) {
       console.error('Invalid login response payload:', error)
       toastError('服务端响应格式异常，请稍后重试')
       return
     }
 
-    if (error instanceof HttpError) {
-      toastError(extractErrorMessage(error.data) || '认证失败，请重试')
+    if (error instanceof HTTPError) {
+      const errorPayload = await readHttpErrorData(error)
+      toastError(extractErrorMessage(errorPayload) || '认证失败，请重试')
       return
     }
 
