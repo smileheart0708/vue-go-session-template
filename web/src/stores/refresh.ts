@@ -1,6 +1,8 @@
 import { computed, ref, watch } from 'vue'
 import { defineStore } from 'pinia'
-import { useDocumentVisibility, useIntervalFn, useLocalStorage, useNetwork } from '@vueuse/core'
+import { useDocumentVisibility, useIntervalFn, useNetwork } from '@vueuse/core'
+import { z } from 'zod'
+import { useValidatedLocalStorage } from '@/composables/useValidatedLocalStorage'
 
 type RefreshHandler = () => Promise<void>
 
@@ -27,13 +29,16 @@ const normalizeIntervalSeconds = (value: number): number => {
   return nextValue
 }
 
+const intervalSecondsSchema = z.number().finite().transform(normalizeIntervalSeconds)
+
 export const useRefreshStore = defineStore('refresh', () => {
   // ==========================
   // 1. 配置状态 (持久化)
   // ==========================
-  const isEnabled = useLocalStorage('settings.refresh_enabled', true)
-  const intervalSeconds = useLocalStorage(
+  const isEnabled = useValidatedLocalStorage('settings.refresh_enabled', z.boolean(), true)
+  const intervalSeconds = useValidatedLocalStorage(
     'settings.refresh_interval_seconds',
+    intervalSecondsSchema,
     DEFAULT_INTERVAL_SECONDS,
   )
 
@@ -118,17 +123,6 @@ export const useRefreshStore = defineStore('refresh', () => {
   const setIntervalSeconds = (value: number) => {
     intervalSeconds.value = normalizeIntervalSeconds(value)
   }
-
-  watch(
-    intervalSeconds,
-    (value) => {
-      const normalized = normalizeIntervalSeconds(value)
-      if (normalized !== value) {
-        intervalSeconds.value = normalized
-      }
-    },
-    { immediate: true },
-  )
 
   function register(key: string, handler: RefreshHandler, options?: RegisterOptions) {
     if (!key.trim()) return

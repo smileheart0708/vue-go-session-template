@@ -1,8 +1,9 @@
 import { computed } from 'vue'
-import { useLocalStorage } from '@vueuse/core'
+import { z } from 'zod'
 import { defineStore } from 'pinia'
-import { useDashboardStore } from './dashboard'
+import { useValidatedLocalStorage } from '@/composables/useValidatedLocalStorage'
 import { logoutResponseSchema, sessionStatusResponseSchema } from '@/types/api'
+import { useDashboardStore } from './dashboard'
 import {
   api,
   ApiResponseValidationError,
@@ -16,28 +17,24 @@ import { isMockAuthEnabled } from '@/utils/env'
 
 const STORAGE_KEY = 'vue-go-session-auth'
 
-interface StoredAuthState {
-  isAuthenticated: boolean
-}
+const storedAuthStateSchema = z
+  .object({
+    isAuthenticated: z.boolean().catch(false),
+  })
+  .transform((value) => ({
+    isAuthenticated: value.isAuthenticated === true,
+  }))
+
+type StoredAuthState = z.infer<typeof storedAuthStateSchema>
 
 const DEFAULT_AUTH_STATE: StoredAuthState = { isAuthenticated: false }
 
-function hasIsAuthenticatedField(value: unknown): value is { isAuthenticated: unknown } {
-  return typeof value === 'object' && value !== null && 'isAuthenticated' in value
-}
-
-function normalizeStoredAuthState(value: unknown): StoredAuthState {
-  if (!hasIsAuthenticatedField(value)) {
-    return { ...DEFAULT_AUTH_STATE }
-  }
-
-  return {
-    isAuthenticated: value.isAuthenticated === true,
-  }
-}
-
 export const useAuthStore = defineStore('auth', () => {
-  const storedState = useLocalStorage<StoredAuthState>(STORAGE_KEY, { ...DEFAULT_AUTH_STATE })
+  const storedState = useValidatedLocalStorage(
+    STORAGE_KEY,
+    storedAuthStateSchema,
+    DEFAULT_AUTH_STATE,
+  )
   const isAuthenticated = computed(() => storedState.value.isAuthenticated)
 
   function applyState(nextState: StoredAuthState): void {
@@ -59,7 +56,7 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   function init(): void {
-    applyState(normalizeStoredAuthState(storedState.value))
+    applyState(storedState.value)
     setUnauthorizedHandler(handleUnauthorized)
   }
 

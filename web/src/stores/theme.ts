@@ -1,10 +1,13 @@
-import { ref, computed, watch } from 'vue'
-import { defineStore } from 'pinia'
+import { computed } from 'vue'
 import { useColorMode } from '@vueuse/core'
+import { z } from 'zod'
+import { defineStore } from 'pinia'
+import { useValidatedLocalStorage } from '@/composables/useValidatedLocalStorage'
 
 export type ThemeMode = 'light' | 'dark' | 'auto'
 
 const STORAGE_KEY = 'vue-go-session-theme-mode'
+const themeModeSchema = z.enum(['light', 'dark', 'auto'])
 
 export const useThemeStore = defineStore('theme', () => {
   const colorMode = useColorMode({
@@ -14,22 +17,23 @@ export const useThemeStore = defineStore('theme', () => {
     modes: { light: 'light', dark: 'dark' },
   })
 
-  const mode = ref<ThemeMode>('auto')
+  const mode = useValidatedLocalStorage<ThemeMode>(STORAGE_KEY, themeModeSchema, 'auto')
 
   const isDark = computed(() => {
-    if (mode.value === 'auto') {
-      return colorMode.value === 'dark'
-    }
     return colorMode.value === 'dark'
   })
 
+  function syncColorMode(nextMode: ThemeMode): void {
+    if (nextMode === 'auto') {
+      colorMode.value = 'auto'
+      return
+    }
+    colorMode.value = nextMode
+  }
+
   function setMode(newMode: ThemeMode) {
     mode.value = newMode
-    if (newMode === 'auto') {
-      colorMode.value = 'auto'
-    } else {
-      colorMode.value = newMode
-    }
+    syncColorMode(newMode)
   }
 
   function cycleMode() {
@@ -43,19 +47,7 @@ export const useThemeStore = defineStore('theme', () => {
   }
 
   function init() {
-    const stored = localStorage.getItem(STORAGE_KEY)
-    if (stored === 'light' || stored === 'dark' || stored === 'auto') {
-      mode.value = stored
-    }
-
-    watch(mode, (newMode) => {
-      localStorage.setItem(STORAGE_KEY, newMode)
-      if (newMode === 'auto') {
-        colorMode.value = 'auto'
-      } else {
-        colorMode.value = newMode
-      }
-    })
+    syncColorMode(mode.value)
   }
 
   return { mode, isDark, setMode, cycleMode, init }
