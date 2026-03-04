@@ -11,7 +11,11 @@
       class="inline-flex items-center justify-center text-base leading-none"
     >
       <slot name="icon">
-        <component :is="icon" v-if="icon" :size="16" />
+        <component
+          :is="icon"
+          v-if="icon"
+          :size="16"
+        />
       </slot>
     </span>
     <span class="whitespace-nowrap leading-none">{{ text }}</span>

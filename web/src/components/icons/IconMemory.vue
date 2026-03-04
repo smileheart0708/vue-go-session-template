@@ -14,8 +14,22 @@
       stroke-linejoin="round"
     />
     <!-- 内部两个芯片：保持微小圆角 -->
-    <rect x="23" y="25" width="30" height="20" rx="2" stroke-linejoin="round" />
-    <rect x="67" y="25" width="30" height="20" rx="2" stroke-linejoin="round" />
+    <rect
+      x="23"
+      y="25"
+      width="30"
+      height="20"
+      rx="2"
+      stroke-linejoin="round"
+    />
+    <rect
+      x="67"
+      y="25"
+      width="30"
+      height="20"
+      rx="2"
+      stroke-linejoin="round"
+    />
     <!-- 底部引脚：6个引脚，间距相等，最左和最右与外框侧边对齐 -->
     <path d="M 10 60 V 78" />
     <path d="M 30 60 V 78" />

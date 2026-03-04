@@ -18,12 +18,19 @@
         </slot>
       </div>
 
-      <div v-if="$slots['actions']" class="flex shrink-0 items-center gap-3 max-md:gap-2">
+      <div
+        v-if="$slots['actions']"
+        class="flex shrink-0 items-center gap-3 max-md:gap-2"
+      >
         <slot name="actions" />
       </div>
     </header>
 
-    <div class="max-w-full overflow-auto" role="region" :aria-label="regionLabel || undefined">
+    <div
+      class="max-w-full overflow-auto"
+      role="region"
+      :aria-label="regionLabel || undefined"
+    >
       <table :class="tableClass">
         <thead>
           <tr>
@@ -34,7 +41,10 @@
               :class="[getHeaderCellClass(column), column.headerClass]"
               :style="getColumnStyle(column, index)"
             >
-              <slot :name="`header-${column.key}`" :column="column">
+              <slot
+                :name="`header-${column.key}`"
+                :column="column"
+              >
                 {{ column.label }}
               </slot>
             </th>

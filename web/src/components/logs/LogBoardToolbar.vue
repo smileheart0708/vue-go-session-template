@@ -4,7 +4,10 @@
       <h2>{{ title }}</h2>
     </div>
     <div class="log-board-actions">
-      <div ref="exportAnchorRef" class="log-export">
+      <div
+        ref="exportAnchorRef"
+        class="log-export"
+      >
         <BaseButton
           @click="toggleExportMenu"
           :disabled="exportDisabled"
@@ -17,10 +20,30 @@
           aria-haspopup="menu"
           :aria-expanded="showExportMenu"
         />
-        <DropdownDrawer v-model="showExportMenu" :anchor-el="exportAnchorEl" :min-width="160">
-          <button class="dropdown-item" type="button" @click="handleExport('txt')">导出 TXT</button>
-          <button class="dropdown-item" type="button" @click="handleExport('csv')">导出 CSV</button>
-          <button class="dropdown-item" type="button" @click="handleExport('json')">
+        <DropdownDrawer
+          v-model="showExportMenu"
+          :anchor-el="exportAnchorEl"
+          :min-width="160"
+        >
+          <button
+            class="dropdown-item"
+            type="button"
+            @click="handleExport('txt')"
+          >
+            导出 TXT
+          </button>
+          <button
+            class="dropdown-item"
+            type="button"
+            @click="handleExport('csv')"
+          >
+            导出 CSV
+          </button>
+          <button
+            class="dropdown-item"
+            type="button"
+            @click="handleExport('json')"
+          >
             导出 JSON
           </button>
         </DropdownDrawer>

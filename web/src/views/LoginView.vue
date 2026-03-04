@@ -95,7 +95,7 @@ const handleLogin = async () => {
 <template>
   <div class="relative flex min-h-screen items-center justify-center p-5">
     <div
-      class="relative w-full max-w-[400px] rounded-lg border border-border bg-bg-surface p-10 shadow-card"
+      class="relative w-full max-w-100 rounded-lg border border-border bg-bg-surface p-10 shadow-card"
     >
       <div class="absolute right-3 top-3">
         <ThemeToggle
@@ -110,14 +110,21 @@ const handleLogin = async () => {
       </div>
       <h1 class="mb-8 text-center text-2xl font-semibold text-text-primary">身份认证</h1>
 
-      <form @submit.prevent="handleLogin" class="flex flex-col gap-5">
+      <form
+        @submit.prevent="handleLogin"
+        class="flex flex-col gap-5"
+      >
         <div class="flex flex-col gap-2">
-          <label for="authKey" class="text-sm font-medium text-text-primary">认证令牌</label>
+          <label
+            for="authKey"
+            class="text-sm font-medium text-text-primary"
+            >认证令牌</label
+          >
           <input
             id="authKey"
             v-model="authKey"
             type="password"
-            class="rounded-[4px] px-3 py-2.5 text-sm transition-all disabled:cursor-not-allowed disabled:opacity-60"
+            class="rounded-sm px-3 py-2.5 text-sm transition-all disabled:cursor-not-allowed disabled:opacity-60"
             placeholder="请输入 AUTH_KEY"
             :disabled="isLoading"
           />

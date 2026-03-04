@@ -1,5 +1,8 @@
 <template>
-  <Teleport defer :to="teleportTo">
+  <Teleport
+    defer
+    :to="teleportTo"
+  >
     <Transition
       enter-active-class="transition duration-200 motion-reduce:transition-none"
       enter-from-class="-translate-y-2 opacity-0"

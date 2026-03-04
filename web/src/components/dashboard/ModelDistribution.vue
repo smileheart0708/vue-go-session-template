@@ -7,8 +7,11 @@
         模型分布
       </h2>
     </div>
-    <div class="relative w-full min-h-[240px] flex-1">
-      <div ref="chartRef" class="absolute left-0 top-0 h-full w-full"></div>
+    <div class="relative w-full min-h-60 flex-1">
+      <div
+        ref="chartRef"
+        class="absolute left-0 top-0 h-full w-full"
+      ></div>
     </div>
 
     <!-- 自定义两栏图例 -->

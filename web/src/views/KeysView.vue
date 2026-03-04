@@ -27,7 +27,11 @@
       </template>
     </AppTable>
 
-    <AppPagination v-model="currentPage" :total="demoKeys.length" :page-size="pageSize" />
+    <AppPagination
+      v-model="currentPage"
+      :total="demoKeys.length"
+      :page-size="pageSize"
+    />
   </div>
 </template>
 

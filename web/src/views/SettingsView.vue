@@ -6,7 +6,7 @@
     >
       <span
         v-show="showIndicator"
-        class="absolute bottom-0 left-0 h-[3px] rounded-full bg-accent shadow-accent-glow transition-[transform,width] duration-350 ease-[cubic-bezier(0.2,0.8,0.2,1)]"
+        class="absolute bottom-0 left-0 h-0.75 rounded-full bg-accent shadow-accent-glow transition-[transform,width] duration-350 ease-[cubic-bezier(0.2,0.8,0.2,1)]"
         :style="{ width: indicatorWidthPx, transform: `translate3d(${indicatorOffsetPx}, 0, 0)` }"
       />
 
@@ -21,7 +21,7 @@
       </RouterLink>
     </div>
 
-    <section class="min-h-[240px] [overflow-anchor:none]">
+    <section class="min-h-60 [overflow-anchor:none]">
       <RouterView v-slot="{ Component }">
         <Transition
           mode="out-in"
@@ -32,7 +32,10 @@
           :leave-to-class="transitionLeaveToClass"
           enter-to-class="opacity-100 translate-x-0 scale-100"
         >
-          <component :is="Component" :key="routeKey" />
+          <component
+            :is="Component"
+            :key="routeKey"
+          />
         </Transition>
       </RouterView>
     </section>

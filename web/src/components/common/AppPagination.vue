@@ -1,15 +1,26 @@
 <template>
-  <div class="flex w-full flex-col items-center gap-2" :class="{ 'opacity-70': disabled }">
+  <div
+    class="flex w-full flex-col items-center gap-2"
+    :class="{ 'opacity-70': disabled }"
+  >
     <p
       v-if="showSummary"
       class="m-0 w-full text-center text-[clamp(0.875rem,1vw,1.125rem)] leading-5 tracking-[0.02em] text-text-secondary"
     >
-      <slot name="summary" :start="rangeStart" :end="rangeEnd" :total="total">
+      <slot
+        name="summary"
+        :start="rangeStart"
+        :end="rangeEnd"
+        :total="total"
+      >
         {{ summaryText }}
       </slot>
     </p>
 
-    <nav class="flex w-full flex-wrap items-center justify-center gap-1" :aria-label="ariaLabel">
+    <nav
+      class="flex w-full flex-wrap items-center justify-center gap-1"
+      :aria-label="ariaLabel"
+    >
       <button
         class="inline-flex size-8 items-center justify-center rounded-md border border-border bg-bg-surface text-text-primary transition-all duration-200 enabled:hover:border-accent enabled:hover:text-accent enabled:active:translate-y-px disabled:cursor-not-allowed disabled:text-text-tertiary disabled:opacity-70"
         type="button"
@@ -20,7 +31,10 @@
         <ChevronLeft :size="14" />
       </button>
 
-      <template v-for="(item, index) in pageItems" :key="`${item.type}-${index}`">
+      <template
+        v-for="(item, index) in pageItems"
+        :key="`${item.type}-${index}`"
+      >
         <button
           v-if="item.type === 'page'"
           class="inline-flex size-8 items-center justify-center rounded-md border border-border bg-bg-surface text-xs leading-none font-semibold text-text-primary transition-all duration-200 enabled:hover:border-accent enabled:hover:text-accent enabled:active:translate-y-px disabled:cursor-not-allowed disabled:text-text-tertiary disabled:opacity-70"

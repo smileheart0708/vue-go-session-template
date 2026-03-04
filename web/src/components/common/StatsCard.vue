@@ -9,7 +9,12 @@
     <div class="stats-content">
       <p class="stats-label">{{ label }}</p>
       <p class="stats-value">{{ value }}</p>
-      <p v-if="change" class="stats-change">{{ change }}</p>
+      <p
+        v-if="change"
+        class="stats-change"
+      >
+        {{ change }}
+      </p>
     </div>
   </div>
 </template>

@@ -2,7 +2,11 @@
   <header
     class="fixed inset-x-0 top-0 z-90 flex h-header items-center gap-4 border-b border-(--cmp-header-border) bg-(--cmp-header-bg) px-6 backdrop-blur-md backdrop-saturate-140 md:left-sidebar max-md:px-4"
   >
-    <IconButton class="md:hidden" title="切换侧边栏" @click="emit('toggle-sidebar')">
+    <IconButton
+      class="md:hidden"
+      title="切换侧边栏"
+      @click="emit('toggle-sidebar')"
+    >
       <Menu />
     </IconButton>
 

@@ -15,5 +15,9 @@ onMounted(() => {
 
 <template>
   <RouterView />
-  <ToastMessage :toasts="toasts" close-aria-label="关闭通知" @close="removeToast" />
+  <ToastMessage
+    :toasts="toasts"
+    close-aria-label="关闭通知"
+    @close="removeToast"
+  />
 </template>

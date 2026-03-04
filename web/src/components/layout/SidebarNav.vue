@@ -5,7 +5,7 @@
   >
     <div
       v-show="showIndicator"
-      class="absolute left-3 top-0 z-10 h-[22px] w-1 rounded-full bg-accent shadow-accent-glow transition-transform duration-300 ease-[cubic-bezier(0.2,0.8,0.2,1)] will-change-transform"
+      class="absolute left-3 top-0 z-10 h-5.5 w-1 rounded-full bg-accent shadow-accent-glow transition-transform duration-300 ease-[cubic-bezier(0.2,0.8,0.2,1)] will-change-transform"
       :style="{ transform: `translate3d(0, ${indicatorOffset}px, 0)` }"
     />
 
@@ -17,7 +17,10 @@
       :exact-active-class="item.path === '/dashboard' ? 'active' : ''"
       :active-class="item.path !== '/dashboard' ? 'active' : ''"
     >
-      <component :is="item.icon" class="size-5 shrink-0" />
+      <component
+        :is="item.icon"
+        class="size-5 shrink-0"
+      />
       <span>{{ item.label }}</span>
     </RouterLink>
   </nav>

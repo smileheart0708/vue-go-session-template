@@ -15,7 +15,10 @@
       <Monitor v-else />
     </IconButton>
 
-    <DropdownDrawer v-model="showDropdown" :anchor-el="anchorEl">
+    <DropdownDrawer
+      v-model="showDropdown"
+      :anchor-el="anchorEl"
+    >
       <button
         class="dropdown-item"
         :class="{ active: mode === 'light' }"

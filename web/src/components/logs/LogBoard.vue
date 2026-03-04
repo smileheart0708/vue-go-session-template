@@ -8,8 +8,15 @@
       @export="exportLogs"
     />
 
-    <div ref="logContainer" class="log-board-content">
-      <TransitionGroup name="log-list" tag="div" class="log-list">
+    <div
+      ref="logContainer"
+      class="log-board-content"
+    >
+      <TransitionGroup
+        name="log-list"
+        tag="div"
+        class="log-list"
+      >
         <div
           v-for="(log, index) in logs"
           :key="`${log.time}-${index}`"
@@ -19,7 +26,10 @@
           <span class="log-message">{{ formatLogMessage(log) }}</span>
         </div>
       </TransitionGroup>
-      <div v-if="logs.length === 0" class="log-board-empty">
+      <div
+        v-if="logs.length === 0"
+        class="log-board-empty"
+      >
         <Info :size="48" />
         <p>暂无日志数据</p>
         <p class="log-board-empty-hint">等待服务器推送日志...</p>

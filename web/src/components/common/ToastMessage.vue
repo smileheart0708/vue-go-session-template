@@ -10,10 +10,22 @@
         >
           <div class="toast-glow"></div>
           <div class="toast-icon">
-            <Check v-if="toast.type === 'success'" :size="20" />
-            <XCircle v-else-if="toast.type === 'error'" :size="20" />
-            <AlertTriangle v-else-if="toast.type === 'warning'" :size="20" />
-            <Info v-else :size="20" />
+            <Check
+              v-if="toast.type === 'success'"
+              :size="20"
+            />
+            <XCircle
+              v-else-if="toast.type === 'error'"
+              :size="20"
+            />
+            <AlertTriangle
+              v-else-if="toast.type === 'warning'"
+              :size="20"
+            />
+            <Info
+              v-else
+              :size="20"
+            />
           </div>
           <div class="toast-content">
             <div class="toast-message">{{ toast.message }}</div>
@@ -26,7 +38,10 @@
           >
             <X :size="14" />
           </button>
-          <div v-if="toast.duration > 0" class="toast-progress">
+          <div
+            v-if="toast.duration > 0"
+            class="toast-progress"
+          >
             <div
               class="toast-progress-bar"
               :style="{ animationDuration: `${toast.duration}ms` }"

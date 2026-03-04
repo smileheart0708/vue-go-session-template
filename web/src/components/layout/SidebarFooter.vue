@@ -1,6 +1,12 @@
 <template>
   <div class="min-h-20 bg-transparent px-5 pb-6 pt-5">
-    <BaseButton width="100%" :height="40" text="退出登录" :icon="LogOut" @click="handleLogout" />
+    <BaseButton
+      width="100%"
+      :height="40"
+      text="退出登录"
+      :icon="LogOut"
+      @click="handleLogout"
+    />
   </div>
 </template>
 

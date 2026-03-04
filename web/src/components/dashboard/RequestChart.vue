@@ -1,11 +1,14 @@
 <template>
   <section
-    class="box-border flex w-full min-h-[400px] flex-col overflow-hidden rounded-xl border border-border bg-bg-surface p-6 max-md:min-h-[350px] max-md:p-4"
+    class="box-border flex w-full min-h-100 flex-col overflow-hidden rounded-xl border border-border bg-bg-surface p-6 max-md:min-h-87.5 max-md:p-4"
   >
     <div class="mb-6 flex items-center justify-between max-md:mb-4">
       <h2 class="m-0 text-xl font-semibold text-text-primary max-md:text-[1.1rem]">{{ title }}</h2>
     </div>
-    <div ref="chartRef" class="w-full min-h-[300px] flex-1 max-md:min-h-[250px]"></div>
+    <div
+      ref="chartRef"
+      class="w-full min-h-75 flex-1 max-md:min-h-62.5"
+    ></div>
   </section>
 </template>
 
