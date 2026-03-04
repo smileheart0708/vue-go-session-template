@@ -16,7 +16,23 @@ const MOCK_SSE_INTERVAL_MS = 1200
 const MOCK_UPTIME_DAYS = 14
 const MOCK_START_TIME = Math.floor(Date.now() / 1000) - MOCK_UPTIME_DAYS * 24 * 60 * 60
 
-let isMockAuthenticated = false
+function parseBooleanEnv(value: unknown, fallback: boolean): boolean {
+  if (typeof value !== 'string') {
+    return fallback
+  }
+
+  const normalized = value.trim().toLowerCase()
+  if (normalized === 'true') {
+    return true
+  }
+  if (normalized === 'false') {
+    return false
+  }
+  return fallback
+}
+
+const isMockAuthEnabledByEnv = parseBooleanEnv(import.meta.env.VITE_MOCK_AUTH, false)
+let isMockAuthenticated = isMockAuthEnabledByEnv
 
 const LOG_LEVELS = ['INFO', 'WARN', 'ERROR', 'DEBUG'] as const
 type LogLevel = (typeof LOG_LEVELS)[number]
