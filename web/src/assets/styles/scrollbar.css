@@ -1,40 +1,7 @@
 /* 自定义滚动条样式 */
 
-/* Webkit 浏览器 (Chrome, Safari, Edge) */
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-  border-radius: 100px;
-}
-
-::-webkit-scrollbar-track {
-  background: var(--sys-scrollbar-track);
-  border-radius: 100px;
-}
-
-::-webkit-scrollbar-thumb {
-  background: var(--sys-scrollbar-thumb);
-  border-radius: 100px;
-  border: 2px solid transparent;
-  background-clip: padding-box;
-  backdrop-filter: blur(40px);
-  transition: background 0.2s;
-}
-
-::-webkit-scrollbar-corner {
-  background: transparent;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: var(--sys-scrollbar-thumb-hover);
-}
-
-::-webkit-scrollbar-thumb:active {
-  background: var(--sys-scrollbar-thumb-active);
-}
-
-/* Firefox */
+/* 标准 CSS 属性 (所有现代浏览器优先使用) */
 * {
   scrollbar-width: thin;
-  scrollbar-color: var(--sys-scrollbar-thumb) var(--sys-scrollbar-track);
+  scrollbar-color: rgba(128, 128, 128, 0.3) transparent;
 }

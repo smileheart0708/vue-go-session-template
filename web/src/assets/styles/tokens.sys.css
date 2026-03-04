@@ -55,12 +55,6 @@
     0 10px 22px -10px rgba(var(--ref-color-shadow-light-rgb), 0.36),
     0 6px 12px -8px rgba(var(--ref-color-shadow-light-rgb), 0.22);
 
-  /* Scrollbar */
-  --sys-scrollbar-track: transparent;
-  --sys-scrollbar-thumb: rgba(var(--sys-color-accent-rgb), 0.32);
-  --sys-scrollbar-thumb-hover: rgba(var(--sys-color-accent-hover-rgb), 0.54);
-  --sys-scrollbar-thumb-active: rgba(var(--sys-color-accent-active-rgb), 0.64);
-
   /* State */
   --state-color-success: var(--ref-color-state-success);
   --state-color-success-rgb: var(--ref-color-state-success-rgb);
