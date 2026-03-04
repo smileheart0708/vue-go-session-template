@@ -67,13 +67,13 @@ const statusText: Record<ApiKeyStatus, string> = {
 }
 
 const columns: ReadonlyArray<AppTableColumn<ApiKeyItem, '__actions'>> = [
-  { key: 'name', label: '名称', minWidth: 180 },
-  { key: 'project', label: '项目', minWidth: 140 },
-  { key: 'key_masked', label: '密钥', minWidth: 220 },
-  { key: 'scopes', label: '权限范围', minWidth: 240 },
-  { key: 'status_label', label: '状态', align: 'center', width: 100 },
-  { key: 'created_at', label: '创建时间', minWidth: 150 },
-  { key: 'last_used_at', label: '最近使用', minWidth: 150 },
+  { key: 'name', label: '名称', minWidth: 10 },
+  { key: 'project', label: '项目', minWidth: 10 },
+  { key: 'key_masked', label: '密钥', minWidth: 10 },
+  { key: 'scopes', label: '权限范围', minWidth: 10 },
+  { key: 'status_label', label: '状态', align: 'center', width: 10 },
+  { key: 'created_at', label: '创建时间', minWidth: 10 },
+  { key: 'last_used_at', label: '最近使用', minWidth: 10 },
   {
     key: '__actions',
     kind: 'display',
