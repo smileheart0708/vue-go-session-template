@@ -1,14 +1,10 @@
 import ky, { HTTPError, type Options } from 'ky'
+import { ZodError, z, type ZodType } from 'zod'
 
 const DEFAULT_API_BASE_URL = '/api'
 const DEFAULT_TIMEOUT_MS = 30_000
 
 type UnauthorizedHandler = () => void | Promise<void>
-
-export interface ApiResponseSchema<T> {
-  readonly name: string
-  parse: (value: unknown) => T
-}
 
 let unauthorizedHandler: UnauthorizedHandler | null = null
 let unauthorizedTask: Promise<void> | null = null
@@ -16,12 +12,16 @@ let redirectingToLogin = false
 
 const API_BASE_URL = resolveApiBaseUrl(import.meta.env.VITE_API_BASE_URL)
 
+const contextSchema = z
+  .object({
+    skipUnauthorizedHandler: z.boolean().optional(),
+  })
+  .catchall(z.unknown())
+
+const redirectQuerySchema = z.union([z.string(), z.array(z.string())])
+
 function isAbsoluteUrl(value: string): boolean {
   return /^[a-z][a-z\d+\-.]*:\/\//i.test(value)
-}
-
-function isObjectRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === 'object' && value !== null
 }
 
 function resolveApiBaseUrl(rawValue: string | undefined): string {
@@ -43,11 +43,12 @@ function resolveApiBaseUrl(rawValue: string | undefined): string {
 }
 
 function shouldSkipUnauthorizedHandler(options: { context?: unknown }): boolean {
-  if (!isObjectRecord(options.context)) {
+  const parsedContext = contextSchema.safeParse(options.context)
+  if (!parsedContext.success) {
     return false
   }
 
-  return options.context['skipUnauthorizedHandler'] === true
+  return parsedContext.data.skipUnauthorizedHandler === true
 }
 
 function ensureRedirectToLogin(currentPath: string = getCurrentPath()): void {
@@ -76,6 +77,47 @@ async function runUnauthorizedHandler(): Promise<void> {
   }
 
   await unauthorizedTask
+}
+
+function formatIssuePath(path: ReadonlyArray<PropertyKey>): string {
+  if (path.length === 0) {
+    return 'root'
+  }
+
+  return path
+    .map((segment, index) => {
+      if (typeof segment === 'number') {
+        return `[${segment}]`
+      }
+
+      const segmentText = String(segment)
+      if (index === 0) {
+        return segmentText
+      }
+      return `.${segmentText}`
+    })
+    .join('')
+}
+
+function summarizeZodError(error: ZodError): string {
+  const issueMessages = error.issues.slice(0, 3).map((issue) => {
+    const path = formatIssuePath(issue.path)
+    return `${path}: ${issue.message}`
+  })
+
+  if (error.issues.length > 3) {
+    issueMessages.push(`...and ${error.issues.length - 3} more issue(s)`)
+  }
+
+  return issueMessages.join('; ')
+}
+
+function resolveSchemaName(schema: ZodType<unknown>): string {
+  const description = schema.description?.trim()
+  if (description) {
+    return description
+  }
+  return 'AnonymousSchema'
 }
 
 export const api = ky.create({
@@ -116,14 +158,23 @@ export class ApiResponseValidationError extends Error {
 
 export function parseWithSchema<T>(
   value: unknown,
-  schema: ApiResponseSchema<T>,
+  schema: ZodType<T>,
   requestUrl: string,
 ): T {
   try {
     return schema.parse(value)
   } catch (error) {
+    if (error instanceof ZodError) {
+      throw new ApiResponseValidationError(
+        requestUrl,
+        resolveSchemaName(schema),
+        summarizeZodError(error),
+        value,
+      )
+    }
+
     const detail = error instanceof Error ? error.message : 'Unknown schema parse error'
-    throw new ApiResponseValidationError(requestUrl, schema.name, detail, value)
+    throw new ApiResponseValidationError(requestUrl, resolveSchemaName(schema), detail, value)
   }
 }
 
@@ -155,7 +206,9 @@ export function setUnauthorizedHandler(handler: UnauthorizedHandler | null): voi
 }
 
 export function withUnauthorizedHandlerSkipped(options: Options = {}): Options {
-  const context = isObjectRecord(options.context) ? options.context : {}
+  const parsedContext = contextSchema.safeParse(options.context)
+  const context = parsedContext.success ? parsedContext.data : {}
+
   return {
     ...options,
     context: {
@@ -191,8 +244,15 @@ export function getCurrentPath(): string {
 }
 
 export function resolveRedirectPath(value: unknown): string | null {
-  const rawValue = Array.isArray(value) ? value[0] : value
-  if (typeof rawValue !== 'string') {
+  const parsedQueryValue = redirectQuerySchema.safeParse(value)
+  if (!parsedQueryValue.success) {
+    return null
+  }
+
+  const rawValue = Array.isArray(parsedQueryValue.data)
+    ? parsedQueryValue.data[0]
+    : parsedQueryValue.data
+  if (!rawValue) {
     return null
   }
 

@@ -1,9 +1,6 @@
-export interface LogEntry {
-  time: string
-  level: string
-  msg: string
-  attrs?: Record<string, unknown> | undefined
-}
+import type { LogEntry } from '@/types/api'
+
+export type { LogEntry } from '@/types/api'
 
 export function getLevelClass(level: string): string {
   const upperLevel = level.toUpperCase()

@@ -1,15 +1,23 @@
-export type ApiMode = 'real' | 'mock'
+import { z } from 'zod'
+import { parseWithFallback } from '@/types/zod'
 
-function normalizeFlag(value: string | undefined): boolean {
-  return value?.trim().toLowerCase() === 'true'
-}
+const apiModeSchema = z.enum(['real', 'mock'])
+export type ApiMode = z.infer<typeof apiModeSchema>
 
-function resolveApiMode(value: string | undefined): ApiMode {
-  const normalized = value?.trim().toLowerCase()
-  if (normalized === 'mock') return 'mock'
-  return 'real'
-}
+const booleanFlagSchema = z.preprocess(
+  (value) => {
+    if (typeof value !== 'string') {
+      return value
+    }
+    return value.trim().toLowerCase()
+  },
+  z.union([z.literal('true'), z.literal('false')]).transform((value) => value === 'true'),
+)
 
-export const isMockAuthEnabled = normalizeFlag(import.meta.env.VITE_MOCK_AUTH)
-export const apiMode = resolveApiMode(import.meta.env.VITE_API_MODE)
+export const isMockAuthEnabled = parseWithFallback(
+  booleanFlagSchema,
+  import.meta.env.VITE_MOCK_AUTH,
+  false,
+)
+export const apiMode = parseWithFallback<ApiMode>(apiModeSchema, import.meta.env.VITE_API_MODE, 'real')
 export const isMockApiEnabled = apiMode === 'mock'
