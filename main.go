@@ -12,7 +12,6 @@ import (
 	"main/internal/database"
 	"main/internal/middleware"
 	"main/internal/server"
-	"main/internal/session"
 	"main/internal/stream"
 )
 
@@ -34,7 +33,11 @@ func main() {
 	startTime := time.Now().Unix()
 
 	// 加载配置
-	cfg := config.Load()
+	cfg, err := config.Load()
+	if err != nil {
+		fmt.Printf("failed to load config: %v\n", err)
+		return
+	}
 
 	// 初始化日志系统
 	logBroadcaster := stream.NewLogBroadcaster()
@@ -47,6 +50,9 @@ func main() {
 	// 如果是自动生成的 AUTH_KEY，则打印出来
 	if cfg.IsAutoAuthKey {
 		slog.Info("自动生成的 AUTH_KEY", "auth_key", cfg.AuthKey)
+	}
+	if cfg.IsAutoSessionAuthKey {
+		slog.Warn("SESSION_AUTH_KEY 未配置，已使用临时随机值；服务重启后会话将失效")
 	}
 
 	// 初始化 SQLite 数据库
@@ -66,18 +72,8 @@ func main() {
 	}()
 	slog.Info("database initialized", "path", dbContainer.Path())
 
-	// 初始化 session 管理器
-	sessionManager, err := session.NewManager(cfg.DataDir)
-	if err != nil {
-		slog.Error("failed to initialize session manager", "error", err)
-		return
-	}
-
-	// 启动定期清理过期 session
-	sessionManager.StartCleanup(time.Hour)
-
 	// 创建路由
-	r := server.NewRouter(cfg, sessionManager, logBroadcaster, startTime, distFS)
+	r := server.NewRouter(cfg, logBroadcaster, startTime, distFS)
 
 	// 启动服务器
 	addr := fmt.Sprintf(":%d", cfg.Port)

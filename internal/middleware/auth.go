@@ -3,19 +3,21 @@ package middleware
 import (
 	"log/slog"
 	"net/http"
+	"time"
 
+	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
-
-	"main/internal/session"
 )
 
+const sessionMaxAgeSeconds = 7 * 24 * 60 * 60
+
 // AuthMiddleware 认证中间件
-func AuthMiddleware(sessionManager *session.Manager) gin.HandlerFunc {
+func AuthMiddleware(cookieSecure bool) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		// 从 Cookie 中获取 session_id
-		sessionID, err := c.Cookie("session_id")
-		if err != nil || sessionID == "" {
-			slog.Warn("未提供 session_id", "remote_addr", c.ClientIP())
+		sess := sessions.Default(c)
+		authenticated, ok := sess.Get("authenticated").(bool)
+		if !ok || !authenticated {
+			slog.Warn("unauthorized request", "remote_addr", c.ClientIP())
 			c.JSON(http.StatusUnauthorized, gin.H{
 				"error": "未授权，请先登录",
 			})
@@ -23,22 +25,23 @@ func AuthMiddleware(sessionManager *session.Manager) gin.HandlerFunc {
 			return
 		}
 
-		// 验证 session 是否有效
-		if !sessionManager.ValidateSession(sessionID) {
-			slog.Warn("无效的 session_id", "session_id", sessionID, "remote_addr", c.ClientIP())
-			c.JSON(http.StatusUnauthorized, gin.H{
-				"error": "会话已过期，请重新登录",
-			})
-			c.Abort()
-			return
+		sess.Set("last_seen_at", time.Now().Unix())
+		sess.Options(sessions.Options{
+			Path:     "/",
+			MaxAge:   sessionMaxAgeSeconds,
+			HttpOnly: true,
+			Secure:   cookieSecure,
+			SameSite: http.SameSiteLaxMode,
+		})
+		if err := sess.Save(); err != nil {
+			slog.Warn("failed to refresh session", "error", err)
 		}
 
-		// 刷新 session 有效期
-		if err := sessionManager.RefreshSession(sessionID); err != nil {
-			slog.Warn("刷新 session 失败", "session_id", sessionID, "error", err)
+		sessionID, _ := sess.Get("session_id").(string)
+		if sessionID == "" {
+			sessionID = "unknown"
 		}
 
-		// 将 session_id 存入上下文，供后续使用
 		c.Set("session_id", sessionID)
 		c.Next()
 	}

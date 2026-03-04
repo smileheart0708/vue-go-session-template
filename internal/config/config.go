@@ -3,28 +3,37 @@ package config
 import (
 	"crypto/rand"
 	"encoding/hex"
+	"fmt"
 	"os"
 	"strconv"
+	"strings"
 )
 
 // Config 应用配置结构
 type Config struct {
-	Port          int    // 服务监听端口
-	DataDir       string // 数据持久化目录
-	LogLevel      string // 日志等级
-	AuthKey       string // 管理员身份验证密钥
-	CookieSecure  bool   // Session Cookie 是否启用 Secure
-	IsAutoAuthKey bool   // AuthKey 是否自动生成
+	Port                 int    // 服务监听端口
+	DataDir              string // 数据持久化目录
+	LogLevel             string // 日志等级
+	AuthKey              string // 管理员身份验证密钥
+	CookieSecure         bool   // Session Cookie 是否启用 Secure
+	SessionName          string // Session Cookie 名称
+	SessionAuthKey       string // Session 签名密钥
+	SessionEncKey        string // Session 加密密钥（可选）
+	IsAutoAuthKey        bool   // AuthKey 是否自动生成
+	IsAutoSessionAuthKey bool   // SessionAuthKey 是否自动生成
 }
 
 // Load 从环境变量加载配置
-func Load() *Config {
+func Load() (*Config, error) {
 	cfg := &Config{
-		Port:         getEnvAsInt("PORT", 8080),
-		DataDir:      getEnv("DATA_DIR", ".data"),
-		LogLevel:     getEnv("LOG_LEVEL", "info"),
-		AuthKey:      getEnv("AUTH_KEY", ""),
-		CookieSecure: getEnvAsBool("COOKIE_SECURE", false),
+		Port:           getEnvAsInt("PORT", 8080),
+		DataDir:        getEnv("DATA_DIR", ".data"),
+		LogLevel:       getEnv("LOG_LEVEL", "info"),
+		AuthKey:        getEnv("AUTH_KEY", ""),
+		CookieSecure:   getEnvAsBool("COOKIE_SECURE", false),
+		SessionName:    getEnv("SESSION_NAME", "session_id"),
+		SessionAuthKey: getEnv("SESSION_AUTH_KEY", ""),
+		SessionEncKey:  getEnv("SESSION_ENC_KEY", ""),
 	}
 
 	// 如果 AUTH_KEY 未设置，生成随机 12 位字符串
@@ -33,7 +42,21 @@ func Load() *Config {
 		cfg.IsAutoAuthKey = true
 	}
 
-	return cfg
+	if strings.TrimSpace(cfg.SessionName) == "" {
+		cfg.SessionName = "session_id"
+	}
+
+	// SESSION_AUTH_KEY 默认仅用于开发环境，生产环境应显式配置
+	if cfg.SessionAuthKey == "" {
+		cfg.SessionAuthKey = generateRandomKey(64)
+		cfg.IsAutoSessionAuthKey = true
+	}
+
+	if err := validateSessionEncKey(cfg.SessionEncKey); err != nil {
+		return nil, err
+	}
+
+	return cfg, nil
 }
 
 // getEnv 获取环境变量，如果不存在则返回默认值
@@ -90,4 +113,17 @@ func generateRandomKey(length int) string {
 	}
 
 	return key
+}
+
+func validateSessionEncKey(value string) error {
+	if value == "" {
+		return nil
+	}
+
+	keyLen := len([]byte(value))
+	if keyLen == 16 || keyLen == 24 || keyLen == 32 {
+		return nil
+	}
+
+	return fmt.Errorf("SESSION_ENC_KEY must be 16, 24, or 32 bytes, got %d", keyLen)
 }
