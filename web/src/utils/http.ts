@@ -356,14 +356,8 @@ type HttpBlobOptions = HttpBaseOptions & { responseType: 'blob' }
 type HttpArrayBufferOptions = HttpBaseOptions & { responseType: 'arrayBuffer' }
 type HttpResponseOptions = HttpBaseOptions & { responseType: 'response' }
 
-export async function http<T = unknown>(
-  endpoint: string,
-  options?: HttpJsonOptions<T>,
-): Promise<T>
-export async function http(
-  endpoint: string,
-  options: HttpTextOptions,
-): Promise<string | undefined>
+export async function http<T = unknown>(endpoint: string, options?: HttpJsonOptions<T>): Promise<T>
+export async function http(endpoint: string, options: HttpTextOptions): Promise<string | undefined>
 export async function http(endpoint: string, options: HttpBlobOptions): Promise<Blob | undefined>
 export async function http(
   endpoint: string,

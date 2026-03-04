@@ -24,7 +24,9 @@
         <button
           v-if="item.type === 'page'"
           class="inline-flex size-8 items-center justify-center rounded-md border border-border bg-bg-surface text-xs leading-none font-semibold text-text-primary transition-all duration-200 enabled:hover:border-accent enabled:hover:text-accent enabled:active:translate-y-px disabled:cursor-not-allowed disabled:text-text-tertiary disabled:opacity-70"
-          :class="item.page === page ? 'border-accent bg-accent text-on-accent hover:text-on-accent' : ''"
+          :class="
+            item.page === page ? 'border-accent bg-accent text-on-accent hover:text-on-accent' : ''
+          "
           type="button"
           :disabled="disabled"
           :aria-current="item.page === page ? 'page' : undefined"
@@ -32,7 +34,12 @@
         >
           {{ item.page }}
         </button>
-        <span v-else class="inline-flex w-3 justify-center text-[0.5625rem] leading-none text-text-tertiary" aria-hidden="true">...</span>
+        <span
+          v-else
+          class="inline-flex w-3 justify-center text-[0.5625rem] leading-none text-text-tertiary"
+          aria-hidden="true"
+          >...</span
+        >
       </template>
 
       <button

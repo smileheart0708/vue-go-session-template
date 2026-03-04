@@ -6,7 +6,9 @@
         <p class="m-0 text-[0.9rem] text-text-secondary">控制转发端口、协议模式与来源限制</p>
       </header>
 
-      <div class="flex items-center justify-between gap-4 border-t-0 border-border pb-3 pt-0 max-sm:flex-col max-sm:items-start">
+      <div
+        class="flex items-center justify-between gap-4 border-t-0 border-border pb-3 pt-0 max-sm:flex-col max-sm:items-start"
+      >
         <div class="flex min-w-0 flex-col gap-1.5">
           <span class="font-medium text-text-primary">启用代理</span>
           <span class="text-[0.85rem] text-text-secondary">开启后将对外提供统一入口</span>
@@ -14,7 +16,9 @@
         <AppSwitch v-model="proxyEnabled" />
       </div>
 
-      <div class="flex items-center justify-between gap-4 border-t border-dashed border-border py-3 max-sm:flex-col max-sm:items-start">
+      <div
+        class="flex items-center justify-between gap-4 border-t border-dashed border-border py-3 max-sm:flex-col max-sm:items-start"
+      >
         <div class="flex min-w-0 flex-col gap-1.5">
           <span class="font-medium text-text-primary">监听端口</span>
           <span class="text-[0.85rem] text-text-secondary">建议使用 1024-65535 范围</span>
@@ -32,19 +36,26 @@
         </div>
       </div>
 
-      <div class="flex items-center justify-between gap-4 border-t border-dashed border-border py-3 max-sm:flex-col max-sm:items-start">
+      <div
+        class="flex items-center justify-between gap-4 border-t border-dashed border-border py-3 max-sm:flex-col max-sm:items-start"
+      >
         <div class="flex min-w-0 flex-col gap-1.5">
           <span class="font-medium text-text-primary">代理模式</span>
           <span class="text-[0.85rem] text-text-secondary">决定请求是否改写或镜像</span>
         </div>
-        <select v-model="proxyMode" class="w-[220px] rounded-md bg-bg-surface px-2.5 py-1.5 max-sm:w-full">
+        <select
+          v-model="proxyMode"
+          class="w-[220px] rounded-md bg-bg-surface px-2.5 py-1.5 max-sm:w-full"
+        >
           <option value="transparent">透明转发</option>
           <option value="rewrite">路径改写</option>
           <option value="mirror">流量镜像</option>
         </select>
       </div>
 
-      <div class="flex items-center justify-between gap-4 border-t border-dashed border-border py-3 max-sm:flex-col max-sm:items-start">
+      <div
+        class="flex items-center justify-between gap-4 border-t border-dashed border-border py-3 max-sm:flex-col max-sm:items-start"
+      >
         <div class="flex min-w-0 flex-col gap-1.5">
           <span class="font-medium text-text-primary">允许来源</span>
           <span class="text-[0.85rem] text-text-secondary">用英文逗号分隔多个域名</span>
@@ -63,7 +74,9 @@
         <p class="m-0 text-[0.9rem] text-text-secondary">提升稳定性并避免突发流量</p>
       </header>
 
-      <div class="flex items-center justify-between gap-4 border-t-0 border-border pb-3 pt-0 max-sm:flex-col max-sm:items-start">
+      <div
+        class="flex items-center justify-between gap-4 border-t-0 border-border pb-3 pt-0 max-sm:flex-col max-sm:items-start"
+      >
         <div class="flex min-w-0 flex-col gap-1.5">
           <span class="font-medium text-text-primary">启用缓存</span>
           <span class="text-[0.85rem] text-text-secondary">短时间内复用上游响应结果</span>
@@ -71,7 +84,9 @@
         <AppSwitch v-model="cacheEnabled" />
       </div>
 
-      <div class="flex items-center justify-between gap-4 border-t border-dashed border-border py-3 max-sm:flex-col max-sm:items-start">
+      <div
+        class="flex items-center justify-between gap-4 border-t border-dashed border-border py-3 max-sm:flex-col max-sm:items-start"
+      >
         <div class="flex min-w-0 flex-col gap-1.5">
           <span class="font-medium text-text-primary">缓存时长</span>
           <span class="text-[0.85rem] text-text-secondary">缓存命中后重复请求将直接返回</span>
@@ -89,7 +104,9 @@
         </div>
       </div>
 
-      <div class="flex items-center justify-between gap-4 border-t border-dashed border-border py-3 max-sm:flex-col max-sm:items-start">
+      <div
+        class="flex items-center justify-between gap-4 border-t border-dashed border-border py-3 max-sm:flex-col max-sm:items-start"
+      >
         <div class="flex min-w-0 flex-col gap-1.5">
           <span class="font-medium text-text-primary">限速等级</span>
           <span class="text-[0.85rem] text-text-secondary">限制单账号的最大并发</span>

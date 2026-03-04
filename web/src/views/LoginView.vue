@@ -37,7 +37,9 @@ function extractErrorMessage(payload: unknown): string | null {
   return message.trim() || null
 }
 
-const loginRedirectPath = computed(() => resolveRedirectPath(route.query['redirect']) ?? '/dashboard')
+const loginRedirectPath = computed(
+  () => resolveRedirectPath(route.query['redirect']) ?? '/dashboard',
+)
 
 async function handleThemeChange(nextMode: ThemeMode, event?: MouseEvent): Promise<void> {
   await setTheme(nextMode, event)
@@ -92,7 +94,9 @@ const handleLogin = async () => {
 
 <template>
   <div class="relative flex min-h-screen items-center justify-center p-5">
-    <div class="relative w-full max-w-[400px] rounded-lg border border-border bg-bg-surface p-10 shadow-card">
+    <div
+      class="relative w-full max-w-[400px] rounded-lg border border-border bg-bg-surface p-10 shadow-card"
+    >
       <div class="absolute right-3 top-3">
         <ThemeToggle
           v-model="mode"

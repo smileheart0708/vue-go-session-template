@@ -66,9 +66,7 @@ export function useLogStream(options: UseLogStreamOptions = {}) {
     }
 
     try {
-      const data = await http(historyEndpoint, {
-        schema: logsHistoryResponseSchema,
-      })
+      const data = await http(historyEndpoint, { schema: logsHistoryResponseSchema })
       mergeHistory(data.logs)
       historyLoaded = true
     } catch (error) {

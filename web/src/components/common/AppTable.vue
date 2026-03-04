@@ -109,8 +109,10 @@ export type AppTableDisplayValueResolver<TRow extends object> = (
   rowIndex: number,
 ) => unknown
 
-export interface AppTableDisplayColumn<TRow extends object, TExtraKey extends string>
-  extends AppTableColumnBase {
+export interface AppTableDisplayColumn<
+  TRow extends object,
+  TExtraKey extends string,
+> extends AppTableColumnBase {
   kind: 'display'
   key: TExtraKey
   value?: AppTableDisplayValueResolver<TRow>
@@ -286,7 +288,8 @@ function getColumnStyle(
 function getPinnedCellClass(column: AppTableColumn<TRow, TExtraKey>, header: boolean): string {
   if (!shouldPinColumn(column) || !column.fixed) return ''
 
-  const sideClass = column.fixed === 'right' ? 'right-0 border-l border-border' : 'left-0 border-r border-border'
+  const sideClass =
+    column.fixed === 'right' ? 'right-0 border-l border-border' : 'left-0 border-r border-border'
   const sharedClass = 'sticky backdrop-blur-md backdrop-saturate-140'
   if (header) {
     return `${sharedClass} ${sideClass} z-4 bg-bg-surface`

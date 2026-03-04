@@ -74,9 +74,7 @@ function parseLoginResponse(value: unknown): LoginResponse {
 
 function parseValidateSessionResponse(value: unknown): ValidateSessionResponse {
   const payload = expectObjectRecord(value, 'ValidateSessionResponse')
-  return {
-    valid: expectBooleanField(payload, 'valid', 'ValidateSessionResponse'),
-  }
+  return { valid: expectBooleanField(payload, 'valid', 'ValidateSessionResponse') }
 }
 
 function parseLogoutResponse(value: unknown): LogoutResponse {

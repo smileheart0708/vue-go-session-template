@@ -6,7 +6,9 @@ export interface PoeAccountListItem {
   status: 'active' | 'disabled'
 }
 
-export const poeTableColumnsWithActions: ReadonlyArray<AppTableColumn<PoeAccountListItem, '__actions'>> = [
+export const poeTableColumnsWithActions: ReadonlyArray<
+  AppTableColumn<PoeAccountListItem, '__actions'>
+> = [
   { key: 'account_name', label: '账号' },
   { key: 'status', label: '状态' },
   { key: '__actions', kind: 'display', label: '操作', fixed: 'right' },

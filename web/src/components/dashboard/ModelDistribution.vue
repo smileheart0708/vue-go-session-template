@@ -1,7 +1,9 @@
 <template>
   <section class="flex flex-col rounded-xl border border-border bg-bg-surface p-6 max-md:p-4">
     <div class="mb-6 flex items-center justify-between gap-4 max-md:mb-4">
-      <h2 class="m-0 whitespace-nowrap text-xl font-semibold text-text-primary max-md:text-[1.1rem]">
+      <h2
+        class="m-0 whitespace-nowrap text-xl font-semibold text-text-primary max-md:text-[1.1rem]"
+      >
         模型分布
       </h2>
     </div>
@@ -11,12 +13,19 @@
 
     <!-- 自定义两栏图例 -->
     <div class="mt-4 grid grid-cols-2 gap-3">
-      <div v-for="(item, index) in chartData" :key="item.name" class="flex min-w-0 items-center gap-2">
+      <div
+        v-for="(item, index) in chartData"
+        :key="item.name"
+        class="flex min-w-0 items-center gap-2"
+      >
         <span
           class="h-2.5 w-2.5 shrink-0 rounded-full"
           :style="{ backgroundColor: PIE_CHART_COLORS[index] }"
         ></span>
-        <span class="overflow-hidden text-ellipsis whitespace-nowrap text-xs text-text-secondary" :title="item.name">
+        <span
+          class="overflow-hidden text-ellipsis whitespace-nowrap text-xs text-text-secondary"
+          :title="item.name"
+        >
           {{ item.name }}
         </span>
       </div>

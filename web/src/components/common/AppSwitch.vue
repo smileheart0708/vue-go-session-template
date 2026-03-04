@@ -57,7 +57,7 @@ function handleChange(event: Event): void {
       aria-hidden="true"
     >
       <span
-        class="absolute left-[3px] top-1/2 h-3 w-3 -translate-y-1/2 rounded-full bg-text-secondary transition-all duration-200 ease-out peer-checked:left-[calc(100%-15px)] peer-checked:bg-on-accent"
+        class="absolute left-0.75 top-1/2 h-3 w-3 -translate-y-1/2 rounded-full bg-text-secondary transition-all duration-200 ease-out peer-checked:left-[calc(100%-15px)] peer-checked:bg-on-accent"
       />
     </label>
 

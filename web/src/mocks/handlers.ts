@@ -68,11 +68,7 @@ function createMockLogEntry(
   const level = forcedLevel ?? pickRandom(LOG_LEVELS)
   const message = forcedMessage ?? pickRandom(LOG_MESSAGES[level])
 
-  const entry: LogEntry = {
-    time: formatLogTime(date),
-    level,
-    msg: message,
-  }
+  const entry: LogEntry = { time: formatLogTime(date), level, msg: message }
   if (Math.random() > 0.5) {
     entry.attrs = { trace_id: Math.random().toString(16).slice(2, 10) }
   }

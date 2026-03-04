@@ -1,5 +1,8 @@
 <template>
-  <nav ref="navRef" class="relative flex flex-1 flex-col gap-1 overflow-y-auto bg-transparent px-0 py-2">
+  <nav
+    ref="navRef"
+    class="relative flex flex-1 flex-col gap-1 overflow-y-auto bg-transparent px-0 py-2"
+  >
     <div
       v-show="showIndicator"
       class="absolute left-3 top-0 z-10 h-[22px] w-1 rounded-full bg-accent shadow-accent-glow transition-transform duration-300 ease-[cubic-bezier(0.2,0.8,0.2,1)] will-change-transform"

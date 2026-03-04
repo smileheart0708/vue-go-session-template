@@ -95,9 +95,7 @@ export const useDashboardStore = defineStore('dashboard', () => {
 
   async function fetchDashboardStats(): Promise<boolean> {
     try {
-      const data = await http('/dashboard/stats', {
-        schema: dashboardStatsResponseSchema,
-      })
+      const data = await http('/dashboard/stats', { schema: dashboardStatsResponseSchema })
       setDashboardStats(data)
       return true
     } catch (error) {

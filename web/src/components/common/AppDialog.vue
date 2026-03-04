@@ -10,11 +10,11 @@
     >
       <div
         v-if="modelValue"
-        class="fixed inset-0 z-1000 flex items-center justify-center bg-black/50 p-4 backdrop-blur-[4px]"
+        class="fixed inset-0 z-1000 flex items-center justify-center bg-black/50 p-4 backdrop-blur-xs"
         @click="handleOverlayClick"
       >
         <div
-          class="dialog-panel flex max-h-[90vh] w-full max-w-[480px] flex-col overflow-hidden rounded-xl bg-bg-surface shadow-[0_25px_50px_-12px_rgba(0,0,0,0.25)]"
+          class="dialog-panel flex max-h-[90vh] w-full max-w-120 flex-col overflow-hidden rounded-xl bg-bg-surface shadow-[0_25px_50px_-12px_rgba(0,0,0,0.25)]"
           @click.stop
         >
           <div
