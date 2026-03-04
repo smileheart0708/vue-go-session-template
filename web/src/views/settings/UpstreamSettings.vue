@@ -16,7 +16,7 @@
         <input
           v-model="baseUrl"
           type="url"
-          class="w-[220px] rounded-md px-2.5 py-1.5 max-sm:w-full"
+          class="w-55 rounded-md px-2.5 py-1.5 max-sm:w-full"
           placeholder="https://api.example.com"
         />
       </div>
@@ -60,7 +60,7 @@
         </div>
         <select
           v-model="trafficMode"
-          class="w-[220px] rounded-md bg-bg-surface px-2.5 py-1.5 max-sm:w-full"
+          class="w-55 rounded-md bg-bg-surface px-2.5 py-1.5 max-sm:w-full"
         >
           <option value="balanced">均衡</option>
           <option value="low-latency">低延迟</option>
@@ -85,7 +85,7 @@
         <input
           v-model="apiToken"
           type="password"
-          class="w-[220px] rounded-md px-2.5 py-1.5 max-sm:w-full"
+          class="w-55 rounded-md px-2.5 py-1.5 max-sm:w-full"
           placeholder="sk-..."
         />
       </div>
@@ -109,7 +109,7 @@
         </div>
         <select
           v-model="retryPolicy"
-          class="w-[220px] rounded-md bg-bg-surface px-2.5 py-1.5 max-sm:w-full"
+          class="w-55 rounded-md bg-bg-surface px-2.5 py-1.5 max-sm:w-full"
         >
           <option value="none">关闭</option>
           <option value="conservative">保守</option>

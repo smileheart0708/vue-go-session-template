@@ -5,6 +5,7 @@
   "printWidth": 100,
   "trailingComma": "all",
   "arrowParens": "always",
-  "endOfLine": "auto",
-  "objectWrap": "collapse"
+  "endOfLine": "lf",
+  "objectWrap": "collapse",
+  "singleAttributePerLine": true
 }

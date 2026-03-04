@@ -75,7 +75,7 @@
         </div>
         <select
           v-model="defaultLanding"
-          class="w-[220px] rounded-md bg-bg-surface px-2.5 py-1.5 max-sm:w-full"
+          class="w-55 rounded-md bg-bg-surface px-2.5 py-1.5 max-sm:w-full"
         >
           <option value="dashboard">仪表板</option>
           <option value="logs">日志</option>

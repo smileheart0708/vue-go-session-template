@@ -45,7 +45,7 @@
         </div>
         <select
           v-model="proxyMode"
-          class="w-[220px] rounded-md bg-bg-surface px-2.5 py-1.5 max-sm:w-full"
+          class="w-55 rounded-md bg-bg-surface px-2.5 py-1.5 max-sm:w-full"
         >
           <option value="transparent">透明转发</option>
           <option value="rewrite">路径改写</option>
@@ -62,7 +62,7 @@
         </div>
         <textarea
           v-model="allowedOrigins"
-          class="min-h-16 w-[260px] resize-y rounded-md px-2.5 py-1.5 max-sm:w-full"
+          class="min-h-16 w-65 resize-y rounded-md px-2.5 py-1.5 max-sm:w-full"
           placeholder="https://console.example.com, https://ops.example.com"
         />
       </div>
@@ -113,7 +113,7 @@
         </div>
         <select
           v-model="rateLimitLevel"
-          class="w-[220px] rounded-md bg-bg-surface px-2.5 py-1.5 max-sm:w-full"
+          class="w-55 rounded-md bg-bg-surface px-2.5 py-1.5 max-sm:w-full"
         >
           <option value="off">关闭</option>
           <option value="soft">温和</option>
