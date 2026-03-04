@@ -37,10 +37,7 @@
       >
         <button
           v-if="item.type === 'page'"
-          class="inline-flex size-8 items-center justify-center rounded-md border border-border bg-bg-surface text-xs leading-none font-semibold text-text-primary transition-all duration-200 enabled:hover:border-accent enabled:hover:text-accent enabled:active:translate-y-px disabled:cursor-not-allowed disabled:text-text-tertiary disabled:opacity-70"
-          :class="
-            item.page === page ? 'border-accent bg-accent text-on-accent hover:text-on-accent' : ''
-          "
+          :class="getPageButtonClass(item.page)"
           type="button"
           :disabled="disabled"
           :aria-current="item.page === page ? 'page' : undefined"
@@ -95,13 +92,17 @@ const {
   maxVisible = 5,
   disabled = false,
   showSummary = true,
-  ariaLabel = 'Pagination',
-  previousAriaLabel = 'Previous page',
-  nextAriaLabel = 'Next page',
+  ariaLabel = '分页导航',
+  previousAriaLabel = '上一页',
+  nextAriaLabel = '下一页',
   summaryFormatter,
 } = defineProps<Props>()
 
 const page = defineModel<number>({ required: true })
+const pageButtonBaseClass =
+  'inline-flex size-8 items-center justify-center rounded-md border text-xs leading-none font-semibold transition-all duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--sys-color-focus-ring) disabled:cursor-not-allowed disabled:text-text-tertiary disabled:opacity-70'
+const inactivePageButtonClass = `${pageButtonBaseClass} border-border bg-bg-surface text-text-primary enabled:hover:border-accent enabled:hover:text-accent enabled:active:translate-y-px`
+const activePageButtonClass = `${pageButtonBaseClass} border-accent bg-accent text-on-accent enabled:hover:border-accent-hover enabled:hover:bg-accent-hover enabled:active:border-accent-active enabled:active:bg-accent-active`
 
 const normalizedPageSize = computed<number>(() => {
   const value = Math.trunc(pageSize)
@@ -128,7 +129,7 @@ const summaryText = computed<string>(() => {
   if (summaryFormatter) {
     return summaryFormatter(context)
   }
-  return `Showing ${context.start}-${context.end} / Total ${context.total}`
+  return `显示 ${context.start}-${context.end} 条 / 共 ${context.total} 条`
 })
 
 const canGoPrevious = computed<boolean>(() => !disabled && page.value > 1)
@@ -207,5 +208,12 @@ function goPrevious(): void {
 
 function goNext(): void {
   goToPage(page.value + 1)
+}
+
+function getPageButtonClass(targetPage: number): string {
+  if (targetPage === page.value) {
+    return activePageButtonClass
+  }
+  return inactivePageButtonClass
 }
 </script>
