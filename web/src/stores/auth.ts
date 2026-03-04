@@ -2,35 +2,42 @@ import { computed } from 'vue'
 import { useLocalStorage } from '@vueuse/core'
 import { defineStore } from 'pinia'
 import { useDashboardStore } from './dashboard'
-import { logoutResponseSchema, validateSessionResponseSchema } from '@/types/api'
-import { HttpError, HttpResponseValidationError, http, setUnauthorizedHandler } from '@/utils'
+import { logoutResponseSchema, sessionStatusResponseSchema } from '@/types/api'
+import {
+  api,
+  ApiResponseValidationError,
+  HTTPError,
+  normalizeApiEndpoint,
+  parseWithSchema,
+  setUnauthorizedHandler,
+  withUnauthorizedHandlerSkipped,
+} from '@/utils'
 import { isMockAuthEnabled } from '@/utils/env'
 
 const STORAGE_KEY = 'vue-go-session-auth'
 
 interface StoredAuthState {
-  sessionId: string
   isAuthenticated: boolean
 }
 
-const DEFAULT_AUTH_STATE: StoredAuthState = { sessionId: '', isAuthenticated: false }
+const DEFAULT_AUTH_STATE: StoredAuthState = { isAuthenticated: false }
 
-function isValidStoredAuthState(value: unknown): value is StoredAuthState {
-  if (!value || typeof value !== 'object') {
-    return false
+function hasIsAuthenticatedField(value: unknown): value is { isAuthenticated: unknown } {
+  return typeof value === 'object' && value !== null && 'isAuthenticated' in value
+}
+
+function normalizeStoredAuthState(value: unknown): StoredAuthState {
+  if (!hasIsAuthenticatedField(value)) {
+    return { ...DEFAULT_AUTH_STATE }
   }
 
-  if (!('sessionId' in value) || !('isAuthenticated' in value)) {
-    return false
+  return {
+    isAuthenticated: value.isAuthenticated === true,
   }
-
-  return typeof value.sessionId === 'string' && typeof value.isAuthenticated === 'boolean'
 }
 
 export const useAuthStore = defineStore('auth', () => {
   const storedState = useLocalStorage<StoredAuthState>(STORAGE_KEY, { ...DEFAULT_AUTH_STATE })
-
-  const sessionId = computed(() => storedState.value.sessionId)
   const isAuthenticated = computed(() => storedState.value.isAuthenticated)
 
   function applyState(nextState: StoredAuthState): void {
@@ -52,20 +59,17 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   function init(): void {
-    if (!isValidStoredAuthState(storedState.value)) {
-      applyState(DEFAULT_AUTH_STATE)
-    }
+    applyState(normalizeStoredAuthState(storedState.value))
     setUnauthorizedHandler(handleUnauthorized)
   }
 
   function mockLogin(): void {
-    const mockSessionId = `mock-session-${Date.now()}`
-    applyState({ sessionId: mockSessionId, isAuthenticated: true })
-    console.log('[MOCK AUTH] 模拟登录成功:', mockSessionId)
+    applyState({ isAuthenticated: true })
+    console.log('[MOCK AUTH] 模拟登录成功')
   }
 
-  function setAuthenticated(newSessionId: string): void {
-    applyState({ sessionId: newSessionId, isAuthenticated: true })
+  function setAuthenticated(): void {
+    applyState({ isAuthenticated: true })
   }
 
   async function validateSession(): Promise<boolean> {
@@ -73,28 +77,25 @@ export const useAuthStore = defineStore('auth', () => {
       return isAuthenticated.value
     }
 
-    if (!sessionId.value) {
-      handleUnauthorized()
-      return false
-    }
-
     try {
-      const data = await http('/validate-session', {
-        method: 'POST',
-        body: { session_id: sessionId.value },
-        skipUnauthorizedHandler: true,
-        schema: validateSessionResponseSchema,
-      })
+      const response = await api.get(
+        normalizeApiEndpoint('/session'),
+        withUnauthorizedHandlerSkipped(),
+      )
+      const payload = await response.json<unknown>()
+      const data = parseWithSchema(payload, sessionStatusResponseSchema, response.url)
 
-      if (!data.valid) {
+      if (!data.authenticated) {
         handleUnauthorized()
         return false
       }
 
-      applyState({ sessionId: sessionId.value, isAuthenticated: true })
+      applyState({ isAuthenticated: true })
       return true
     } catch (error) {
-      if (!(error instanceof HttpError)) {
+      if (error instanceof ApiResponseValidationError) {
+        console.error('Invalid session status response payload:', error)
+      } else if (!(error instanceof HTTPError && error.response.status === 401)) {
         console.error('Failed to validate session:', error)
       }
       handleUnauthorized()
@@ -104,20 +105,21 @@ export const useAuthStore = defineStore('auth', () => {
 
   async function logout(): Promise<void> {
     try {
-      const data = await http('/logout', {
-        method: 'POST',
-        skipUnauthorizedHandler: true,
-        schema: logoutResponseSchema,
-      })
+      const response = await api.post(
+        normalizeApiEndpoint('/logout'),
+        withUnauthorizedHandlerSkipped(),
+      )
+      const payload = await response.json<unknown>()
+      const data = parseWithSchema(payload, logoutResponseSchema, response.url)
       if (!data.success) {
         console.warn('Logout response indicates failure:', data)
       }
     } catch (error) {
-      if (error instanceof HttpResponseValidationError) {
+      if (error instanceof ApiResponseValidationError) {
         console.error('Invalid logout response payload:', error)
         return
       }
-      if (!(error instanceof HttpError && error.status === 401)) {
+      if (!(error instanceof HTTPError && error.response.status === 401)) {
         console.error('Failed to logout:', error)
       }
     } finally {
@@ -126,7 +128,6 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   return {
-    sessionId,
     isAuthenticated,
     init,
     mockLogin,

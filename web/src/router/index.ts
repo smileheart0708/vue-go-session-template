@@ -94,6 +94,7 @@ const router = createRouter({
 // 全局前置守卫
 router.beforeEach(async (to) => {
   const authStore = useAuthStore()
+  const isMockAuth = import.meta.env.VITE_MOCK_AUTH === 'true'
 
   // 检查路由是否需要认证
   const requiresAuth = to.matched.some((record) => record.meta['requiresAuth'])
@@ -101,29 +102,28 @@ router.beforeEach(async (to) => {
 
   // 如果需要认证
   if (requiresAuth) {
-    if (!authStore.isAuthenticated) {
-      // 未登录，重定向到登录页
-      return createLoginRedirect(to.fullPath)
-    }
-
-    // 已登录，验证 session 是否有效（非模拟模式）
-    const isMockAuth = import.meta.env.VITE_MOCK_AUTH === 'true'
-    if (!isMockAuth) {
+    if (isMockAuth) {
+      if (!authStore.isAuthenticated) {
+        return createLoginRedirect(to.fullPath)
+      }
+    } else {
       const isValid = await authStore.validateSession()
       if (!isValid) {
-        // session 无效，重定向到登录页
         return createLoginRedirect(to.fullPath)
       }
     }
   }
 
-  // 如果是登录页，但已经登录
-  if (requiresGuest && authStore.isAuthenticated) {
+  if (requiresGuest) {
+    const hasActiveSession = isMockAuth ? authStore.isAuthenticated : await authStore.validateSession()
+    if (!hasActiveSession) {
+      return true
+    }
+
     const redirectPath = resolveRedirectPath(to.query['redirect'])
     if (redirectPath) {
       return redirectPath
     }
-    // 已登录，重定向到仪表板
     return { name: 'dashboard' }
   }
 

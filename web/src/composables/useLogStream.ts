@@ -2,7 +2,14 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { logEntrySchema, logsHistoryResponseSchema } from '@/types/api'
 import { useAuthStore } from '@/stores/auth'
-import { HttpError, HttpResponseValidationError, buildLoginRedirectPath, http } from '@/utils'
+import {
+  api,
+  ApiResponseValidationError,
+  buildLoginRedirectPath,
+  HTTPError,
+  normalizeApiEndpoint,
+  parseWithSchema,
+} from '@/utils'
 import { isMockApiEnabled } from '@/utils/env'
 import type { LogEntry } from '@/utils/logs'
 
@@ -26,7 +33,7 @@ export function useLogStream(options: UseLogStreamOptions = {}) {
   const logs = ref<LogEntry[]>([])
   const status = ref<LogStreamStatus>('connecting')
   const streamUrl = options.streamUrl ?? '/api/logs/stream?history=0'
-  const historyEndpoint = options.historyEndpoint ?? '/logs/history'
+  const historyEndpoint = options.historyEndpoint ?? 'logs/history'
   const maxLogs = options.maxLogs ?? 500
   let eventSource: EventSource | null = null
   let reconnectTimer: ReturnType<typeof setTimeout> | null = null
@@ -66,15 +73,17 @@ export function useLogStream(options: UseLogStreamOptions = {}) {
     }
 
     try {
-      const data = await http(historyEndpoint, { schema: logsHistoryResponseSchema })
+      const response = await api.get(normalizeApiEndpoint(historyEndpoint))
+      const payload = await response.json<unknown>()
+      const data = parseWithSchema(payload, logsHistoryResponseSchema, response.url)
       mergeHistory(data.logs)
       historyLoaded = true
     } catch (error) {
-      if (error instanceof HttpResponseValidationError) {
+      if (error instanceof ApiResponseValidationError) {
         console.error('历史日志响应格式异常:', error)
         return
       }
-      if (error instanceof HttpError && error.status === 401) {
+      if (error instanceof HTTPError && error.response.status === 401) {
         return
       }
       console.error('加载历史日志失败:', error)

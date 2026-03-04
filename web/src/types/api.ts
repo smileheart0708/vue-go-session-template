@@ -1,4 +1,4 @@
-import type { HttpResponseSchema } from '@/utils/http'
+import type { ApiResponseSchema } from '@/utils/api-client'
 import type { LogEntry } from '@/utils/logs'
 import {
   ensureJsonValue,
@@ -14,11 +14,11 @@ import {
 export interface LoginResponse {
   success: boolean
   message: string
-  session_id?: string
 }
 
-export interface ValidateSessionResponse {
-  valid: boolean
+export interface SessionStatusResponse {
+  authenticated: boolean
+  message?: string
 }
 
 export interface LogoutResponse {
@@ -57,24 +57,22 @@ function parseLogAttrs(value: unknown): Record<string, unknown> | undefined {
 
 function parseLoginResponse(value: unknown): LoginResponse {
   const payload = expectObjectRecord(value, 'LoginResponse')
-  const success = expectBooleanField(payload, 'success', 'LoginResponse')
-  const message = expectStringField(payload, 'message', 'LoginResponse')
-  const sessionId = expectOptionalStringField(payload, 'session_id', 'LoginResponse')
-
-  if (success && !sessionId) {
-    throw new Error('LoginResponse.session_id is required when success is true')
+  return {
+    success: expectBooleanField(payload, 'success', 'LoginResponse'),
+    message: expectStringField(payload, 'message', 'LoginResponse'),
   }
-
-  const response: LoginResponse = { success, message }
-  if (sessionId !== undefined) {
-    response.session_id = sessionId
-  }
-  return response
 }
 
-function parseValidateSessionResponse(value: unknown): ValidateSessionResponse {
-  const payload = expectObjectRecord(value, 'ValidateSessionResponse')
-  return { valid: expectBooleanField(payload, 'valid', 'ValidateSessionResponse') }
+function parseSessionStatusResponse(value: unknown): SessionStatusResponse {
+  const payload = expectObjectRecord(value, 'SessionStatusResponse')
+  const authenticated = expectBooleanField(payload, 'authenticated', 'SessionStatusResponse')
+  const message = expectOptionalStringField(payload, 'message', 'SessionStatusResponse')
+
+  const response: SessionStatusResponse = { authenticated }
+  if (message !== undefined) {
+    response.message = message
+  }
+  return response
 }
 
 function parseLogoutResponse(value: unknown): LogoutResponse {
@@ -163,32 +161,32 @@ function parseLogsHistoryResponse(value: unknown): LogsHistoryResponse {
   return { logs, count }
 }
 
-export const loginResponseSchema: HttpResponseSchema<LoginResponse> = {
+export const loginResponseSchema: ApiResponseSchema<LoginResponse> = {
   name: 'LoginResponse',
   parse: parseLoginResponse,
 }
 
-export const validateSessionResponseSchema: HttpResponseSchema<ValidateSessionResponse> = {
-  name: 'ValidateSessionResponse',
-  parse: parseValidateSessionResponse,
+export const sessionStatusResponseSchema: ApiResponseSchema<SessionStatusResponse> = {
+  name: 'SessionStatusResponse',
+  parse: parseSessionStatusResponse,
 }
 
-export const logoutResponseSchema: HttpResponseSchema<LogoutResponse> = {
+export const logoutResponseSchema: ApiResponseSchema<LogoutResponse> = {
   name: 'LogoutResponse',
   parse: parseLogoutResponse,
 }
 
-export const dashboardStatsResponseSchema: HttpResponseSchema<DashboardStatsResponse> = {
+export const dashboardStatsResponseSchema: ApiResponseSchema<DashboardStatsResponse> = {
   name: 'DashboardStatsResponse',
   parse: parseDashboardStatsResponse,
 }
 
-export const logEntrySchema: HttpResponseSchema<LogEntry> = {
+export const logEntrySchema: ApiResponseSchema<LogEntry> = {
   name: 'LogEntry',
   parse: parseLogEntry,
 }
 
-export const logsHistoryResponseSchema: HttpResponseSchema<LogsHistoryResponse> = {
+export const logsHistoryResponseSchema: ApiResponseSchema<LogsHistoryResponse> = {
   name: 'LogsHistoryResponse',
   parse: parseLogsHistoryResponse,
 }

@@ -4,5 +4,5 @@
 
 export * from './format'
 export * from './env'
-export * from './http'
+export * from './api-client'
 export * from './time'
