@@ -5,18 +5,19 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/gin-contrib/sessions"
+	ginsessions "github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
-)
 
-const sessionMaxAgeSeconds = 7 * 24 * 60 * 60
+	"main/internal/session"
+)
 
 // AuthMiddleware 认证中间件
 func AuthMiddleware(cookieSecure bool) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		sess := sessions.Default(c)
+		sess := ginsessions.Default(c)
 		authenticated, ok := sess.Get("authenticated").(bool)
 		if !ok || !authenticated {
+			clearInvalidSessionCookie(sess, cookieSecure)
 			slog.Warn("unauthorized request", "remote_addr", c.ClientIP())
 			c.JSON(http.StatusUnauthorized, gin.H{
 				"error": "未授权，请先登录",
@@ -26,13 +27,7 @@ func AuthMiddleware(cookieSecure bool) gin.HandlerFunc {
 		}
 
 		sess.Set("last_seen_at", time.Now().Unix())
-		sess.Options(sessions.Options{
-			Path:     "/",
-			MaxAge:   sessionMaxAgeSeconds,
-			HttpOnly: true,
-			Secure:   cookieSecure,
-			SameSite: http.SameSiteLaxMode,
-		})
+		session.SetCookieOptions(sess, cookieSecure, session.SessionMaxAgeSeconds)
 		if err := sess.Save(); err != nil {
 			slog.Warn("failed to refresh session", "error", err)
 		}
@@ -44,5 +39,12 @@ func AuthMiddleware(cookieSecure bool) gin.HandlerFunc {
 
 		c.Set("session_id", sessionID)
 		c.Next()
+	}
+}
+
+func clearInvalidSessionCookie(sess ginsessions.Session, secure bool) {
+	session.ExpireCookie(sess, secure)
+	if err := sess.Save(); err != nil {
+		slog.Warn("failed to clear invalid session", "error", err)
 	}
 }

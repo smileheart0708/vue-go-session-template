@@ -12,6 +12,7 @@ import (
 	"main/internal/database"
 	"main/internal/middleware"
 	"main/internal/server"
+	"main/internal/session"
 	"main/internal/stream"
 )
 
@@ -68,6 +69,15 @@ func main() {
 		}
 	}()
 	slog.Info("database initialized", "path", dbContainer.Path())
+
+	if _, err := session.Bootstrap(cfg.DataDir, cfg.AuthKey, time.Now()); err != nil {
+		slog.Error("failed to bootstrap session maintenance", "error", err)
+		return
+	}
+
+	janitorCtx, janitorCancel := context.WithCancel(context.Background())
+	defer janitorCancel()
+	go session.RunJanitor(janitorCtx, cfg.DataDir, time.Now)
 
 	// 创建路由
 	r := server.NewRouter(cfg, logBroadcaster, startTime, distFS)

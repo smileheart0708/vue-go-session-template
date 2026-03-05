@@ -7,11 +7,11 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/gin-contrib/sessions"
+	ginsessions "github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
-)
 
-const sessionMaxAgeSeconds = 7 * 24 * 60 * 60
+	"main/internal/session"
+)
 
 // AuthHandler 认证处理器
 type AuthHandler struct {
@@ -70,13 +70,13 @@ func (h *AuthHandler) Login(c *gin.Context) {
 		return
 	}
 
-	sess := sessions.Default(c)
+	sess := ginsessions.Default(c)
 	now := time.Now().Unix()
 	sess.Set("authenticated", true)
 	sess.Set("session_id", sessionID)
 	sess.Set("login_at", now)
 	sess.Set("last_seen_at", now)
-	setSessionCookieOptions(sess, h.cookieSecure, sessionMaxAgeSeconds)
+	session.SetCookieOptions(sess, h.cookieSecure, session.SessionMaxAgeSeconds)
 	if err := sess.Save(); err != nil {
 		slog.Error("failed to save session", "error", err)
 		c.JSON(http.StatusInternalServerError, LoginResponse{
@@ -102,9 +102,10 @@ type SessionStatusResponse struct {
 
 // Session 验证当前会话是否有效
 func (h *AuthHandler) Session(c *gin.Context) {
-	sess := sessions.Default(c)
+	sess := ginsessions.Default(c)
 	authenticated, ok := sess.Get("authenticated").(bool)
 	if !ok || !authenticated {
+		clearInvalidSessionCookie(sess, h.cookieSecure)
 		c.JSON(http.StatusUnauthorized, SessionStatusResponse{
 			Authenticated: false,
 			Message:       "未授权，请先登录",
@@ -113,7 +114,7 @@ func (h *AuthHandler) Session(c *gin.Context) {
 	}
 
 	sess.Set("last_seen_at", time.Now().Unix())
-	setSessionCookieOptions(sess, h.cookieSecure, sessionMaxAgeSeconds)
+	session.SetCookieOptions(sess, h.cookieSecure, session.SessionMaxAgeSeconds)
 	if err := sess.Save(); err != nil {
 		slog.Warn("failed to refresh session", "error", err)
 	}
@@ -125,11 +126,10 @@ func (h *AuthHandler) Session(c *gin.Context) {
 
 // Logout 处理登出请求
 func (h *AuthHandler) Logout(c *gin.Context) {
-	sess := sessions.Default(c)
+	sess := ginsessions.Default(c)
 	sessionID, _ := sess.Get("session_id").(string)
 
-	sess.Clear()
-	setSessionCookieOptions(sess, h.cookieSecure, -1)
+	session.ExpireCookie(sess, h.cookieSecure)
 	if err := sess.Save(); err != nil {
 		slog.Error("failed to clear session", "error", err)
 		c.JSON(http.StatusInternalServerError, gin.H{
@@ -147,14 +147,11 @@ func (h *AuthHandler) Logout(c *gin.Context) {
 	})
 }
 
-func setSessionCookieOptions(sess sessions.Session, secure bool, maxAge int) {
-	sess.Options(sessions.Options{
-		Path:     "/",
-		MaxAge:   maxAge,
-		HttpOnly: true,
-		Secure:   secure,
-		SameSite: http.SameSiteLaxMode,
-	})
+func clearInvalidSessionCookie(sess ginsessions.Session, secure bool) {
+	session.ExpireCookie(sess, secure)
+	if err := sess.Save(); err != nil {
+		slog.Warn("failed to clear invalid session", "error", err)
+	}
 }
 
 func generateSessionID() (string, error) {

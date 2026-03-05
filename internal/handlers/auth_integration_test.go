@@ -183,6 +183,24 @@ func TestSessionEndpointReturnsUnauthorizedWithoutCookie(t *testing.T) {
 	if recorder.Code != http.StatusUnauthorized {
 		t.Fatalf("expected status 401, got %d", recorder.Code)
 	}
+
+	setCookie := recorder.Header().Get("Set-Cookie")
+	if !strings.Contains(setCookie, "session_id=") {
+		t.Fatalf("expected unauthorized session response to clear cookie, got %q", setCookie)
+	}
+}
+
+func TestProtectedEndpointClearsCookieWhenUnauthorized(t *testing.T) {
+	router := newAuthTestRouter("top-secret-auth-key")
+	recorder := performRequest(router, http.MethodGet, "/api/protected", nil)
+	if recorder.Code != http.StatusUnauthorized {
+		t.Fatalf("expected status 401, got %d", recorder.Code)
+	}
+
+	setCookie := recorder.Header().Get("Set-Cookie")
+	if !strings.Contains(setCookie, "session_id=") {
+		t.Fatalf("expected unauthorized protected response to clear cookie, got %q", setCookie)
+	}
 }
 
 func TestLogoutInvalidatesSession(t *testing.T) {

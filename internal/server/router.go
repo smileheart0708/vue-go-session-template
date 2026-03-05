@@ -6,7 +6,6 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
-	"time"
 
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
@@ -16,12 +15,8 @@ import (
 	"main/internal/config"
 	"main/internal/handlers"
 	"main/internal/middleware"
+	"main/internal/session"
 	"main/internal/stream"
-)
-
-const (
-	sessionDuration   = 7 * 24 * time.Hour
-	sessionCookieName = "session_id"
 )
 
 func NewRouter(
@@ -40,7 +35,7 @@ func NewRouter(
 	httpLogConfig.WithRequestID = false
 	r.Use(sloggin.NewWithConfig(slog.Default().WithGroup("http"), httpLogConfig))
 	r.Use(gin.Recovery())
-	r.Use(sessions.Sessions(sessionCookieName, newSessionStore(cfg)))
+	r.Use(sessions.Sessions(session.SessionCookieName, newSessionStore(cfg)))
 
 	api := r.Group("/api")
 	{
@@ -62,7 +57,7 @@ func NewRouter(
 }
 
 func newSessionStore(cfg *config.Config) sessions.Store {
-	sessionDir := filepath.Join(cfg.DataDir, "sessions")
+	sessionDir := filepath.Join(cfg.DataDir, session.SessionDirectoryName)
 	if err := os.MkdirAll(sessionDir, 0755); err != nil {
 		panic(err)
 	}
@@ -72,7 +67,7 @@ func newSessionStore(cfg *config.Config) sessions.Store {
 	wrappedStore := &filesystemSessionStore{FilesystemStore: store}
 	wrappedStore.Options(sessions.Options{
 		Path:     "/",
-		MaxAge:   int(sessionDuration.Seconds()),
+		MaxAge:   session.SessionMaxAgeSeconds,
 		HttpOnly: true,
 		Secure:   cfg.CookieSecure,
 		SameSite: http.SameSiteLaxMode,
