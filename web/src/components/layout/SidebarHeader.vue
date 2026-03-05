@@ -2,7 +2,7 @@
   <div class="bg-transparent px-5 pb-3 pt-5">
     <div class="flex items-center gap-3">
       <img
-        :src="logoSvg"
+        src="/logo.svg"
         alt="logo"
         class="size-7 shrink-0"
       />
@@ -10,7 +10,3 @@
     </div>
   </div>
 </template>
-
-<script setup lang="ts">
-import logoSvg from '@/assets/logo.svg'
-</script>
