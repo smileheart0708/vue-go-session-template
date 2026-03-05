@@ -1,3 +1,12 @@
+/* 基础样式重置 */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
 body {
   min-height: 100vh;
   color: var(--sys-color-text-primary);
@@ -70,9 +79,8 @@ select:focus {
   border-color: var(--sys-color-accent);
 }
 
-/* 毛玻璃效果工具类 */
-.glass {
-  background-color: var(--sys-color-bg-glass);
-  backdrop-filter: blur(12px) saturate(140%);
-  backdrop-filter: blur(12px) saturate(140%);
+/* 自定义滚动条样式（标准 CSS 属性，现代浏览器优先使用） */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(128, 128, 128, 0.3) transparent;
 }

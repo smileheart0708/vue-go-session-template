@@ -1,7 +1,0 @@
-/* 自定义滚动条样式 */
-
-/* 标准 CSS 属性 (所有现代浏览器优先使用) */
-* {
-  scrollbar-width: thin;
-  scrollbar-color: rgba(128, 128, 128, 0.3) transparent;
-}

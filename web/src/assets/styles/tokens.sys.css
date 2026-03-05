@@ -12,8 +12,6 @@
   --sys-color-accent-hover: var(--ref-color-brand-primary-hover);
   --sys-color-accent-active: var(--ref-color-brand-primary-active);
   --sys-color-accent-rgb: var(--ref-color-brand-primary-rgb);
-  --sys-color-accent-hover-rgb: var(--ref-color-brand-primary-hover-rgb);
-  --sys-color-accent-active-rgb: var(--ref-color-brand-primary-active-rgb);
   --sys-color-on-accent: var(--ref-color-brand-on-primary);
 
   /* Surface */

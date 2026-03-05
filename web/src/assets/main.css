@@ -6,9 +6,7 @@
 @import './styles/tokens.cmp.css' layer(theme);
 @import './styles/tailwind-theme.css' layer(theme);
 @import 'tailwindcss/preflight.css' layer(base);
-@import './styles/reset.css' layer(base);
-@import './styles/elements.css' layer(base);
-@import './styles/scrollbar.css' layer(base);
+@import './styles/base.css' layer(base);
 @import './styles/motion.css' layer(base);
 @import 'tailwindcss/utilities.css' layer(utilities);
 
