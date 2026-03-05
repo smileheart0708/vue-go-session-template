@@ -104,7 +104,6 @@ function handleClose(id: ToastId): void {
   padding: 1rem 1.25rem;
   background: var(--sys-color-bg-surface);
   backdrop-filter: blur(12px) saturate(180%);
-  backdrop-filter: blur(12px) saturate(180%);
   border-radius: 14px;
   box-shadow: var(--sys-shadow-toast);
   pointer-events: auto;

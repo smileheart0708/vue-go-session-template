@@ -10,7 +10,7 @@
     "lint": "run-s oxlint eslint lint:css",
     "oxlint": "oxlint . --fix",
     "eslint": "eslint . --fix --cache",
-    "lint:css": "stylelint \"src/**/*.{css,vue}\"",
+    "lint:css": "stylelint \"src/**/*.{css,vue}\" --max-warnings 0 --report-needless-disables",
     "format": "prettier --write src/"
   },
   "dependencies": {
