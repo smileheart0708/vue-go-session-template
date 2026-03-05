@@ -1,7 +1,7 @@
 # AGENTS.md
 
 > **项目**: Vue-Go 全栈模板 (Golang Embed + Vue 3 SPA)
-> **技术栈**: Go 1.25+ (Gin) + Vue 3.5+ (TypeScript) + Pinia + Vite
+> **技术栈**: Go 1.26+ (Gin) + Vue 3.5+ (TypeScript) + Pinia + Vite
 > **包管理器**: pnpm (前端) + Go Modules (后端)
 
 ---

@@ -5,7 +5,7 @@ Go + Vue 的单体全栈模板。后端使用 Gin，前端使用 Vue 3 + TypeScr
 ## 1. 架构与特性
 
 - 前端：Vue 3.5+、TypeScript、Pinia、Vite
-- 后端：Go 1.25+、Gin、`log/slog`
+- 后端：Go 1.26+、Gin、`log/slog`
 - 认证：`AUTH_KEY` + `gin-contrib/sessions`（filesystem store）
 - 日志：SSE 实时推送 + 历史日志接口
 - 构建：前端 `web/dist` 嵌入 Go 可执行文件，支持 `.br/.gz`
