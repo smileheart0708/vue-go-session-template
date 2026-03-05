@@ -93,9 +93,6 @@ Windows 全量构建：
 | `LOG_LEVEL` | `info` | 日志等级：`debug/info/warn/error` |
 | `AUTH_KEY` | 空 | 管理认证密钥；为空时启动自动生成 |
 | `COOKIE_SECURE` | `false` | Session Cookie 的 `Secure` 属性，生产环境必须 `true` |
-| `SESSION_NAME` | `session_id` | Session Cookie 名称 |
-| `SESSION_AUTH_KEY` | 空 | Session 签名密钥；为空时仅开发环境自动生成并告警 |
-| `SESSION_ENC_KEY` | 空 | Session 加密密钥（可选，长度必须是 16/24/32 字节） |
 
 ### 4.2 前端（`web/`）
 
@@ -153,8 +150,7 @@ const data = parseWithSchema(payload, dashboardStatsResponseSchema, response.url
 
 1. 必须通过 HTTPS 暴露服务（建议反向代理终止 TLS）。
 2. 设置强随机 `AUTH_KEY`（建议至少 32 字符）。
-3. 设置强随机 `SESSION_AUTH_KEY`（建议 32 字节以上）。
-4. 设置 `COOKIE_SECURE=true`。
+3. 设置 `COOKIE_SECURE=true`。
 4. 限制公网暴露面：仅暴露网关端口，不直接暴露内部调试端口。
 5. 为 `DATA_DIR` 配置最小权限（仅服务账户可读写）。
 
@@ -162,7 +158,7 @@ const data = parseWithSchema(payload, dashboardStatsResponseSchema, response.url
 
 - Session Cookie：`HttpOnly` + `SameSite=Lax`（已在后端设置）
 - Session 默认有效期：7 天（`internal/server/router.go`）
-- 轮换 `SESSION_AUTH_KEY` 会使旧会话失效，需规划维护窗口
+- 轮换 `AUTH_KEY` 会使旧会话失效，需规划维护窗口
 
 ### 7.3 前端安全
 
@@ -195,7 +191,7 @@ pnpm run build
 
 ## 8. 开放给他人使用时的 Checklist
 
-1. 复制 `.env.example` 并填写 `AUTH_KEY`、`SESSION_AUTH_KEY`、`COOKIE_SECURE`。
+1. 复制 `.env.example` 并填写 `AUTH_KEY`、`COOKIE_SECURE`。
 2. 执行前后端静态检查和构建。
 3. 确认 `VITE_API_MODE=real`，关闭 mock。
 4. 使用 HTTPS 网关对外开放，配置代理和限流。

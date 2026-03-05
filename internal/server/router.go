@@ -19,7 +19,10 @@ import (
 	"main/internal/stream"
 )
 
-const sessionDuration = 7 * 24 * time.Hour
+const (
+	sessionDuration   = 7 * 24 * time.Hour
+	sessionCookieName = "session_id"
+)
 
 func NewRouter(
 	cfg *config.Config,
@@ -37,7 +40,7 @@ func NewRouter(
 	httpLogConfig.WithRequestID = false
 	r.Use(sloggin.NewWithConfig(slog.Default().WithGroup("http"), httpLogConfig))
 	r.Use(gin.Recovery())
-	r.Use(sessions.Sessions(cfg.SessionName, newSessionStore(cfg)))
+	r.Use(sessions.Sessions(sessionCookieName, newSessionStore(cfg)))
 
 	api := r.Group("/api")
 	{
@@ -64,16 +67,7 @@ func newSessionStore(cfg *config.Config) sessions.Store {
 		panic(err)
 	}
 
-	var store *gorillasessions.FilesystemStore
-	if cfg.SessionEncKey == "" {
-		store = gorillasessions.NewFilesystemStore(sessionDir, []byte(cfg.SessionAuthKey))
-	} else {
-		store = gorillasessions.NewFilesystemStore(
-			sessionDir,
-			[]byte(cfg.SessionAuthKey),
-			[]byte(cfg.SessionEncKey),
-		)
-	}
+	store := gorillasessions.NewFilesystemStore(sessionDir, []byte(cfg.AuthKey))
 
 	wrappedStore := &filesystemSessionStore{FilesystemStore: store}
 	wrappedStore.Options(sessions.Options{

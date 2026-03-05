@@ -51,9 +51,6 @@ func main() {
 	if cfg.IsAutoAuthKey {
 		slog.Info("自动生成的 AUTH_KEY", "auth_key", cfg.AuthKey)
 	}
-	if cfg.IsAutoSessionAuthKey {
-		slog.Warn("SESSION_AUTH_KEY 未配置，已使用临时随机值；服务重启后会话将失效")
-	}
 
 	// 初始化 SQLite 数据库
 	dbCtx, dbCancel := context.WithTimeout(context.Background(), 10*time.Second)
