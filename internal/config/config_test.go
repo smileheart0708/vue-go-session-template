@@ -35,3 +35,16 @@ func TestLoadUsesProvidedAuthKey(t *testing.T) {
 		t.Fatal("expected IsAutoAuthKey=false when AUTH_KEY is provided")
 	}
 }
+
+func TestLoadParsesDisableStaticAssetLogs(t *testing.T) {
+	t.Setenv("DISABLE_STATIC_ASSET_LOGS", "true")
+
+	cfg, err := config.Load()
+	if err != nil {
+		t.Fatalf("expected no error, got %v", err)
+	}
+
+	if !cfg.DisableStaticAssetLogs {
+		t.Fatal("expected DisableStaticAssetLogs=true when env is true")
+	}
+}

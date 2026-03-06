@@ -12,12 +12,13 @@ import (
 
 // Config 应用配置结构
 type Config struct {
-	Port          int    // 服务监听端口
-	DataDir       string // 数据持久化目录
-	LogLevel      string // 日志等级
-	AuthKey       string // 管理员身份验证密钥，同时用于 Session 签名
-	CookieSecure  bool   // Session Cookie 是否启用 Secure
-	IsAutoAuthKey bool   // AuthKey 是否自动生成
+	Port                   int    // 服务监听端口
+	DataDir                string // 数据持久化目录
+	LogLevel               string // 日志等级
+	DisableStaticAssetLogs bool   // 是否禁用前端静态资源访问日志
+	AuthKey                string // 管理员身份验证密钥，同时用于 Session 签名
+	CookieSecure           bool   // Session Cookie 是否启用 Secure
+	IsAutoAuthKey          bool   // AuthKey 是否自动生成
 }
 
 // Load 从环境变量加载配置
@@ -28,11 +29,12 @@ func Load() (*Config, error) {
 	}
 
 	cfg := &Config{
-		Port:         getEnvAsInt("PORT", 8080),
-		DataDir:      getEnv("DATA_DIR", ".data"),
-		LogLevel:     getEnv("LOG_LEVEL", "info"),
-		AuthKey:      getEnv("AUTH_KEY", ""),
-		CookieSecure: getEnvAsBool("COOKIE_SECURE", false),
+		Port:                   getEnvAsInt("PORT", 8080),
+		DataDir:                getEnv("DATA_DIR", ".data"),
+		LogLevel:               getEnv("LOG_LEVEL", "info"),
+		DisableStaticAssetLogs: getEnvAsBool("DISABLE_STATIC_ASSET_LOGS", false),
+		AuthKey:                getEnv("AUTH_KEY", ""),
+		CookieSecure:           getEnvAsBool("COOKIE_SECURE", false),
 	}
 
 	// 如果 AUTH_KEY 未设置，生成随机 12 位字符串

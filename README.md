@@ -91,6 +91,7 @@ Windows 全量构建：
 | `PORT` | `8080` | 服务端口 |
 | `DATA_DIR` | `.data` | 数据目录 |
 | `LOG_LEVEL` | `info` | 日志等级：`debug/info/warn/error` |
+| `DISABLE_STATIC_ASSET_LOGS` | `false` | `true` 时不打印前端静态资源请求日志（如 `/`、`/assets/*`、`favicon.ico`） |
 | `AUTH_KEY` | 空 | 管理认证密钥；为空时启动自动生成 |
 | `COOKIE_SECURE` | `false` | Session Cookie 的 `Secure` 属性，生产环境必须 `true` |
 

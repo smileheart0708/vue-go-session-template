@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
@@ -33,6 +34,11 @@ func NewRouter(
 	r := gin.New()
 	httpLogConfig := sloggin.DefaultConfig()
 	httpLogConfig.WithRequestID = false
+	if cfg.DisableStaticAssetLogs {
+		httpLogConfig.Filters = append(httpLogConfig.Filters, func(c *gin.Context) bool {
+			return !shouldSkipStaticAssetAccessLog(c.Request.URL.Path)
+		})
+	}
 	r.Use(sloggin.NewWithConfig(slog.Default().WithGroup("http"), httpLogConfig))
 	r.Use(gin.Recovery())
 	r.Use(sessions.Sessions(session.SessionCookieName, newSessionStore(cfg)))
@@ -83,4 +89,39 @@ type filesystemSessionStore struct {
 func (s *filesystemSessionStore) Options(options sessions.Options) {
 	s.FilesystemStore.Options = options.ToGorillaOptions()
 	s.FilesystemStore.MaxAge(options.MaxAge)
+}
+
+var staticAssetLogExtensions = map[string]struct{}{
+	".js":    {},
+	".css":   {},
+	".map":   {},
+	".ico":   {},
+	".svg":   {},
+	".png":   {},
+	".jpg":   {},
+	".jpeg":  {},
+	".gif":   {},
+	".webp":  {},
+	".avif":  {},
+	".woff":  {},
+	".woff2": {},
+	".ttf":   {},
+	".eot":   {},
+}
+
+func shouldSkipStaticAssetAccessLog(path string) bool {
+	if path == "/" || path == "/index.html" {
+		return true
+	}
+
+	if strings.HasPrefix(path, "/assets/") {
+		return true
+	}
+
+	ext := strings.ToLower(filepath.Ext(path))
+	if _, ok := staticAssetLogExtensions[ext]; ok {
+		return true
+	}
+
+	return false
 }
