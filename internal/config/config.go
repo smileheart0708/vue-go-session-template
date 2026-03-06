@@ -3,8 +3,11 @@ package config
 import (
 	"crypto/rand"
 	"encoding/hex"
+	"fmt"
 	"os"
 	"strconv"
+
+	"github.com/joho/godotenv"
 )
 
 // Config 应用配置结构
@@ -19,6 +22,11 @@ type Config struct {
 
 // Load 从环境变量加载配置
 func Load() (*Config, error) {
+	// 若当前目录存在 .env，先加载到进程环境变量（不会覆盖已存在变量）。
+	if err := godotenv.Load(".env"); err != nil && !os.IsNotExist(err) {
+		return nil, fmt.Errorf("load .env: %w", err)
+	}
+
 	cfg := &Config{
 		Port:         getEnvAsInt("PORT", 8080),
 		DataDir:      getEnv("DATA_DIR", ".data"),

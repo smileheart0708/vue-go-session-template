@@ -44,3 +44,4 @@ __screenshots__/
 nul
 .data/
 local/
+.env
