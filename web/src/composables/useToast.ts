@@ -1,12 +1,20 @@
 import { ref } from 'vue'
 
-export type ToastType = 'success' | 'error' | 'warning' | 'info'
+type ToastType = 'success' | 'error' | 'warning' | 'info'
+type ToastNotifier = (message: string, duration?: number) => number
 
-export interface Toast {
+interface Toast {
   id: number
   message: string
   type: ToastType
   duration: number
+}
+
+export interface ToastController {
+  success: ToastNotifier
+  error: ToastNotifier
+  warn: ToastNotifier
+  info: ToastNotifier
 }
 
 const MAX_TOASTS = 5
@@ -41,25 +49,24 @@ export function useToast() {
     }
   }
 
-  function success(message: string, duration?: number) {
-    return addToast(message, 'success', duration)
-  }
-
-  function error(message: string, duration?: number) {
-    return addToast(message, 'error', duration)
-  }
-
-  function warning(message: string, duration?: number) {
-    return addToast(message, 'warning', duration)
-  }
-
-  function info(message: string, duration?: number) {
-    return addToast(message, 'info', duration)
+  const toast: ToastController = {
+    success(message, duration) {
+      return addToast(message, 'success', duration)
+    },
+    error(message, duration) {
+      return addToast(message, 'error', duration)
+    },
+    warn(message, duration) {
+      return addToast(message, 'warning', duration)
+    },
+    info(message, duration) {
+      return addToast(message, 'info', duration)
+    },
   }
 
   function clear() {
     toasts.value = []
   }
 
-  return { toasts, addToast, removeToast, success, error, warning, info, clear }
+  return { toasts, addToast, removeToast, toast, clear }
 }

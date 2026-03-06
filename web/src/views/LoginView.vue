@@ -23,7 +23,7 @@ const router = useRouter()
 const authStore = useAuthStore()
 const authKey = ref('')
 const isLoading = ref(false)
-const { success, error: toastError } = useToast()
+const { toast } = useToast()
 const { mode, setTheme } = useTheme()
 
 const errorMessageSchema = z.union([z.string(), z.object({ message: z.string() })])
@@ -50,7 +50,7 @@ async function handleThemeChange(nextMode: ThemeMode, event?: MouseEvent): Promi
 
 const handleLogin = async () => {
   if (!authKey.value.trim()) {
-    toastError('请输入认证令牌')
+    toast.error('请输入认证令牌')
     return
   }
 
@@ -65,31 +65,31 @@ const handleLogin = async () => {
     const data = parseWithSchema(payload, loginResponseSchema, response.url)
 
     if (!data.success) {
-      toastError(data.message || '认证失败，请重试')
+      toast.error(data.message || '认证失败，请重试')
       return
     }
 
     // 登录成功
     authStore.setAuthenticated()
-    success('登录成功！')
+    toast.success('登录成功！')
 
     // 登录后回跳
     await router.replace(loginRedirectPath.value)
   } catch (error) {
     if (error instanceof ApiResponseValidationError) {
       console.error('Invalid login response payload:', error)
-      toastError('服务端响应格式异常，请稍后重试')
+      toast.error('服务端响应格式异常，请稍后重试')
       return
     }
 
     if (error instanceof HTTPError) {
       const errorPayload = await readHttpErrorData(error)
-      toastError(extractErrorMessage(errorPayload) || '认证失败，请重试')
+      toast.error(extractErrorMessage(errorPayload) || '认证失败，请重试')
       return
     }
 
     console.error('Login error:', error)
-    toastError('网络错误，请重试')
+    toast.error('网络错误，请重试')
   } finally {
     isLoading.value = false
   }

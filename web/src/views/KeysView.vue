@@ -132,7 +132,7 @@ interface ApiKeyItem {
   last_used_at: string
 }
 
-const { warning } = useToast()
+const { toast } = useToast()
 const pageSize = 8
 const currentPage = ref<number>(1)
 const showActionMenu = ref<boolean>(false)
@@ -237,7 +237,7 @@ function handleSelectDetail(): void {
 
 function handleSelectDelete(): void {
   if (!actionMenuRow.value) return
-  warning(`演示操作：删除 ${actionMenuRow.value.name}`)
+  toast.warn(`演示操作：删除 ${actionMenuRow.value.name}`)
   showActionMenu.value = false
 }
 
